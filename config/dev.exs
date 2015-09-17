@@ -19,7 +19,6 @@ config :groove_lion, GrooveLion.Endpoint,
   live_reload: [
     patterns: [
      # ~r{priv/static/.*(js|css|png|jpeg|jpg|gif)$},
-      ~r{priv/static/.*(css|png|jpeg|jpg|gif)$},
       ~r{web/views/.*(ex)$},
       ~r{web/templates/.*(eex)$}
     ]
