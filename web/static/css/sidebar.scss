@@ -1,0 +1,69 @@
+.sidebar {
+  width: 300px;
+  padding-top: 20px;
+  flex-shrink: 0;
+  background: #FFF;
+}
+
+.sidebar-links {
+  font-size: 25px;
+  font-weight: 200;
+
+  li {
+    cursor: pointer;
+
+    padding-left: 40px;
+    transition: background 100ms ease-in,
+                color 100ms ease-in,
+                padding-top 100ms ease-in-out,
+                padding-bottom 100ms ease-in-out;
+
+
+    &:hover {
+      background: $color-primary;
+      color: #FFF;
+    }
+
+    &.active {
+      border-left: 10px solid $color-primary;
+      padding: 4px 0 4px 30px;
+    }
+  }
+}
+
+.playlist-chat {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 15px;
+  font-size: 20px;
+
+  padding-left: 0; // Why ember?
+
+  & > * {cursor: pointer;}
+
+  .playlists:hover,
+  .playlists.active,
+  .chat:active,
+  .chat:hover {
+    color: $color-primary;
+  }
+
+  .divider {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+}
+
+.playlist-tab {
+  padding-left: 40px;
+  font-size: 16px;
+}
+
+.playlist-list li {
+  cursor: pointer;
+  margin-bottom: 4px;
+  font-weight: 300;
+  &:hover {
+    color: $color-primary;
+  }
+}

@@ -2,7 +2,7 @@ defmodule GrooveLion.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "rooms:*", GrooveLion.RoomChannel
+  channel "status:*", GrooveLion.RoomChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

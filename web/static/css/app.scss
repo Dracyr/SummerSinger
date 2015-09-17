@@ -1,0 +1,45 @@
+$color-primary: #aa79ff;
+
+@import "bootstrap";
+@import "font-awesome";
+@import "player";
+@import "sidebar";
+
+@import url(http://fonts.googleapis.com/css?family=Raleway:400,300,200);
+
+html {
+  min-height: 100vh;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+
+  color: #666;
+  background: #ddd;
+  font-family: 'Raleway', sans-serif;
+
+}
+body > .ember-view { min-height: 100vh; }
+
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #ddd;
+}
+
+.main-content {
+  padding: 20px 60px 0px 60px;
+  flex-grow: 1;
+
+  background: #EEE;
+}
+
+.playing-icon {
+  position: absolute;
+  left: 330px;
+  font-size: 23px;
+  margin-top: -6px;
+}
+
+

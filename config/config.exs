@@ -10,7 +10,7 @@ config :groove_lion, GrooveLion.Endpoint,
   url: [host: "localhost"],
   root: Path.dirname(__DIR__),
   secret_key_base: "tqW9azCIn08D2k+S7Ml8VXuMYdft8o7+NUBeyzycZr1YikaKv2i4aRiAlXfeiBJB",
-  render_errors: [default_format: "html"],
+  render_errors: [accepts: ~w(html json)],
   pubsub: [name: GrooveLion.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
@@ -22,3 +22,8 @@ config :logger, :console,
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
+
+# Configure phoenix generators
+config :phoenix, :generators,
+  migration: true,
+  binary_id: false

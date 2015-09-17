@@ -1,0 +1,102 @@
+$now_playing_height: 70px;
+$player_center_width: 600px;
+
+.now-playing {
+  display: flex;
+
+  height: $now_playing_height;
+  width: 100%;
+
+  background: #FAFAFA;
+
+  i {
+    cursor: pointer;
+    &:hover {
+      color: $color-primary;
+    }
+  }
+}
+
+#player-controls {
+  width: 300px;
+  min-width: 235px;
+  height: 100%;
+  float: left;
+  padding-left: 75px;
+
+  font-size: 40px;
+  line-height: 1.8;
+  letter-spacing: 20px;
+}
+
+.player-info {
+  flex-grow: 1;
+}
+
+.player-left-wrapper {
+  position: relative;
+  width: 50%;
+  height: $now_playing_height;
+  float: left;
+  margin-right: ($player_center_width / 2) * -1 ;
+}
+
+.player-center {
+  position: relative;
+  float: left;
+  width: $player_center_width;
+  height: 100%;
+
+  text-align: center;
+  .song {
+    padding-top: 6px;
+
+    font-size: 24px;
+  }
+}
+
+.player-right-wrapper {
+  position: relative;
+  float: right;
+  width: 50%;
+  height: $now_playing_height;
+  margin-left: ($player_center_width / 2) * -1 ;
+}
+
+#volume {
+  display: inline-block;
+  width: 140px;
+  height: 100%;
+  float: right;
+  margin-right: 60px;
+}
+
+$seek_slider_height: 10px;
+.seek-slider {
+  position: relative;
+  display: block;
+  height: $seek_slider_height;
+  width: 100%;
+  background: #DDD;
+
+  .duration-passed {
+    background: $color-primary;
+    display: inline-block;
+    height: $seek_slider_height;
+    position: absolute;
+    width: 100%;
+
+    //transition: transform 200ms ease-out;
+
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+}
+
+.streaming-controls {
+  position: relative;
+  right: 40px;
+  float: right;
+  font-size: 30px;
+  top: 15px;
+}

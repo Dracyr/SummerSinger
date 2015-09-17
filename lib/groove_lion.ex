@@ -11,6 +11,7 @@ defmodule GrooveLion do
       supervisor(GrooveLion.Endpoint, []),
       # Start the Ecto repository
       worker(GrooveLion.Repo, []),
+      worker(GrooveLion.CurrentStatus, [])
       # Here you could define other workers and supervisors as children
       # worker(GrooveLion.Worker, [arg1, arg2, arg3]),
     ]
