@@ -12,13 +12,24 @@ config :groove_lion, GrooveLion.Endpoint,
   code_reloader: true,
   cache_static_lookup: false,
   check_origin: false,
-  watchers: [node: ["webpack.devserver.js"]]
+  watchers: [
+    node: ["webpack.devserver.js"],
+    npm: ["run", "watch:css"]
+    # sass: [
+    #   "node_modules/node-sass/bin/node-sass",
+    #   "--watch",
+    #   "web/static/css/app.scss",
+    #   "priv/static/css/app.css"
+    # ]
+    # "node_modules/node-sass/bin/node-sass --watch --source-map true web/static/css/app.scss priv/static/css/app.css",
+  ]
 
 # Watch static and templates for browser reloading.
 config :groove_lion, GrooveLion.Endpoint,
   live_reload: [
     patterns: [
      # ~r{priv/static/.*(js|css|png|jpeg|jpg|gif)$},
+      ~r{priv/static/.*(css)$},
       ~r{web/views/.*(ex)$},
       ~r{web/templates/.*(eex)$}
     ]
