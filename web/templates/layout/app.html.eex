@@ -14,6 +14,7 @@
   <body>
     <div id="container">
     </div>
+    <%= @inner %>
 
     <%= if Mix.env == :dev do %>
       <script src='http://localhost:4001/bundle.js'></script>
