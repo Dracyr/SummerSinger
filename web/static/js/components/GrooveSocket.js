@@ -1,4 +1,4 @@
-import { setPlaying, socketStatusUpdate } from '../actionCreators';
+import { socketStatusUpdate, queueUpdate } from '../actionCreators';
 
 import { Socket } from '../../../../deps/phoenix/web/static/js/phoenix';
 
@@ -18,6 +18,7 @@ export default class GrooveSocket {
     });
 
     broadcastChannel.on('statusUpdate', this.statusUpdate.bind(this));
+    broadcastChannel.on('queueUpdate', this.queueUpdate.bind(this));
 
     this.state = this.state.bind(this);
   }
@@ -30,8 +31,16 @@ export default class GrooveSocket {
     this.store.dispatch(socketStatusUpdate(statusUpdate));
   }
 
-  play(play) {
-    this.broadcastChannel.push('playback', {playback: play});
+  queueUpdate(queue) {
+    this.store.dispatch(queueUpdate(queue.queue));
+  }
+
+  requestPlayback(playback) {
+    this.broadcastChannel.push('playback', {playback: playback});
+  }
+
+  requestQueueTrack(trackId) {
+    this.broadcastChannel.push('queue_track', {track_id: trackId});
   }
 
   seek(seekPercent) {

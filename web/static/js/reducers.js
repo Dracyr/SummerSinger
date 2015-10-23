@@ -8,6 +8,7 @@ const initialState = {
   statusUpdate: null,
   library: [],
   libraryVersion: '',
+  queue: [],
   track: null
 };
 
@@ -23,6 +24,8 @@ function grooveReducer(state = initialState, action) {
       };
     case actions.RECEIVE_LIBRARY:
       return { ...state, library: action.library };
+    case actions.QUEUE_UPDATE:
+      return { ...state, queue: action.queue };
     default:
       return state;
   }

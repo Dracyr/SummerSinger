@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
-import { fetchLibrary, queueTrack } from '../actionCreators';
+import { fetchLibrary, requestQueueTrack } from '../actionCreators';
 
 
 class Track extends Component {
-
-  queueTrack() {
-    queueTrack(this.props.track.id);
-  }
-
   render() {
     var track = this.props.track;
 
@@ -17,7 +12,7 @@ class Track extends Component {
     }
 
     return (
-      <tr onClick={this.queueTrack}>
+      <tr onClick={() => requestQueueTrack(track.id)}>
         <td>
           {track.title}
           {currentTrack}

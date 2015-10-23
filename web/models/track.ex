@@ -22,4 +22,13 @@ defmodule GrooveLion.Track do
     model
     |> cast(params, @required_fields, @optional_fields)
   end
+
+  def to_map(track, index) do
+     %{
+      index: index,
+      id: track.id,
+      title: track.title,
+      artist: track.artist,
+    }
+  end
 end

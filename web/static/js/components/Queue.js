@@ -17,11 +17,11 @@ class QueueItem extends Component {
     return (
       <tr onClick={this.playTrack}>
         <td>
-          {track.name}
+          {track.title}
           {currentTrack}
         </td>
-        <td>{track.artistName}</td>
-        <td>{track.albumName}</td>
+        <td>{track.artist}</td>
+        <td>{track.album}</td>
         <td></td>
       </tr>
     );
@@ -44,7 +44,7 @@ class Queue extends Component {
         </thead>
         <tbody>
           {queueItems.map(function(queueItem) {
-            return <QueueItem key={queueItem.id} track={queueItem} currentId={currentId}/>;
+            return <QueueItem key={queueItem.index} track={queueItem} currentId={currentId}/>;
           })}
         </tbody>
       </table>

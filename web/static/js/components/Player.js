@@ -28,7 +28,7 @@ export default class Player extends React.Component {
         <div className='now-playing'>
           <div id='player-controls'>
             <i className='fa fa-fast-backward'></i>
-            <i className={playingClass} onClick={() => actions.requestPlaying(!playing) }></i>
+            <i className={playingClass} onClick={() => actions.requestPlayback(!playing) }></i>
             <i className='fa fa-fast-forward'></i>
           </div>
           <div className='player-info'>

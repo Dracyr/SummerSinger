@@ -22,16 +22,15 @@ class GrooveApp extends React.Component {
         track,
         grooveSocket,
         dispatch,
-        library
+        library,
+        queue
       } = this.props;
 
     let currentId = statusUpdate ? statusUpdate.currentItemId : '';
     let mainView;
     switch(view) {
       case 'QUEUE':
-        // var queueItems = store.queue.getQueue();
-        let queueItems = [];
-        mainView = <Queue queueItems={queueItems} currentId={currentId}/>;
+        mainView = <Queue queueItems={queue} currentId={currentId}/>;
         break;
       case 'SETTINGS':
         var settings = {
@@ -82,7 +81,8 @@ function mapState(state) {
     streaming: state.default.streaming,
     statusUpdate: state.default.statusUpdate,
     track: state.default.track,
-    library: state.default.library
+    library: state.default.library,
+    queue: state.default.queue
   };
 }
 
