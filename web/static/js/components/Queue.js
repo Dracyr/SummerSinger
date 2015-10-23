@@ -7,7 +7,7 @@ class QueueItem extends Component {
     var track = this.props.track;
 
     var currentTrack = '';
-    if (this.props.currentId === track.id) {
+    if (this.props.currentId === track.index) {
       currentTrack = <span className="playing-icon"><i className="fa fa-volume-up"></i></span>;
     }
 

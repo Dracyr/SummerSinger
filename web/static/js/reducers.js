@@ -4,12 +4,10 @@ import * as actions from './actions';
 const initialState = {
   view: 'QUEUE',
   playing: false,
-  streaming: false,
-  statusUpdate: null,
+  current_track: null,
+  queue_index: null,
   library: [],
-  libraryVersion: '',
   queue: [],
-  track: null
 };
 
 function grooveReducer(state = initialState, action) {
@@ -17,10 +15,12 @@ function grooveReducer(state = initialState, action) {
     case actions.SWITCH_VIEW:
       return { ...state, view: action.view };
     case actions.SOCKET_STATUS_UPDATE:
-      let status = action.status;
+      let current_track = state.queue[action.statusUpdate.queue_index] || null;
       return {
         ...state,
-        playing: status.playback
+        playing: action.statusUpdate.playback,
+        current_track: current_track,
+        queue_index: action.statusUpdate.queue_index
       };
     case actions.RECEIVE_LIBRARY:
       return { ...state, library: action.library };

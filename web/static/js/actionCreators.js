@@ -10,8 +10,8 @@ export function switchPlaylist(playlist) {
   return { type: actions.SWITCH_PLAYLIST, playlist };
 }
 
-export function socketStatusUpdate(status) {
-  return { type: actions.SOCKET_STATUS_UPDATE, status };
+export function socketStatusUpdate(statusUpdate) {
+  return { type: actions.SOCKET_STATUS_UPDATE, statusUpdate };
 }
 
 export function requestPlayback(playback) {

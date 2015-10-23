@@ -17,16 +17,14 @@ class GrooveApp extends React.Component {
         actions,
         view,
         playing,
-        streaming,
-        statusUpdate,
-        track,
+        current_track,
         grooveSocket,
         dispatch,
         library,
         queue
       } = this.props;
 
-    let currentId = statusUpdate ? statusUpdate.currentItemId : '';
+    let currentId = '';
     let mainView;
     switch(view) {
       case 'QUEUE':
@@ -59,9 +57,7 @@ class GrooveApp extends React.Component {
         <Player
           actions={actions}
           playing={playing}
-          streaming={streaming}
-          statusUpdate={statusUpdate}
-          track={track}
+          track={current_track}
           grooveSocket={grooveSocket} />
         <div className="wrapper">
           <Sidebar view={view} switchView={actions.switchView}/>
@@ -78,9 +74,8 @@ function mapState(state) {
   return {
     view: state.default.view,
     playing: state.default.playing,
-    streaming: state.default.streaming,
-    statusUpdate: state.default.statusUpdate,
-    track: state.default.track,
+    current_track: state.default.current_track,
+    queue_index: state.default.queue_index,
     library: state.default.library,
     queue: state.default.queue
   };
