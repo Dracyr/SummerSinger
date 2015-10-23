@@ -4,22 +4,23 @@ import * as GrooveActions from '../actionCreators';
 import { bindActionCreators } from 'redux';
 
 import Player     from '../components/Player';
-import Sidebar    from '../components/sidebar';
-import Queue      from '../components/queue';
+import Sidebar    from '../components/Sidebar';
+import Queue      from '../components/Queue';
 import Settings   from '../components/Settings';
-import Playlist   from '../components/playlist';
+import Playlist   from '../components/Playlist';
+import Library   from '../components/Library';
 
 class GrooveApp extends React.Component {
 
   render() {
     const { actions, view, playing, streaming, statusUpdate, track, grooveSocket } = this.props;
 
+    let currentId = statusUpdate ? statusUpdate.currentItemId : '';
     let mainView;
     switch(view) {
       case 'QUEUE':
         // var queueItems = store.queue.getQueue();
         let queueItems = [];
-        let currentId = statusUpdate ? statusUpdate.currentItemId : '';
         mainView = <Queue queueItems={queueItems} currentId={currentId}/>;
         break;
       case 'SETTINGS':
@@ -32,6 +33,10 @@ class GrooveApp extends React.Component {
       case 'PLAYLIST':
         let playlist = '';
         mainView = <Playlist playlist={playlist}/>;
+        break;
+      case 'LIBRARY':
+        let tracks = [];
+        mainView = <Library tracks={tracks} currentId={currentId}/>;
         break;
       default:
         mainView = '';

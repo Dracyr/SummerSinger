@@ -1,5 +1,5 @@
 import * as actions from './actions';
-import { getGrooveSocket } from './containers/App';
+import fetch from 'isomorphic-fetch';
 
 export function setPlaying(playing) {
   return { type: actions.SET_PLAYING, playing };
@@ -51,4 +51,23 @@ export function currentTrack(track) {
 
 export function libraryUpdate(update) {
   return { type: actions.SOCKET_LIBRARY_UPDATE, update };
+}
+
+function requestLibrary() {
+  return { type: actions.REQUEST_LIBRARY };
+}
+
+function receiveLibrary(library) {
+  return { type: actions.RECEIVE_LIBRARY, library };
+}
+
+export function fetchLibrary() {
+  return dispatch => {
+    dispatch(requestLibrary());
+    console.log("asd");
+
+    return fetch('http://localhost:4000/api/tracks')
+      .then(response => response.json())
+      .then(json => dispatch(receiveLibrary(json)));
+  };
 }

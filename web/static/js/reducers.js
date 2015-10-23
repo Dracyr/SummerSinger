@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux';
 import * as actions from './actions';
-import WebSocketConnection from './lib/websocket_connection';
 
 const initialState = {
   view: 'QUEUE',
@@ -49,15 +48,16 @@ function grooveReducer(state = initialState, action) {
       }
 
       return newState;
-
+    case actions.RECEIVE_LIBRARY:
+      console.log("in reducers");
+      return { ...state, library: action.library };
     default:
       return state;
   }
 }
 
-// const grooveApp = combineReducers({
-//   grooveReducer,
-//   socketReducer
-// });
+const rootReducer = combineReducers({
+  grooveReducer
+});
 
-export default grooveReducer;
+export default rootReducer;
