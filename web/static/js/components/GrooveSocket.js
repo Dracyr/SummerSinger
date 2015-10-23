@@ -13,7 +13,9 @@ export default class GrooveSocket {
     let broadcastChannel = socket.channel('status:broadcast', {});
     this.broadcastChannel = broadcastChannel;
 
-    broadcastChannel.join().receive('ok', channel => {
+    broadcastChannel.join().receive('ok', initInfo => {
+      this.store.dispatch(socketStatusUpdate(initInfo.statusUpdate));
+      this.store.dispatch(queueUpdate(initInfo.queue.queue));
       console.log('Connected to broadcast channel');
     });
 
@@ -41,6 +43,10 @@ export default class GrooveSocket {
 
   requestQueueTrack(trackId) {
     this.broadcastChannel.push('queue_track', {track_id: trackId});
+  }
+
+  requestPlayTrack(queueId) {
+    this.broadcastChannel.push('play_track', {queue_id: queueId});
   }
 
   seek(seekPercent) {

@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
+import { requestPlayTrack } from '../actionCreators';
 
 class QueueItem extends Component {
 
-  playTrack() {
-    // Actions.playTrack(this.props.track.id);
-  }
-
-  render() {
+ render() {
     var track = this.props.track;
 
     var currentTrack = '';
@@ -15,7 +12,7 @@ class QueueItem extends Component {
     }
 
     return (
-      <tr onClick={this.playTrack}>
+      <tr onClick={() => requestPlayTrack(track.index)}>
         <td>
           {track.title}
           {currentTrack}

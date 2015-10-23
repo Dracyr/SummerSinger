@@ -1,12 +1,13 @@
 defmodule GrooveLion.RoomChannel do
   use Phoenix.Channel
-  alias GrooveLion.Queue
+  alias GrooveLion.Player
   alias GrooveLion.CurrentStatus
-  alias GrooveLion.Repo
-  alias GrooveLion.Track
 
   def join("status:broadcast", auth_msg, socket) do
-    {:ok, socket}
+    {:ok, %{
+      statusUpdate: CurrentStatus.get_status,
+      queue: Player.get_queue
+      }, socket}
   end
 
   def join("status:" <> _private_room_id, _auth_msg, socket) do
@@ -14,16 +15,23 @@ defmodule GrooveLion.RoomChannel do
   end
 
   def handle_in("playback", %{"playback" => playback}, socket) do
-    current_status = CurrentStatus.get_status()
-    CurrentStatus.set_playback(!current_status[:playback])
+    Player.playback(playback)
 
-    broadcast! socket, "statusUpdate", CurrentStatus.get_status()
+    broadcast! socket, "statusUpdate", CurrentStatus.get_status
     {:noreply, socket}
   end
 
   def handle_in("queue_track", %{"track_id" => track_id}, socket) do
-    Queue.add_track(track_id)
-    broadcast! socket, "queueUpdate", %{queue: Queue.get_tracks()}
+    Player.queue_track(track_id)
+
+    broadcast! socket, "queueUpdate", Player.get_queue
+    {:noreply, socket}
+  end
+
+  def handle_in("play_track", %{"queue_id" => queue_id}, socket) do
+    Player.play_track(queue_id)
+
+    broadcast! socket, "statusUpdate", CurrentStatus.get_status
     {:noreply, socket}
   end
 end

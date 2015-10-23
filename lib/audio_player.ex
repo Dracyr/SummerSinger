@@ -1,9 +1,10 @@
 defmodule GrooveLion.AudioPlayer do
   alias Porcelain.Process, as: Proc
+  require Logger
 
   def start_link do
     default = %{
-      current_status: 0,
+      current_status: 'stopped',
       current_frame: nil,
       frames: nil,
       current_duration: nil,
@@ -25,8 +26,16 @@ defmodule GrooveLion.AudioPlayer do
       {:status, caller} ->
         send caller, map
         loop(map)
-      {:play_pause} ->
-        send_input("PAUSE\n")
+      {:playback, playback} ->
+        status = map[:current_status]
+        cond do
+          playback == true && status == "paused" ->
+            send_input("PAUSE\n")
+          playback == false && status == "playing" ->
+            send_input("PAUSE\n")
+          true ->
+            # No track loaded
+        end
         loop(map)
       {:load, path} ->
         send_input("LOAD #{path}\n")
@@ -48,14 +57,14 @@ defmodule GrooveLion.AudioPlayer do
   defp handle_message(message, map) do
     case message do
       "@R " <> version ->
-        IO.inspect "Loaded player: " <> version
+        Logger.debug "Loaded player: " <> version
         map
       "@I ID3:" <> metadata ->
         map
       "@I " <> metadata ->
         map
       "@S " <> status ->
-        %{map | current_status: String.to_integer(status)}
+        map
       "@F " <> status ->
         [curr_frame, rem_frame, curr_durr, rem_durr] = String.split(status)
         %{map |
@@ -65,10 +74,13 @@ defmodule GrooveLion.AudioPlayer do
           duration: String.to_float(curr_durr) + String.to_float(rem_durr)
         }
       "@P " <> status ->
-        # IO.inspect status
-        map
+        current_status = case status do
+          "0" -> "stopped"
+          "1" -> "paused"
+          "2" -> "playing"
+        end
+        %{map | current_status: current_status}
       "@E " <> error ->
-        # IO.inspect error
         map
       _ ->
         map

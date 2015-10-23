@@ -19,9 +19,14 @@ export function requestPlayback(playback) {
   return { type: actions.REQUEST_PLAYBACK };
 }
 
-export function requestQueueTrack(track) {
-  getGrooveSocket().requestQueueTrack(track);
+export function requestQueueTrack(trackId) {
+  getGrooveSocket().requestQueueTrack(trackId);
   return { type: actions.REQUEST_QUEUE_TRACK };
+}
+
+export function requestPlayTrack(queueId) {
+  getGrooveSocket().requestPlayTrack(queueId);
+  return { type: actions.REQUEST_PLAY_TRACK };
 }
 
 export function queueUpdate(queue) {
