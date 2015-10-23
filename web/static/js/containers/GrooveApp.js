@@ -13,7 +13,18 @@ import Library   from '../components/Library';
 class GrooveApp extends React.Component {
 
   render() {
-    const { actions, view, playing, streaming, statusUpdate, track, grooveSocket } = this.props;
+    const {
+        actions,
+        view,
+        playing,
+        streaming,
+        statusUpdate,
+        track,
+        grooveSocket,
+        dispatch,
+        library
+      } = this.props;
+
     let currentId = statusUpdate ? statusUpdate.currentItemId : '';
     let mainView;
     switch(view) {
@@ -34,8 +45,11 @@ class GrooveApp extends React.Component {
         mainView = <Playlist playlist={playlist}/>;
         break;
       case 'LIBRARY':
-        let tracks = [];
-        mainView = <Library tracks={tracks} currentId={currentId}/>;
+        mainView = <Library
+                      library={library}
+                      currentId={currentId}
+                      dispatch={dispatch}
+                      grooveSocket={grooveSocket} />;
         break;
       default:
         mainView = '';
@@ -43,12 +57,13 @@ class GrooveApp extends React.Component {
 
     return (
       <div>
-        <Player actions={actions}
-                playing={playing}
-                streaming={streaming}
-                statusUpdate={statusUpdate}
-                track={track}
-                grooveSocket={grooveSocket} />
+        <Player
+          actions={actions}
+          playing={playing}
+          streaming={streaming}
+          statusUpdate={statusUpdate}
+          track={track}
+          grooveSocket={grooveSocket} />
         <div className="wrapper">
           <Sidebar view={view} switchView={actions.switchView}/>
           <div className="main-content">
@@ -66,7 +81,8 @@ function mapState(state) {
     playing: state.default.playing,
     streaming: state.default.streaming,
     statusUpdate: state.default.statusUpdate,
-    track: state.default.track
+    track: state.default.track,
+    library: state.default.library
   };
 }
 

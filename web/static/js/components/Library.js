@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { fetchLibrary } from '../actionCreators';
+import { fetchLibrary, queueTrack } from '../actionCreators';
 
 
 class Track extends Component {
 
   queueTrack() {
-    // Actions.playTrack(this.props.track.id);
+    queueTrack(this.props.track.id);
   }
 
   render() {
@@ -17,13 +17,13 @@ class Track extends Component {
     }
 
     return (
-      <tr onClick={this.playTrack}>
+      <tr onClick={this.queueTrack}>
         <td>
-          {track.name}
+          {track.title}
           {currentTrack}
         </td>
-        <td>{track.artistName}</td>
-        <td>{track.albumName}</td>
+        <td>{track.artist}</td>
+        <td>{track.album}</td>
         <td></td>
       </tr>
     );
@@ -32,12 +32,11 @@ class Track extends Component {
 
 class Library extends Component {
   componentDidMount() {
-    console.log("library mounted");
     this.props.dispatch(fetchLibrary());
   }
 
   render() {
-    const { currentId, tracks } = this.props;
+    const { currentId, library } = this.props;
     return (
       <table className="table table-hover">
         <thead>
@@ -49,7 +48,7 @@ class Library extends Component {
           </tr>
         </thead>
         <tbody>
-          {tracks.map(function(track) {
+          {library.map(function(track) {
             return <Track key={track.id} track={track} currentId={currentId}/>;
           })}
         </tbody>

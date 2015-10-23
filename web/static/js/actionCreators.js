@@ -1,8 +1,18 @@
 import * as actions from './actions';
 import fetch from 'isomorphic-fetch';
+import { getGrooveSocket } from './containers/App';
+
+export function socketStatusUpdate(status) {
+  return { type: actions.SOCKET_STATUS_UPDATE, status };
+}
 
 export function setPlaying(playing) {
   return { type: actions.SET_PLAYING, playing };
+}
+
+export function requestPlaying(playing) {
+  getGrooveSocket().play(playing);
+  return { type: actions.REQUEST_PLAYING };
 }
 
 export function seek(duration) {
@@ -64,10 +74,9 @@ function receiveLibrary(library) {
 export function fetchLibrary() {
   return dispatch => {
     dispatch(requestLibrary());
-    console.log("asd");
 
     return fetch('http://localhost:4000/api/tracks')
       .then(response => response.json())
-      .then(json => dispatch(receiveLibrary(json)));
+      .then(json => dispatch(receiveLibrary(json.data)));
   };
 }

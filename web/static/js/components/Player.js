@@ -4,7 +4,7 @@ import SeekSlider from './SeekSlider';
 export default class Player extends React.Component {
 
   render() {
-    const { actions, playing, streaming, track, statusUpdate, grooveSocket } = this.props;
+    const { actions, playing, streaming, track, statusUpdate } = this.props;
 
     var playingClass = playing ? 'fa fa-pause' : 'fa fa-play';
     var streamingClass = streaming ? 'fa fa-volume-up' : 'fa fa-volume-off';
@@ -28,7 +28,7 @@ export default class Player extends React.Component {
         <div className='now-playing'>
           <div id='player-controls'>
             <i className='fa fa-fast-backward'></i>
-            <i className={playingClass} onClick={() => grooveSocket.play(!playing) }></i>
+            <i className={playingClass} onClick={() => actions.requestPlaying(!playing) }></i>
             <i className='fa fa-fast-forward'></i>
           </div>
           <div className='player-info'>

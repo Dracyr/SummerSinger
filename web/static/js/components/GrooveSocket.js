@@ -1,4 +1,4 @@
-import { setPlaying } from '../actionCreators';
+import { setPlaying, socketStatusUpdate } from '../actionCreators';
 
 import { Socket } from '../../../../deps/phoenix/web/static/js/phoenix';
 
@@ -27,7 +27,7 @@ export default class GrooveSocket {
   }
 
   statusUpdate(statusUpdate) {
-    this.store.dispatch(setPlaying(statusUpdate.playback));
+    this.store.dispatch(socketStatusUpdate(statusUpdate));
   }
 
   play(play) {

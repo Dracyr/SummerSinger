@@ -22,6 +22,9 @@ const reducer = combineReducers(reducers);
 const store = finalCreateStore(reducer);
 
 let grooveSocket = new GrooveSocket(store);
+export function getGrooveSocket() {
+  return grooveSocket;
+}
 
 export default class App extends Component {
 
@@ -29,7 +32,7 @@ export default class App extends Component {
     return (
       <div>
         <Provider store={store}>
-          {() => <GrooveApp grooveSocket={grooveSocket} />}
+          {() => <GrooveApp grooveSocket={grooveSocket} dispatch={store.dispatch} />}
         </Provider>
         <DebugPanel top right bottom>
            <DevTools store={store}
@@ -40,6 +43,3 @@ export default class App extends Component {
   }
 }
 
-export function getGrooveSocket() {
-  return grooveSocket;
-}
