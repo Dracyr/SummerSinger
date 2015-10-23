@@ -56,8 +56,8 @@ function grooveReducer(state = initialState, action) {
   }
 }
 
-const rootReducer = combineReducers({
-  grooveReducer
-});
+// const rootReducer = combineReducers({
+//   grooveReducer
+// });
 
-export default rootReducer;
+export default grooveReducer;

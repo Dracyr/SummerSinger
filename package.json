@@ -28,6 +28,7 @@
     "react": "^0.13.3",
     "react-redux": "^0.9.0",
     "redux": "^1.0.1",
+    "redux-thunk": "^1.0.0",
     "reflux": "^0.2.8"
   },
   "scripts": {

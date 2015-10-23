@@ -14,7 +14,6 @@ class GrooveApp extends React.Component {
 
   render() {
     const { actions, view, playing, streaming, statusUpdate, track, grooveSocket } = this.props;
-
     let currentId = statusUpdate ? statusUpdate.currentItemId : '';
     let mainView;
     switch(view) {
