@@ -49,6 +49,18 @@ export default class GrooveSocket {
     this.broadcastChannel.push('play_track', {queue_id: queueId});
   }
 
+  requestPreviousTrack() {
+    this.broadcastChannel.push('previous_track');
+  }
+
+  requestNextTrack() {
+    this.broadcastChannel.push('next_track');
+  }
+
+  requestSeek(percent) {
+    this.broadcastChannel.push('seek', {percent: percent});
+  }
+
   seek(seekPercent) {
     let track = this.state().track;
     if (track) {

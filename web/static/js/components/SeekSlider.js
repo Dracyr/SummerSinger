@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 export default class SeekSlider extends Component {
   constructor(props) {
     super(props);
-    this.state = { now: Date.now() };
+    this.state = { now: Date.now(), lastPlaying: Date.now() };
     this.tick = this.tick.bind(this);
     this.handleSeek = this.handleSeek.bind(this);
   }
@@ -17,7 +17,10 @@ export default class SeekSlider extends Component {
   }
 
   tick() {
-    this.setState({now: Date.now()});
+    this.setState({
+      now: Date.now(),
+      lastPlaying: this.props.playing ? Date.now() : this.state.lastPlaying
+    });
   }
 
   handleSeek(event) {
@@ -25,19 +28,18 @@ export default class SeekSlider extends Component {
   }
 
   render() {
-    const { playing, statusUpdate, track } = this.props;
+    const { playing, startTime, pausedTime, track, duration } = this.props;
 
     let durationPercent = 0;
 
-    if (statusUpdate && track) {
+    if (startTime && track) {
       if (playing) {
-        var now = this.state.now;
-        var trackStartTime = new Date(statusUpdate.trackStartDate).getTime();
-
-        var currentDuration = (now - trackStartTime) / 1000;
-        durationPercent = currentDuration / track.duration;
+        let now = this.state.now;
+        let currentDuration = (now - startTime);
+        durationPercent = currentDuration / duration;
       } else {
-        durationPercent = statusUpdate.pausedTime / track.duration;
+        let currentDuration = (pausedTime - startTime);
+        durationPercent = currentDuration / duration;
       }
     }
 

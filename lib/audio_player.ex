@@ -5,85 +5,118 @@ defmodule GrooveLion.AudioPlayer do
   def start_link do
     default = %{
       current_status: 'stopped',
-      current_frame: nil,
-      frames: nil,
-      current_duration: nil,
-      duration: nil
+      start_time: nil, # Epoch in milliseconds
+      duration: nil # In Milliseconds
     }
 
-    {:ok, tpid} = Task.start_link(fn -> loop(default) end)
+    {:ok, tpid} = Task.start_link(fn -> await_proc(default) end)
     Process.register(tpid, :audio_player)
 
     proc = %Proc{pid: pid} =
       Porcelain.spawn_shell("mpg123 -R", in: :receive, out: {:send, tpid})
 
+    send tpid, {:set_proc, proc}
     Process.register(pid, :procelain_audio)
     {:ok, tpid}
   end
 
-  defp loop(map) do
+  defp await_proc(state) do
     receive do
-      {:status, caller} ->
-        send caller, map
-        loop(map)
-      {:playback, playback} ->
-        status = map[:current_status]
-        cond do
-          playback == true && status == "paused" ->
-            send_input("PAUSE\n")
-          playback == false && status == "playing" ->
-            send_input("PAUSE\n")
-          true ->
-            # No track loaded
-        end
-        loop(map)
-      {:load, path} ->
-        send_input("LOAD #{path}\n")
-        loop(map)
-      {:jump, duration} ->
-        send_input("JUMP +10\n")
-        loop(map)
-      {:quit} ->
-        send_input("QUIT\n")
-        loop(map)
-      {pid, :data, :out, messages} ->
-        String.split(messages, "\n")
-        |> Enum.filter(fn(m) -> String.length(m) > 0 end)
-        |> Enum.reduce(map, fn(message, map) -> handle_message(message, map) end)
-        |> loop()
+      {:set_proc, proc} ->
+        IO.inspect(proc)
+        IO.inspect("\n\n asdASd \n\n")
+
+        loop(state, proc)
     end
   end
 
-  defp handle_message(message, map) do
+  defp loop(state, proc) do
+    receive do
+      {:status, caller} ->
+        send caller, {:status, state}
+        loop(state, proc)
+      {:playback, playback} ->
+        playback(playback, state[:current_status])
+        loop(state, proc)
+      {:load, path} ->
+        send_input("LOAD #{path}\n")
+        loop(state, proc)
+      {:seek, percent, caller} ->
+        if is_nil(state[:start_time]) do
+          send caller, {:err, "No Track"}
+          loop(state, proc)
+        else
+          start_time = seek(percent, state[:duration], state[:start_time])
+          send caller, {:ok, start_time, state[:duration]}
+          loop(%{state | start_time: start_time}, proc)
+        end
+      {:quit} ->
+        send_input("QUIT\n")
+        loop(state, proc)
+      {pid, :data, :out, messages} ->
+        String.split(messages, "\n")
+        |> Enum.filter(fn(m) -> String.length(m) > 0 end)
+        |> Enum.reduce(state, fn(message, state) -> handle_message(message, state) end)
+        |> loop(proc)
+    end
+  end
+
+  defp playback(playback, status) do
+    cond do
+      playback == true && status == "paused" ->
+        send_input("PAUSE\n")
+      playback == false && status == "playing" ->
+        send_input("PAUSE\n")
+      true ->
+        # No track loaded
+    end
+  end
+
+  defp seek(percent, duration, start_time) do
+    current_duration = DateUtil.now - start_time
+    diff = (duration * percent) - current_duration
+    send_input("JUMP #{diff / 1000}\n") # Seconds
+
+    start_time + diff
+  end
+
+  defp handle_message(message, state) do
     case message do
       "@R " <> version ->
         Logger.debug "Loaded player: " <> version
-        map
+        state
       "@I ID3:" <> metadata ->
-        map
+        state
       "@I " <> metadata ->
-        map
+        state
       "@S " <> status ->
-        map
+        state
       "@F " <> status ->
-        [curr_frame, rem_frame, curr_durr, rem_durr] = String.split(status)
-        %{map |
-          current_frame: String.to_integer(curr_frame),
-          frames: String.to_integer(curr_frame) + String.to_integer(rem_frame),
-          current_duration: String.to_float(curr_durr),
-          duration: String.to_float(curr_durr) + String.to_float(rem_durr)
-        }
+        [rem_durr, curr_durr] = String.split(status)
+          |> Enum.reverse
+          |> Enum.take(2)
+          |> Enum.map(fn a -> String.to_float(a) end)
+
+        if 0 == curr_durr do
+          IO.inspect("it is zero")
+          %{state |
+            duration: rem_durr * 1000,
+            start_time: DateUtil.now
+          }
+        else
+          state
+        end
       "@P " <> status ->
         current_status = case status do
           "0" -> "stopped"
           "1" -> "paused"
           "2" -> "playing"
         end
-        %{map | current_status: current_status}
+        %{state | current_status: current_status}
       "@E " <> error ->
-        map
+        state
       _ ->
-        map
+        state
     end
   end
 
@@ -94,7 +127,3 @@ defmodule GrooveLion.AudioPlayer do
     end
   end
 end
-
-# {:ok, apid} = GrooveLion.AudioPlayer.start_link
-# send apid, {:load, "/home/dracyr/test.mp3"}
-# send apid, {:play_pause}

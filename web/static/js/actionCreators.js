@@ -29,6 +29,21 @@ export function requestPlayTrack(queueId) {
   return { type: actions.REQUEST_PLAY_TRACK };
 }
 
+export function requestPreviousTrack() {
+  getGrooveSocket().requestPreviousTrack();
+  return { type: actions.REQUEST_PREVIOUS_TRACK };
+}
+
+export function requestNextTrack() {
+  getGrooveSocket().requestNextTrack();
+  return { type: actions.REQUEST_NEXT_TRACK };
+}
+
+export function requestSeek(percent) {
+  getGrooveSocket().requestSeek(percent);
+  return { type: actions.REQUEST_SEEK };
+}
+
 export function queueUpdate(queue) {
   return { type: actions.QUEUE_UPDATE, queue };
 }

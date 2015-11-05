@@ -8,16 +8,28 @@ defmodule GrooveLion.Player do
         queue: [],
         queue_index: nil,
         playback: false,
-        startTime: nil
+        start_time: nil,
+        paused_time: nil
       } end, name: __MODULE__)
   end
 
   def get_status do
+    send :audio_player, {:status, self()}
+
+    duration = 0
+    receive do
+      {:status, state} ->
+        duration = state[:duration]
+    end
+
     Agent.get(__MODULE__, fn state ->
+
       %{
         playback: state[:playback],
-        startTime: state[:startTime],
+        start_time: state[:start_time],
+        paused_time: state[:paused_time],
         queue_index: state[:queue_index],
+        duration: duration
       }
     end)
   end
@@ -33,8 +45,20 @@ defmodule GrooveLion.Player do
 
   def playback(playback) do
     send :audio_player, {:playback, playback}
+
     Agent.update(__MODULE__, fn state ->
-      %{state | playback: playback}
+      state = %{ state | playback: playback }
+      cond do
+        playback == true && !is_nil(state[:paused_time]) ->
+          %{state |
+            paused_time: nil,
+            start_time: state[:start_time] + (DateUtil.now - state[:paused_time])
+          }
+        playback == false ->
+          %{state | paused_time: DateUtil.now }
+        true ->
+          state
+      end
     end)
   end
 
@@ -52,7 +76,51 @@ defmodule GrooveLion.Player do
     send :audio_player, {:load, track.filename}
 
     Agent.update(__MODULE__, fn state ->
-      %{state | playback: true, queue_index: queue_id}
+      %{state |
+        playback: true,
+        start_time: DateUtil.now,
+        paused_time: DateUtil.now,
+        queue_index: queue_id,
+      }
     end)
+  end
+
+  def previous_track do
+    queue_index = Agent.get(__MODULE__, fn state -> state[:queue_index] end)
+    case queue_index do
+      0 ->
+        play_track(queue_index)
+        {:ok}
+      _ when is_number(queue_index) ->
+        play_track(queue_index - 1)
+        {:ok}
+      _ ->
+        {:err}
+    end
+  end
+
+  def next_track do
+    {count, queue_index} = Agent.get(__MODULE__, fn state ->
+      {Enum.count(state[:queue]), state[:queue_index]}
+    end)
+
+    if is_number(queue_index) && (queue_index + 1 < count) do
+      play_track(queue_index + 1)
+      {:ok}
+    else
+      {:err}
+    end
+  end
+
+  def seek(percent) do
+    send :audio_player, {:seek, percent}
+
+    receive do
+      {:ok, start_time, duration} ->
+        IO.inspect(start_time)
+        IO.inspect(duration)
+      {:err, reason} ->
+        # Fuck it
+    end
   end
 end

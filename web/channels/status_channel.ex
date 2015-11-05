@@ -33,4 +33,26 @@ defmodule GrooveLion.RoomChannel do
     broadcast! socket, "statusUpdate", Player.get_status
     {:noreply, socket}
   end
+
+  def handle_in("previous_track", %{}, socket) do
+    case Player.previous_track() do
+      {:ok} ->
+        broadcast! socket, "statusUpdate", Player.get_status
+      {:err} ->
+        # Nope
+    end
+
+    {:noreply, socket}
+  end
+
+  def handle_in("next_track", %{}, socket) do
+    case Player.next_track() do
+      {:ok} ->
+        broadcast! socket, "statusUpdate", Player.get_status
+      {:err} ->
+        # Nope
+    end
+
+    {:noreply, socket}
+  end
 end

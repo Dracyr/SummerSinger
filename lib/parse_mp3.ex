@@ -4,19 +4,23 @@ defmodule GrooveLion.ID3v2 do
       "ID3",
       major_version  :: integer-size(8),
       minor_version  :: integer-size(8),
-      unsync   :: bits-size(1),
-      extended :: bits-size(1),
-      exprm    :: bits-size(1),
-      flags    :: bits-size(5),
-      length   :: integer-size(32),
-      frames   :: binary-size(length),
-      data     :: binary >>) do
+      unsync      :: bits-size(1),
+      extended    :: bits-size(1),
+      exprm       :: bits-size(1),
+      flags       :: bits-size(5),
+      safe_length :: bytes-size(4),
+      data        :: binary >>) do
+
+    # Extended header not handled
+
+    {:ok, length} = unsync_int(safe_length)
+    << frames :: binary-size(length), audio_data :: binary >> = data
 
     metadata = %{
       tag_version: "ID3v2." <> Integer.to_string(major_version) <> "." <> Integer.to_string(minor_version),
-      unsync: unsync,
-      extended: extended,
-      experimental: exprm,
+      unsync: unsync == 1,
+      extended: extended == 1,
+      experimental: exprm == 1,
       frames: frames
     }
 
@@ -29,12 +33,11 @@ defmodule GrooveLion.ID3v2 do
       id     :: binary-size(4),
       length :: integer-size(32),
       flags  :: bits-size(16),
-      data   :: binary-size(length),
-      frames :: binary >>, metadata) do
+      frame  :: binary-size(length),
+      data   :: binary >>, metadata) do
 
-    metadata = Map.merge(metadata, frame_data(id, data))
-    # metadata = %{metadata | frames: [frame | metadata.frames]}
-    metadata_frames(frames, metadata)
+    metadata = Map.merge(metadata, frame_data(id, frame))
+    metadata_frames(data, metadata)
   end
 
   defp metadata_frames(_, metadata) do
@@ -81,11 +84,44 @@ defmodule GrooveLion.ID3v2 do
         _ -> Map.put(%{}, id, content)
       end
     else
-      #UFID USLT IPLS USER PRIV PCNT POPM APIC
       %{}
     end
+  end
+
+  def unsync_int(<<
+        0 :: size(1), byte_1 :: size(7),
+        0 :: size(1), byte_2 :: size(7),
+        0 :: size(1), byte_3 :: size(7),
+        0 :: size(1), byte_4 :: size(7) >>) do
+
+    << unsynced_int :: integer-size(28) >> = <<
+      byte_1 :: size(7),
+      byte_2 :: size(7),
+      byte_3 :: size(7),
+      byte_4 :: size(7) >>
+    # IO.inspect(unsynced_int)
+    {:ok, unsynced_int}
+  end
+
+  def unsync_int(_) do
+    {:err}
   end
 end
 
 # File.read!("/home/dracyr/test.mp3") |> ID3v2.parse
 #File.read!(System.argv) |> ID3v2.parse |> IO.inspect
+# mp3 frame header
+#<<
+#  frame_sync :: bits-size(11),
+#  version :: bits-size(2),
+#  layer :: bits-size(2),
+#  protection :: bits-size(1),
+#  bitrate :: bits-size(4),
+#  sampling :: bits-size(2),
+#  padding :: bits-size(1),
+#  private :: bits-size(1),
+#  channel :: bits-size(2),
+#  extension :: bits-size(2),
+#  copyright :: bits-size(1),
+#  original :: bits-size(1),
+#  empasis :: bits-size(2) >>
