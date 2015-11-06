@@ -9,7 +9,7 @@ defmodule GrooveLion.Player do
         queue_index: nil,
         playback: false,
         start_time: nil,
-        paused_time: nil
+        paused_duration: 0,
       } end, name: __MODULE__)
   end
 
@@ -27,7 +27,7 @@ defmodule GrooveLion.Player do
       %{
         playback: state[:playback],
         start_time: state[:start_time],
-        paused_time: state[:paused_time],
+        paused_duration: state[:paused_duration],
         queue_index: state[:queue_index],
         duration: duration
       }
@@ -47,17 +47,21 @@ defmodule GrooveLion.Player do
     send :audio_player, {:playback, playback}
 
     Agent.update(__MODULE__, fn state ->
-      state = %{ state | playback: playback }
-      cond do
-        playback == true && !is_nil(state[:paused_time]) ->
-          %{state |
-            paused_time: nil,
-            start_time: state[:start_time] + (DateUtil.now - state[:paused_time])
-          }
-        playback == false ->
-          %{state | paused_time: DateUtil.now }
-        true ->
-          state
+      if is_nil(state[:queue_index]) do
+        state
+      else
+        case playback do
+          true ->
+            %{state |
+              playback: playback,
+              start_time: DateUtil.now - state[:paused_duration]
+            }
+          false ->
+            %{state |
+              playback: playback,
+              paused_duration: DateUtil.now - state[:start_time]
+            }
+        end
       end
     end)
   end
@@ -79,7 +83,7 @@ defmodule GrooveLion.Player do
       %{state |
         playback: true,
         start_time: DateUtil.now,
-        paused_time: DateUtil.now,
+        paused_duration: 0,
         queue_index: queue_id,
       }
     end)
@@ -99,7 +103,7 @@ defmodule GrooveLion.Player do
     end
   end
 
-  def next_track do
+  def next_track(backend_next \\ false) do
     {count, queue_index} = Agent.get(__MODULE__, fn state ->
       {Enum.count(state[:queue]), state[:queue_index]}
     end)
@@ -110,17 +114,54 @@ defmodule GrooveLion.Player do
     else
       {:err}
     end
+
+    if backend_next == true do
+      GrooveLion.Endpoint.broadcast! "status:broadcast", "statusUpdate", get_status
+    end
   end
 
   def seek(percent) do
-    send :audio_player, {:seek, percent}
+    send :audio_player, {:seek, percent, self()}
 
     receive do
-      {:ok, start_time, duration} ->
-        IO.inspect(start_time)
-        IO.inspect(duration)
+      {:ok, duration} ->
+        Agent.update(__MODULE__, fn state ->
+          target_duration = round(duration * percent)
+          %{state |
+            start_time: DateUtil.now - target_duration,
+            paused_duration: target_duration
+          }
+        end)
       {:err, reason} ->
         # Fuck it
     end
   end
 end
+
+
+"""
+Frontend
+  paused ->
+    current_duration = paused_duration
+  playing ->
+    current_duration = now - start_time
+
+Backend
+  play_track ->
+    start_time = now
+
+  pause ->
+    paused_duration = now - start_time
+
+  play ->
+    start_time = now - paused_duration
+
+
+  seek ->
+    target = duration * percent
+
+    start_time = now - target
+    paused_duration = target
+
+
+"""

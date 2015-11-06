@@ -28,28 +28,24 @@ export default class SeekSlider extends Component {
   }
 
   render() {
-    const { playing, startTime, pausedTime, track, duration } = this.props;
-
+    const { playing, startTime, pausedDuration, track, duration } = this.props;
     let durationPercent = 0;
-
     if (startTime && track) {
       if (playing) {
         let now = this.state.now;
-        let currentDuration = (now - startTime);
-        durationPercent = currentDuration / duration;
+        durationPercent = (now - startTime) / duration;
       } else {
-        let currentDuration = (pausedTime - startTime);
-        durationPercent = currentDuration / duration;
+        durationPercent = pausedDuration / duration;
       }
     }
 
-    var divStyle = {
+    var durationStyle = {
       transform: 'scaleX(' + durationPercent + ')'
     };
     return (
       <div className="seek-slider" onClick={this.handleSeek}>
         <span className="seek-slider-handle"></span>
-        <span className="duration-passed" style={divStyle}></span>
+        <span className="duration-passed" style={durationStyle}></span>
       </div>
     );
   }

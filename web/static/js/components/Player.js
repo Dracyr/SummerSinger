@@ -4,7 +4,7 @@ import SeekSlider from './SeekSlider';
 export default class Player extends React.Component {
 
   render() {
-    const { actions, playing, track, startTime, pausedTime, duration } = this.props;
+    const { actions, playing, track, startTime, pausedDuration, duration } = this.props;
 
     var playingClass = playing ? 'fa fa-pause' : 'fa fa-play';
 
@@ -45,7 +45,7 @@ export default class Player extends React.Component {
         <SeekSlider seek={this.props.actions.requestSeek}
                     playing={playing}
                     startTime={startTime}
-                    pausedTime={pausedTime}
+                    pausedDuration={pausedDuration}
                     duration={duration}
                     track={track} />
       </div>

@@ -7,7 +7,7 @@ const initialState = {
   currentTrack: null,
   queueIndex: null,
   startTime: null,
-  pausedTime: null,
+  pausedDuration: null,
   duration: null,
   library: [],
   queue: [],
@@ -27,7 +27,7 @@ function grooveReducer(state = initialState, action) {
         currentTrack: currentTrack,
         queueIndex: action.statusUpdate.queue_index,
         startTime: action.statusUpdate.start_time,
-        pausedTime: action.statusUpdate.paused_time,
+        pausedDuration: action.statusUpdate.paused_duration,
         duration: action.statusUpdate.duration
       };
     case actions.RECEIVE_LIBRARY:

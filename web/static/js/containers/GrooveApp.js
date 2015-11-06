@@ -23,7 +23,7 @@ class GrooveApp extends React.Component {
         library,
         queue,
         startTime,
-        pausedTime,
+        pausedDuration,
         duration
       } = this.props;
 
@@ -57,7 +57,7 @@ class GrooveApp extends React.Component {
           actions={actions}
           playing={playing}
           startTime={startTime}
-          pausedTime={pausedTime}
+          pausedDuration={pausedDuration}
           duration={duration}
           track={currentTrack} />
         <div className="wrapper">
@@ -78,7 +78,7 @@ function mapState(state) {
     currentTrack: state.default.currentTrack,
     queueIndex: state.default.queueIndex,
     startTime: state.default.startTime,
-    pausedTime: state.default.pausedTime,
+    pausedDuration: state.default.pausedDuration,
     duration: state.default.duration,
     library: state.default.library,
     queue: state.default.queue

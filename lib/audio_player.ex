@@ -1,32 +1,37 @@
 defmodule GrooveLion.AudioPlayer do
   alias Porcelain.Process, as: Proc
-  require Logger
 
   def start_link do
-    default = %{
-      current_status: 'stopped',
+    {:ok, sup_pid} = Task.Supervisor.start_link(name: GrooveLion.AudioBackendSupervisor)
+    {:ok, controller_pid} = Task.Supervisor.start_child(
+      GrooveLion.AudioBackendSupervisor, fn -> await_proc() end)
+    {:ok, backend_pid} = Task.Supervisor.start_child(
+      GrooveLion.AudioBackendSupervisor, GrooveLion.AudioPlayer, :start_backend, [controller_pid])
+
+    Process.register(controller_pid, :audio_player)
+
+    {:ok, sup_pid}
+  end
+
+  def start_backend(controller_pid) do
+    proc = %Proc{pid: backend_pid} =
+      Porcelain.spawn_shell("mpg123 -R", in: :receive, out: {:send, controller_pid})
+    {:ok, backend_pid}
+  end
+
+  defp await_proc() do
+    default_state = %{
+      current_status: "stopped",
       start_time: nil, # Epoch in milliseconds
       duration: nil # In Milliseconds
     }
 
-    {:ok, tpid} = Task.start_link(fn -> await_proc(default) end)
-    Process.register(tpid, :audio_player)
-
-    proc = %Proc{pid: pid} =
-      Porcelain.spawn_shell("mpg123 -R", in: :receive, out: {:send, tpid})
-
-    send tpid, {:set_proc, proc}
-    Process.register(pid, :procelain_audio)
-    {:ok, tpid}
-  end
-
-  defp await_proc(state) do
     receive do
-      {:set_proc, proc} ->
-        IO.inspect(proc)
-        IO.inspect("\n\n asdASd \n\n")
-
-        loop(state, proc)
+      {pid, :data, :out, messages} ->
+        String.split(messages, "\n")
+        |> Enum.filter(fn(m) -> String.length(m) > 0 end)
+        |> Enum.reduce(default_state, fn(message, state) -> handle_message(message, state) end)
+        |> loop(%Proc{pid: pid})
     end
   end
 
@@ -36,22 +41,16 @@ defmodule GrooveLion.AudioPlayer do
         send caller, {:status, state}
         loop(state, proc)
       {:playback, playback} ->
-        playback(playback, state[:current_status])
-        loop(state, proc)
+        playback(state, proc, playback)
+        |> loop(proc)
       {:load, path} ->
-        send_input("LOAD #{path}\n")
+        Proc.send_input(proc, "LOAD #{path}\n")
         loop(state, proc)
       {:seek, percent, caller} ->
-        if is_nil(state[:start_time]) do
-          send caller, {:err, "No Track"}
-          loop(state, proc)
-        else
-          start_time = seek(percent, state[:duration], state[:start_time])
-          send caller, {:ok, start_time, state[:duration]}
-          loop(%{state | start_time: start_time}, proc)
-        end
+        seek(state, proc, percent, caller)
+        |> loop(proc)
       {:quit} ->
-        send_input("QUIT\n")
+        Proc.send_input(proc, "QUIT\n")
         loop(state, proc)
       {pid, :data, :out, messages} ->
         String.split(messages, "\n")
@@ -61,29 +60,34 @@ defmodule GrooveLion.AudioPlayer do
     end
   end
 
-  defp playback(playback, status) do
+  defp playback(state, proc, playback) do
     cond do
-      playback == true && status == "paused" ->
-        send_input("PAUSE\n")
-      playback == false && status == "playing" ->
-        send_input("PAUSE\n")
+      playback == true && state[:current_status] == "paused" ->
+        Proc.send_input(proc, "PAUSE\n")
+      playback == false && state[:current_status] == "playing" ->
+        Proc.send_input(proc, "PAUSE\n")
       true ->
         # No track loaded
     end
+    state
   end
 
-  defp seek(percent, duration, start_time) do
-    current_duration = DateUtil.now - start_time
-    diff = (duration * percent) - current_duration
-    send_input("JUMP #{diff / 1000}\n") # Seconds
+  defp seek(state, proc, percent, caller) do
+    if state[:current_status] != "stopped" do
+      target_duration = round(state[:duration] * percent)
+      Proc.send_input(proc, "JUMP #{target_duration / 1000}s\n") # Seconds
 
-    start_time + diff
+      send caller, {:ok, state[:duration]}
+      %{state | start_time: DateUtil.now - target_duration}
+    else
+      send caller, {:err, "No Track"}
+      state
+    end
   end
 
   defp handle_message(message, state) do
     case message do
       "@R " <> version ->
-        Logger.debug "Loaded player: " <> version
         state
       "@I ID3:" <> metadata ->
         state
@@ -98,7 +102,6 @@ defmodule GrooveLion.AudioPlayer do
           |> Enum.map(fn a -> String.to_float(a) end)
 
         if 0 == curr_durr do
-          IO.inspect("it is zero")
           %{state |
             duration: rem_durr * 1000,
             start_time: DateUtil.now
@@ -108,7 +111,11 @@ defmodule GrooveLion.AudioPlayer do
         end
       "@P " <> status ->
         current_status = case status do
-          "0" -> "stopped"
+          "0" ->
+            if state[:status] != "stopped" do
+              GrooveLion.Player.next_track(true)
+            end
+            "stopped"
           "1" -> "paused"
           "2" -> "playing"
         end
@@ -117,13 +124,6 @@ defmodule GrooveLion.AudioPlayer do
         state
       _ ->
         state
-    end
-  end
-
-  defp send_input(message) do
-    pid = Process.whereis(:procelain_audio)
-    unless is_nil(pid) do
-      Proc.send_input(%Proc{pid: pid}, message)
     end
   end
 end

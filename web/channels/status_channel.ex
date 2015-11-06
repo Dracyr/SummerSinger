@@ -55,4 +55,11 @@ defmodule GrooveLion.RoomChannel do
 
     {:noreply, socket}
   end
+
+  def handle_in("seek", %{"percent" => percent}, socket) do
+    Player.seek(percent)
+
+    broadcast! socket, "statusUpdate", Player.get_status
+    {:noreply, socket}
+  end
 end
