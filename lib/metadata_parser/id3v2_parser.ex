@@ -1,4 +1,4 @@
-defmodule GrooveLion.ID3v2 do
+defmodule ID3v2Parser do
 
   @id3v2_tag_frame_names %{
     "AENC" => "Audio encryption",
@@ -80,74 +80,80 @@ defmodule GrooveLion.ID3v2 do
     "WXXX" => "User defined URL link frame"
   }
 
-  def parse(<<
-      "ID3",
-      major_version  :: integer-size(8),
-      minor_version  :: integer-size(8),
-      _unsync      :: bits-size(1),
-      _extended    :: bits-size(1),
-      _exprm       :: bits-size(1),
-      _flags       :: bits-size(5),
-      safe_length :: bytes-size(4),
-      data        :: binary >>) do
+  def parse_binary(binary) do
+    case parse_header(binary) do
+      {:ok, header_info} ->
+        length = header_info[:length]
+        <<
+          _header     :: binary-size(10),
+          tag_frames  :: binary-size(length),
+          _audio_data :: binary >> = binary
 
-    # Extended header not handled
-
-    length = unsync_int(safe_length)
-    << frames :: binary-size(length), _audio_data :: binary >> = data
-
-    metadata = %{
-      tag_version: "ID3v2." <> Integer.to_string(major_version) <> "." <> Integer.to_string(minor_version),
-      frames: frames
-    }
-
-    {:ok, metadata_frames(frames, metadata)}
+          {:ok, metadata_frames(tag_frames, %{})}
+      _ ->
+        {:no_tag, :id3v2}
+    end
   end
 
-  def parse(_) do {:err, "Unknown tag type"} end
+  def parse_header(<<
+      "ID3",
+      major_version :: integer-size(8),
+      minor_version :: integer-size(8),
+      _unsync       :: bits-size(1), # Unsynchronisation scheme not handled
+      _extended     :: bits-size(1), # Extended header not handled yet
+      _experimental :: bits-size(1),
+      _flags        :: bits-size(5),
+      safe_length   :: bytes-size(4),
+      data          :: binary >>) do
+
+    {:ok, %{
+      tag_version: "ID3v2." <> Integer.to_string(major_version) <> "." <> Integer.to_string(minor_version),
+      length: unsync_int(safe_length)
+    }}
+  end
+
+  def parse_header(_), do: {:no_tag, :id3v2}
 
   defp metadata_frames(<<
       id     :: binary-size(4),
       length :: integer-size(32),
-      _flags  :: bits-size(16),
+      _flags :: bits-size(16),
       frame  :: binary-size(length),
-      data   :: binary >>, metadata) do
+      binary :: binary >>, metadata) do
 
-    metadata = Map.merge(metadata, frame_data(id, frame))
-    metadata_frames(data, metadata)
+    metadata_frames(binary, Map.merge(metadata, frame_data(id, frame)))
   end
 
-  defp metadata_frames(_, metadata) do
-    Map.delete(metadata, :frames)
-  end
+  defp metadata_frames(_, metadata), do: metadata
 
   defp frame_data("TXXX", <<
       _encoding :: size(8),
-      data     :: binary >>) do
+      data      :: binary >>) do
 
     null_index = Enum.find_index(to_char_list(data), fn(x) -> x == 0x00 end)
-    << desc :: binary-size(null_index), _, content :: binary>> = data
+    << desc :: binary-size(null_index), _null_marker, content :: binary>> = data
 
     Map.put(%{}, desc, content)
   end
 
   defp frame_data("WXXX", <<
       _encoding :: size(8),
-      data     :: binary >>) do
+      data      :: binary >>) do
 
     null_index = Enum.find_index(to_char_list(data), fn(x) -> x == 0x00 end)
-    << desc :: binary-size(null_index), _, content :: binary>> = data
+    << desc :: binary-size(null_index), _null_marker, content :: binary>> = data
 
-    %{desc: desc, content: content}
+    Map.put(%{}, desc, content)
   end
 
   defp frame_data("COMM", <<
     _encoding :: size(8),
     _language :: size(24),
-    data     :: binary >>) do
+    data      :: binary >>) do
 
     null_index = Enum.find_index(to_char_list(data), fn(x) -> x == 0x00 end)
     << desc :: binary-size(null_index), _, content :: binary>> = data
+
     %{desc: desc, text: content}
   end
 
@@ -161,7 +167,7 @@ defmodule GrooveLion.ID3v2 do
     end
   end
 
-  def unsync_int(<<
+  defp unsync_int(<<
       0 :: size(1), byte_1 :: size(7),
       0 :: size(1), byte_2 :: size(7),
       0 :: size(1), byte_3 :: size(7),
@@ -176,21 +182,3 @@ defmodule GrooveLion.ID3v2 do
     unsynced_int
   end
 end
-
-# File.read!("/home/dracyr/test.mp3") |> ID3v2.parse
-#File.read!(System.argv) |> ID3v2.parse |> IO.inspect
-# mp3 frame header
-#<<
-#  frame_sync :: bits-size(11),
-#  version :: bits-size(2),
-#  layer :: bits-size(2),
-#  protection :: bits-size(1),
-#  bitrate :: bits-size(4),
-#  sampling :: bits-size(2),
-#  padding :: bits-size(1),
-#  private :: bits-size(1),
-#  channel :: bits-size(2),
-#  extension :: bits-size(2),
-#  copyright :: bits-size(1),
-#  original :: bits-size(1),
-#  empasis :: bits-size(2) >>

@@ -28,14 +28,14 @@ export default class SeekSlider extends Component {
   }
 
   render() {
-    const { playing, startTime, pausedDuration, track, duration } = this.props;
+    const { playing, startTime, pausedDuration, track} = this.props;
     let durationPercent = 0;
     if (startTime && track) {
       if (playing) {
         let now = this.state.now;
-        durationPercent = (now - startTime) / duration;
+        durationPercent = (now - startTime) / track.duration;
       } else {
-        durationPercent = pausedDuration / duration;
+        durationPercent = pausedDuration / track.duration;
       }
     }
 

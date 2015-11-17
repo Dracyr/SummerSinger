@@ -23,8 +23,7 @@ class GrooveApp extends React.Component {
         library,
         queue,
         startTime,
-        pausedDuration,
-        duration
+        pausedDuration
       } = this.props;
 
     let currentId = currentTrack ? currentTrack.index : '';
@@ -58,7 +57,6 @@ class GrooveApp extends React.Component {
           playing={playing}
           startTime={startTime}
           pausedDuration={pausedDuration}
-          duration={duration}
           track={currentTrack} />
         <div className="wrapper">
           <Sidebar view={view} switchView={actions.switchView}/>

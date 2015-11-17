@@ -10,9 +10,6 @@ defmodule GrooveLion.TrackView do
   end
 
   def render("track.json", %{track: track}) do
-    %{id: track.id,
-      title: track.title,
-      artist: track.artist,
-      filename: track.filename}
+    GrooveLion.Track.to_map(track)
   end
 end

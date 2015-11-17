@@ -14,22 +14,12 @@ defmodule GrooveLion.Player do
   end
 
   def get_status do
-    send :audio_player, {:status, self()}
-
-    duration = 0
-    receive do
-      {:status, state} ->
-        duration = state[:duration]
-    end
-
     Agent.get(__MODULE__, fn state ->
-
       %{
         playback: state[:playback],
         start_time: state[:start_time],
         paused_duration: state[:paused_duration],
         queue_index: state[:queue_index],
-        duration: duration
       }
     end)
   end

@@ -5,6 +5,8 @@ defmodule GrooveLion.Track do
     field :title, :string
     field :artist, :string
     field :filename, :string
+    field :metadata, :map
+    field :duration, :integer
 
     timestamps
   end
@@ -24,11 +26,15 @@ defmodule GrooveLion.Track do
   end
 
   def to_map(track, index) do
+    to_map(track) |> Map.merge(%{index: index})
+  end
+
+  def to_map(track) do
      %{
-      index: index,
       id: track.id,
       title: track.title,
       artist: track.artist,
+      duration: track.duration
     }
   end
 end
