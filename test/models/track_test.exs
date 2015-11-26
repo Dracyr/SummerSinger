@@ -3,8 +3,18 @@ defmodule GrooveLion.TrackTest do
 
   alias GrooveLion.Track
 
-  @valid_attrs %{artist: "some content", filename: "some content", title: "some content"}
-  @invalid_attrs %{}
+  @valid_attrs %{
+    title: "Somebody new",
+    artist: "Joywave",
+    filename: "Joywave - Somebody New.mp3",
+    duration: 2000
+  }
+  @invalid_attrs %{
+    title: nil,
+    artist: nil,
+    filename: nil,
+    duration: nil
+  }
 
   test "changeset with valid attributes" do
     changeset = Track.changeset(%Track{}, @valid_attrs)

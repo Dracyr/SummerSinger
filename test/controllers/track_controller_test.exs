@@ -2,8 +2,19 @@ defmodule GrooveLion.TrackControllerTest do
   use GrooveLion.ConnCase
 
   alias GrooveLion.Track
-  @valid_attrs %{artist: "some content", filename: "some content", title: "some content"}
-  @invalid_attrs %{}
+  @valid_attrs %{
+    title: "Somebody new",
+    artist: "Joywave",
+    filename: "Joywave - Somebody New.mp3",
+    duration: 2000
+  }
+
+  @invalid_attrs %{
+    title: nil,
+    artist: nil,
+    filename: nil,
+    duration: nil
+  }
 
   setup do
     conn = conn() |> put_req_header("accept", "application/json")
@@ -18,10 +29,12 @@ defmodule GrooveLion.TrackControllerTest do
   test "shows chosen resource", %{conn: conn} do
     track = Repo.insert! %Track{}
     conn = get conn, track_path(conn, :show, track)
-    assert json_response(conn, 200)["data"] == %{"id" => track.id,
+    assert json_response(conn, 200)["data"] == %{
+      "id" => track.id,
       "title" => track.title,
       "artist" => track.artist,
-      "filename" => track.filename}
+      "filename" => track.filename
+    }
   end
 
   test "does not show resource and instead throw error when id is nonexistent", %{conn: conn} do

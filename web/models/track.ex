@@ -11,8 +11,8 @@ defmodule GrooveLion.Track do
     timestamps
   end
 
-  @required_fields ~w(title artist)
-  @optional_fields ~w()
+  @required_fields ~w(title artist filename duration)
+  @optional_fields ~w(metadata)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

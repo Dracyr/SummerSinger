@@ -97,14 +97,14 @@ defmodule ID3v2Parser do
 
   def parse_header(<<
       "ID3",
-      major_version :: integer-size(8),
-      minor_version :: integer-size(8),
-      _unsync       :: bits-size(1), # Unsynchronisation scheme not handled
-      _extended     :: bits-size(1), # Extended header not handled yet
-      _experimental :: bits-size(1),
-      _flags        :: bits-size(5),
-      safe_length   :: bytes-size(4),
-      data          :: binary >>) do
+      major_version  :: integer-size(8),
+      minor_version  :: integer-size(8),
+      _unsync        :: bits-size(1), # Unsynchronisation scheme not handled
+      _extended      :: bits-size(1), # Extended header not handled yet
+      _experimental  :: bits-size(1),
+      _flags         :: bits-size(5),
+      safe_length    :: bytes-size(4),
+      _data          :: binary >>) do
 
     {:ok, %{
       tag_version: "ID3v2." <> Integer.to_string(major_version) <> "." <> Integer.to_string(minor_version),
@@ -130,17 +130,37 @@ defmodule ID3v2Parser do
       _encoding :: size(8),
       data      :: binary >>) do
 
-    null_index = Enum.find_index(to_char_list(data), fn(x) -> x == 0x00 end)
+    null_index = find_null_index data
     << desc :: binary-size(null_index), _null_marker, content :: binary>> = data
 
     Map.put(%{}, desc, content)
   end
 
+  defp frame_data("TCON", data) do
+    << 0x00, content :: binary >> = data
+    genres = Enum.chunk_by(to_char_list(content), &(&1 == 0))
+    |> Enum.reject(&(&1 == [0]))
+
+    Map.put(%{}, @id3v2_tag_frame_names["TCON"], genres)
+  end
+
+  defp frame_data("POPM", data) do
+    null_index = find_null_index data
+    <<
+      _user    :: bytes-size(null_index),
+      _null_marker,
+      rating   :: integer-size(8),
+      _counter :: binary >> = data
+
+    Map.put(%{}, @id3v2_tag_frame_names["POPM"], rating)
+  end
+
+
   defp frame_data("WXXX", <<
       _encoding :: size(8),
       data      :: binary >>) do
 
-    null_index = Enum.find_index(to_char_list(data), fn(x) -> x == 0x00 end)
+    null_index = find_null_index data
     << desc :: binary-size(null_index), _null_marker, content :: binary>> = data
 
     Map.put(%{}, desc, content)
@@ -151,10 +171,49 @@ defmodule ID3v2Parser do
     _language :: size(24),
     data      :: binary >>) do
 
-    null_index = Enum.find_index(to_char_list(data), fn(x) -> x == 0x00 end)
+    null_index = find_null_index data
     << desc :: binary-size(null_index), _, content :: binary>> = data
 
     %{desc: desc, text: content}
+  end
+
+  @picture_type %{
+    00 => "Other",
+    01 => "32x32 pixels 'file icon' (PNG only)",
+    02 => "Other file icon",
+    03 => "Cover (front)",
+    04 => "Cover (back)",
+    05 => "Leaflet page",
+    06 => "Media (e.g. lable side of CD)",
+    07 => "Lead artist/lead performer/soloist",
+    08 => "Artist/performer",
+    09 => "Conductor",
+    10 => "Band/Orchestra",
+    11 => "Composer",
+    12 => "Lyricist/text writer",
+    13 => "Recording Location",
+    14 => "During recording",
+    15 => "During performance",
+    16 => "Movie/video screen capture",
+    17 => "A bright coloured fish",
+    18 => "Illustration",
+    19 => "Band/artist logotype",
+    20 => "Publisher/Studio logotype"
+  }
+
+  defp frame_data("APIC", << _encoding :: size(8), data :: binary >>) do
+    null_index = find_null_index data
+    <<
+      mime_type :: bytes-size(null_index),
+      _null,
+      picture_type :: integer-size(8),
+      desc_data :: binary >> = data
+
+    null_index = find_null_index desc_data
+    << description :: bytes-size(null_index), _null, picture_data :: binary >> = desc_data
+
+    apic = %{type: @picture_type[picture_type], mime: mime_type, desc: description, file: picture_data}
+    Map.put(%{}, @id3v2_tag_frame_names["APIC"], apic)
   end
 
   defp frame_data(id, data) do
@@ -180,5 +239,9 @@ defmodule ID3v2Parser do
       byte_4 :: size(7) >>
 
     unsynced_int
+  end
+
+  defp find_null_index binary do
+    Enum.find_index(:erlang.binary_to_list(binary), &(&1 == 0))
   end
 end

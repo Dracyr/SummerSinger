@@ -26,6 +26,12 @@ export function getGrooveSocket() {
   return grooveSocket;
 }
 
+let debugPanel =  <DebugPanel top right bottom>
+                     <DevTools store={store}
+                               monitor={LogMonitor} />
+                    </DebugPanel>;
+
+debugPanel = true ? debugPanel : '';
 export default class App extends Component {
 
   render() {
@@ -34,10 +40,7 @@ export default class App extends Component {
         <Provider store={store}>
           {() => <GrooveApp grooveSocket={grooveSocket} dispatch={store.dispatch} />}
         </Provider>
-        <DebugPanel top right bottom>
-           <DevTools store={store}
-                     monitor={LogMonitor} />
-         </DebugPanel>
+        {debugPanel}
       </div>
     );
   }

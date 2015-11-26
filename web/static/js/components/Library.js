@@ -19,7 +19,9 @@ class Track extends Component {
 
 class Library extends Component {
   componentDidMount() {
-    this.props.dispatch(fetchLibrary());
+    if (this.props.library.length === 0) {
+      this.props.dispatch(fetchLibrary());
+    }
   }
 
   render() {
