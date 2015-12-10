@@ -17,12 +17,14 @@ defmodule GrooveLion.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    resources "/tracks", TrackController
   end
 
   # Other scopes may use custom stacks.
   scope "/api", GrooveLion do
     pipe_through :api
-    resources "/tracks", TrackController
+
+    resources "/tracks", TrackController, except: [:new, :edit]
+    resources "/albums", AlbumController, except: [:new, :edit]
+    resources "/artists", ArtistController, except: [:new, :edit]
   end
 end

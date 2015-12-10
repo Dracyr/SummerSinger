@@ -1,10 +1,12 @@
 defmodule GrooveLion.FindMusicFiles do
   alias GrooveLion.Repo
   alias GrooveLion.Track
+  alias GrooveLion.Artist
+  alias GrooveLion.Album
 
   def add_files do
     find_files("/home/dracyr/Music/AMFI 2015-05")
-    |> Enum.each(fn(file) -> add_file(file) end)
+    |> Stream.each(&add_file(&1)) |> Stream.run
   end
 
   def find_files(path) do
@@ -26,9 +28,13 @@ defmodule GrooveLion.FindMusicFiles do
   end
 
   defp create_track file, metadata, mpeg_data do
+    artist = find_or_create_artist(metadata["Artist"])
+    album = find_or_create_album(metadata["Album"], metadata["Artist"])
+
     track = %Track{
       title: metadata["Title"],
-      artist: metadata["Artist"],
+      artist_id: artist && artist.id,
+      album_id: album && album.id,
       filename: file,
       duration: round(mpeg_data.duration * 1000)
     }
@@ -42,10 +48,13 @@ defmodule GrooveLion.FindMusicFiles do
   end
 
   defp update_track track, metadata, mpeg_data do
+    artist = find_or_create_artist(metadata["Artist"])
+    album = find_or_create_album(metadata["Album"], metadata["Artist"])
+
     changeset = Track.changeset(track, %{
         title: metadata["Title"],
-        artist: metadata["Artist"],
-        metadata: metadata,
+        artist_id: artist && artist.id,
+        album_id: album && album.id,
         duration: round(mpeg_data.duration * 1000)
       })
 
@@ -56,4 +65,24 @@ defmodule GrooveLion.FindMusicFiles do
         IO.puts "Error updating: " <> track.filename
     end
   end
+
+  defp find_or_create_artist(nil), do: nil
+  defp find_or_create_artist(artist_name) do
+    case Repo.get_by(Artist, name: artist_name) do
+      nil ->
+        %Artist{name: artist_name} |> Repo.insert!
+      artist -> artist
+    end
+  end
+
+  defp find_or_create_album(nil, _), do: nil
+  defp find_or_create_album(album_name, artist_name) do
+    case Repo.get_by(Album, title: album_name) do
+      nil ->
+        %Album{title: album_name, artist_id: find_or_create_artist(artist_name).id}
+        |> Repo.insert!
+      album -> album
+    end
+  end
+
 end
