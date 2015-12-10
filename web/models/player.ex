@@ -2,6 +2,32 @@ defmodule GrooveLion.Player do
   alias GrooveLion.Track
   alias GrooveLion.Repo
 
+  @doc """
+  Frontend
+    paused ->
+      current_duration = paused_duration
+    playing ->
+      current_duration = now - start_time
+
+  Backend
+    play_track ->
+      start_time = now
+
+    pause ->
+      paused_duration = now - start_time
+
+    play ->
+      start_time = now - paused_duration
+
+
+    seek ->
+      target = duration * percent
+
+      start_time = now - target
+      paused_duration = target
+
+
+  """
   def start_link do
     Agent.start_link(fn ->
       %{
@@ -127,31 +153,3 @@ defmodule GrooveLion.Player do
     end
   end
 end
-
-
-"""
-Frontend
-  paused ->
-    current_duration = paused_duration
-  playing ->
-    current_duration = now - start_time
-
-Backend
-  play_track ->
-    start_time = now
-
-  pause ->
-    paused_duration = now - start_time
-
-  play ->
-    start_time = now - paused_duration
-
-
-  seek ->
-    target = duration * percent
-
-    start_time = now - target
-    paused_duration = target
-
-
-"""

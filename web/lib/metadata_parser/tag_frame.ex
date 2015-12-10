@@ -160,11 +160,13 @@ defmodule ID3v2Parser.TagFrame do
 
   def tag_frame(id, data) do
     cond do
-      Regex.match?(~r/[T].../, id) ->
-        << 0x00, content :: binary >> = data
-        Map.put(%{}, @id3v2_tag_frame_names[id], content)
-      Regex.match?(~r/[W].../, id) ->
-        Map.put(%{}, @id3v2_tag_frame_names[id], data)
+      Regex.match?(~r/[WT].../, id) ->
+        case data do
+            << 0x00, content :: binary >> ->
+                Map.put(%{}, @id3v2_tag_frame_names[id], content)
+            << content :: binary >> ->
+                Map.put(%{}, @id3v2_tag_frame_names[id], content)
+        end
       true ->
         Map.put(%{}, @id3v2_tag_frame_names[id], data)
     end

@@ -1,24 +1,24 @@
-defmodule GrooveLion.TrackController do
+defmodule GrooveLion.AlbumController do
   use GrooveLion.Web, :controller
 
-  alias GrooveLion.Track
+  alias GrooveLion.Album
 
-  plug :scrub_params, "track" when action in [:create, :update]
+  plug :scrub_params, "album" when action in [:create, :update]
 
   def index(conn, _params) do
-    tracks = Repo.all(Track)
-    render(conn, "index.json", tracks: tracks)
+    albums = Repo.all(Album)
+    render(conn, "index.json", albums: albums)
   end
 
-  def create(conn, %{"track" => track_params}) do
-    changeset = Track.changeset(%Track{}, track_params)
+  def create(conn, %{"album" => album_params}) do
+    changeset = Album.changeset(%Album{}, album_params)
 
     case Repo.insert(changeset) do
-      {:ok, track} ->
+      {:ok, album} ->
         conn
         |> put_status(:created)
-        |> put_resp_header("location", track_path(conn, :show, track))
-        |> render("show.json", track: track)
+        |> put_resp_header("location", album_path(conn, :show, album))
+        |> render("show.json", album: album)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -27,17 +27,17 @@ defmodule GrooveLion.TrackController do
   end
 
   def show(conn, %{"id" => id}) do
-    track = Repo.get!(Track, id)
-    render(conn, "show.json", track: track)
+    album = Repo.get!(Album, id)
+    render(conn, "show.json", album: album)
   end
 
-  def update(conn, %{"id" => id, "track" => track_params}) do
-    track = Repo.get!(Track, id)
-    changeset = Track.changeset(track, track_params)
+  def update(conn, %{"id" => id, "album" => album_params}) do
+    album = Repo.get!(Album, id)
+    changeset = Album.changeset(album, album_params)
 
     case Repo.update(changeset) do
-      {:ok, track} ->
-        render(conn, "show.json", track: track)
+      {:ok, album} ->
+        render(conn, "show.json", album: album)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -46,11 +46,11 @@ defmodule GrooveLion.TrackController do
   end
 
   def delete(conn, %{"id" => id}) do
-    track = Repo.get!(Track, id)
+    album = Repo.get!(Album, id)
 
     # Here we use delete! (with a bang) because we expect
     # it to always work (and if it does not, it will raise).
-    Repo.delete!(track)
+    Repo.delete!(album)
 
     send_resp(conn, :no_content, "")
   end
