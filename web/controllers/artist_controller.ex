@@ -27,7 +27,7 @@ defmodule GrooveLion.ArtistController do
   end
 
   def show(conn, %{"id" => id}) do
-    artist = Repo.get!(Artist, id)
+    artist = Repo.get!(Artist, id) |> Repo.preload([:albums, :tracks])
     render(conn, "show.json", artist: artist)
   end
 

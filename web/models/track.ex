@@ -37,7 +37,7 @@ defmodule GrooveLion.Track do
      %{
       id: track.id,
       title: track.title,
-      artist: track.artist,
+      artist: track.artist.name,
       duration: track.duration
     }
   end

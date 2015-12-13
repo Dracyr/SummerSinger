@@ -4,7 +4,7 @@ import { fetchLibrary, requestQueueTrack } from '../actionCreators';
 
 class Track extends Component {
   render() {
-    var track = this.props.track;
+    const track = this.props.track;
 
     return (
       <tr onClick={() => requestQueueTrack(track.id)}>
@@ -25,7 +25,6 @@ class Library extends Component {
   }
 
   render() {
-    const { library } = this.props;
     return (
       <table className="table table-hover">
         <thead>
@@ -37,7 +36,7 @@ class Library extends Component {
           </tr>
         </thead>
         <tbody>
-          {library.map(function(track) {
+          {this.props.library.map(function(track) {
             return <Track key={track.id} track={track}/>;
           })}
         </tbody>

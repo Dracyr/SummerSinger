@@ -5,6 +5,8 @@ defmodule GrooveLion.Artist do
     field :name, :string
 
     has_many :albums, GrooveLion.Album
+    has_many :tracks, GrooveLion.Track
+    has_many :album_tracks, through: [:albums, :tracks]
 
     timestamps
   end

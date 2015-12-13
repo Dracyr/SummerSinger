@@ -12,8 +12,7 @@ defmodule GrooveLion.TrackView do
   def render("track.json", %{track: track}) do
     %{id: track.id,
       title: track.title,
-      filename: track.filename,
-      metadata: track.metadata,
+      artist: track.artist.name,
       duration: track.duration,
       rating: track.rating}
   end

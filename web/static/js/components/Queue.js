@@ -4,9 +4,9 @@ import { requestPlayTrack } from '../actionCreators';
 class QueueItem extends Component {
 
  render() {
-    var track = this.props.track;
+    const track = this.props.track;
 
-    var currentTrack = '';
+    let currentTrack = '';
     if (this.props.currentId === track.index) {
       currentTrack = <span className="playing-icon"><i className="fa fa-volume-up"></i></span>;
     }
@@ -27,8 +27,8 @@ class QueueItem extends Component {
 
 class Queue extends Component {
   render() {
-    var currentId = this.props.currentId;
-    var queueItems = this.props.queueItems;
+    const { currentId, queueItems } = this.props;
+
     return (
       <table className="table table-hover">
         <thead>

@@ -6,7 +6,7 @@ export default class Player extends React.Component {
   render() {
     const { actions, playing, track, startTime, pausedDuration } = this.props;
 
-    var playingClass = playing ? 'fa fa-pause' : 'fa fa-play';
+    const playingClass = playing ? 'fa fa-pause' : 'fa fa-play';
 
     let playerCenter = '';
     if (track) {

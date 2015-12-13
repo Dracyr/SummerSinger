@@ -6,7 +6,7 @@ defmodule GrooveLion.TrackController do
   plug :scrub_params, "track" when action in [:create, :update]
 
   def index(conn, _params) do
-    tracks = Repo.all(Track)
+    tracks = Repo.all(Track) |> Repo.preload(:artist)
     render(conn, "index.json", tracks: tracks)
   end
 

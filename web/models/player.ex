@@ -53,7 +53,7 @@ defmodule GrooveLion.Player do
   def get_queue do
     Agent.get(__MODULE__, fn state ->
       tracks = Enum.with_index(state[:queue]) |> Enum.map(fn {track_id, index} ->
-        Repo.get(Track, track_id) |> Track.to_map(index)
+        Repo.get(Track, track_id) |> Repo.preload(:artist) |> Track.to_map(index)
       end)
       %{queue: tracks}
     end)
