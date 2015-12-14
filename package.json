@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "font-awesome": "^4.3.0",
+    "isomorphic-fetch": "^2.2.0",
     "lodash": "^3.9.3",
     "react": "^0.13.3",
     "react-redux": "^0.9.0",
