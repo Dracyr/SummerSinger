@@ -12,6 +12,9 @@ defmodule GrooveLion.Track do
     belongs_to :album,  GrooveLion.Album
     has_many   :images, GrooveLion.Image
 
+    has_many   :playlist_items, GrooveLion.PlaylistItem
+    has_many   :playlists, through: :playlist_items
+
     timestamps
   end
 
