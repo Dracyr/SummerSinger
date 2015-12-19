@@ -3,7 +3,7 @@ defmodule GrooveLion.PlaylistItem do
 
   schema "playlist_items" do
     field :title, :string
-    belongs_to :playlists, GrooveLion.Playlist
+    belongs_to :playlist, GrooveLion.Playlist
     belongs_to :track, GrooveLion.Track
 
     timestamps

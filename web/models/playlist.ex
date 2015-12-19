@@ -5,7 +5,7 @@ defmodule GrooveLion.Playlist do
     field :title, :string
 
     has_many :playlist_items, GrooveLion.PlaylistItem
-    has_many :tracks, through: :playlist_items
+    has_many :tracks, through: [:playlist_items, :track]
 
     timestamps
   end

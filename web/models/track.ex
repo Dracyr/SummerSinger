@@ -13,7 +13,7 @@ defmodule GrooveLion.Track do
     has_many   :images, GrooveLion.Image
 
     has_many   :playlist_items, GrooveLion.PlaylistItem
-    has_many   :playlists, through: :playlist_items
+    has_many   :playlists, through: [:playlist_items, :playlist]
 
     timestamps
   end

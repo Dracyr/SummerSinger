@@ -3,9 +3,9 @@ defmodule GrooveLion.Repo.Migrations.CreatePlaylistItems do
 
   def change do
     create table(:playlist_items) do
-      add :playlist_id references(:playlists)
-      add :track_id references(:tracks)
-      add :item_order
+      add :playlist_id, references(:playlists)
+      add :track_id, references(:tracks)
+      add :item_order, :integer
 
       timestamps
     end
