@@ -13,7 +13,7 @@ config :groove_lion, GrooveLion.Endpoint,
   cache_static_lookup: false,
   check_origin: false,
   watchers: [
-    node: ["webpack.devserver.js"],
+    node: ["devServer.js"],
     npm: ["run", "watch:css"]
     # sass: [
     #   "node_modules/node-sass/bin/node-sass",
