@@ -15,7 +15,7 @@ defmodule MPEGParser do
   }
 
   @bitrate_index %{
-    0  => ["free",  "free",  "free",  "free",  "free"],
+    # 0  => ["free",  "free",  "free",  "free",  "free"],
     1  => [32,  32,  32,  32,  8],
     2  => [64,  48,  40,  48,  16],
     3  => [96,  56,  48,  56,  24],
@@ -29,15 +29,15 @@ defmodule MPEGParser do
     11 => [352, 224, 192, 176, 112],
     12 => [384, 256, 224, 192, 128],
     13 => [416, 320, 256, 224, 144],
-    14 => [448, 384, 320, 256, 160],
-    15 => ["bad", "bad", "bad", "bad", "bad"]
+    14 => [448, 384, 320, 256, 160]
+    # 15 => ["bad", "bad", "bad", "bad", "bad"]
   }
 
   @sampling_index %{
     0 => [44100, 22050, 11025],
     1 => [48000, 24000, 12000],
-    2 => [32000, 16000, 8000],
-    3 => ["Reserved", "Reserved", "Reserved"]
+    2 => [32000, 16000, 8000]
+    # 3 => ["Reserved", "Reserved", "Reserved"]
   }
 
   @channel_mode %{
@@ -97,8 +97,7 @@ defmodule MPEGParser do
     _empasis    :: bits-size(2) >>) do
 
     %{
-      version: @mpeg_version[version],
-      layer: @layer_description[layer],
+      encoding: @mpeg_version[version] <> " " <> @layer_description[layer],
       bitrate: parse_bitrate(bitrate, @mpeg_version[version], @layer_description[layer]),
       samplerate: parse_samplerate(samplerate, @mpeg_version[version]),
       channel: @channel_mode[channel]

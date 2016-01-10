@@ -32,6 +32,6 @@ defmodule ID3Parser do
   defp parse_id3(_), do: {:no_tag, :id3}
 
   defp strip_null(binary) do
-    :binary.split(binary, [<< 0 >>]) |> Enum.at 0
+    :binary.split(binary, [<< 0 >>]) |> Enum.at(0)
   end
 end

@@ -9,7 +9,7 @@ defmodule GrooveLion.Mixfile do
      compilers: [:phoenix] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     aliases: ["phoenix.digest": "groove_lion.digest"],
+     aliases: aliases,
      deps: deps]
   end
 
@@ -18,7 +18,7 @@ defmodule GrooveLion.Mixfile do
   # Type `mix help compile.app` for more information
   def application do
     [mod: {GrooveLion, []},
-     applications: [:phoenix, :phoenix_html, :cowboy, :logger,
+     applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :porcelain]]
   end
 
@@ -26,9 +26,9 @@ defmodule GrooveLion.Mixfile do
   defp elixirc_paths(:test), do: ["lib", "web", "test/support"]
   defp elixirc_paths(_),     do: ["lib", "web"]
 
-  # Specifies your project dependencies
+  # Specifies your project dependencies.
   #
-  # Type `mix help deps` for examples and options
+  # Type `mix help deps` for examples and options.
   defp deps do
     [{:phoenix, "~> 1.1.0"},
      {:phoenix_ecto, "~> 2.0"},
@@ -37,6 +37,19 @@ defmodule GrooveLion.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.9"},
      {:cowboy, "~> 1.0"},
-     {:porcelain, "~> 2.0"}]
+     {:porcelain, "~> 2.0"},
+     {:codepagex, "~> 0.1.2"}
+   ]
+  end
+
+  # Aliases are shortcut or tasks specific to the current project.
+  # For example, to create, migrate and run the seeds file at once:
+  #
+  #     $ mix ecto.setup
+  #
+  # See the documentation for `Mix` for more info on aliases.
+  defp aliases do
+    ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+     "ecto.reset": ["ecto.drop", "ecto.setup"]]
   end
 end

@@ -39,7 +39,7 @@ defmodule GrooveLion.RoomChannel do
       {:ok} ->
         broadcast! socket, "statusUpdate", Player.get_status
       {:err} ->
-        # Nope
+        {:noreply, socket}
     end
 
     {:noreply, socket}
@@ -50,7 +50,7 @@ defmodule GrooveLion.RoomChannel do
       {:ok} ->
         broadcast! socket, "statusUpdate", Player.get_status
       {:err} ->
-        # Nope
+        {:noreply, socket}
     end
 
     {:noreply, socket}

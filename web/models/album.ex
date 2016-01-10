@@ -24,4 +24,19 @@ defmodule GrooveLion.Album do
     model
     |> cast(params, @required_fields, @optional_fields)
   end
+
+  def find_or_create(nil, _), do: nil
+  def find_or_create(title, artist) do
+    album = GrooveLion.one(
+          from a in Album,
+          where: a.title == ^title and a.artist_id == ^artist.id)
+
+    case album do
+      nil ->
+        %GrooveLion.Album{}
+        |> Album.changeset(%{title: title, artist_id: artist.id})
+        |> Repo.insert!
+      album -> album
+    end
+  end
 end

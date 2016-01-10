@@ -24,4 +24,15 @@ defmodule GrooveLion.Artist do
     model
     |> cast(params, @required_fields, @optional_fields)
   end
+
+  def find_or_create(nil), do: nil
+  def find_or_create(name) do
+    case Repo.get_by(Artist, name: name) do
+      nil ->
+        %GrooveLion.Artist{}
+        |> Artist.changeset(%{name: name})
+        |> Repo.insert!
+      artist -> artist
+    end
+  end
 end

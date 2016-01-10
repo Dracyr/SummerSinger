@@ -1,91 +1,20 @@
 defmodule ID3v2Parser.TagFrame do
 
-  @id3v2_tag_frame_names %{
-    "AENC" => "Audio encryption",
-    "APIC" => "Attached picture",
-    "COMM" => "Comments",
-    "COMR" => "Commercial frame",
-    "ENCR" => "Encryption method registration",
-    "EQUA" => "Equalization",
-    "ETCO" => "Event timing codes",
-    "GEOB" => "General encapsulated object",
-    "GRID" => "Group identification registration",
-    "IPLS" => "Involved people list",
-    "LINK" => "Linked information",
-    "MCDI" => "Music CD identifier",
-    "MLLT" => "MPEG location lookup table",
-    "OWNE" => "Ownership frame",
-    "PRIV" => "Private frame",
-    "PCNT" => "Play counter",
-    # "POPM" => "Popularimeter",
-    "POPM" => "Rating",
-    "POSS" => "Position synchronisation frame",
-    "RBUF" => "Recommended buffer size",
-    "RVAD" => "Relative volume adjustment",
-    "RVRB" => "Reverb",
-    "SYLT" => "Synchronized lyric/text",
-    "SYTC" => "Synchronized tempo codes",
-    "TALB" => "Album/Movie/Show title",
-    "TBPM" => "BPM (beats per minute)",
-    "TCOM" => "Composer",
-    "TCON" => "Content type",
-    "TCOP" => "Copyright message",
-    "TDAT" => "Date",
-    "TDLY" => "Playlist delay",
-    "TENC" => "Encoded by",
-    "TEXT" => "Lyricist/Text writer",
-    "TFLT" => "File type",
-    "TIME" => "Time",
-    "TIT1" => "Content group description",
-    # "TIT2" => "Title/songname/content description",
-    "TIT2" => "Title",
-    "TIT3" => "Subtitle/Description refinement",
-    "TKEY" => "Initial key",
-    "TLAN" => "Language(s)",
-    "TLEN" => "Length",
-    "TMED" => "Media type",
-    "TOAL" => "Original album/movie/show title",
-    "TOFN" => "Original filename",
-    "TOLY" => "Original lyricist(s)/text writer(s)",
-    "TOPE" => "Original artist(s)/performer(s)",
-    "TORY" => "Original release year",
-    "TOWN" => "File owner/licensee",
-    # "TPE1" => "Lead performer(s)/Soloist(s)",
-    "TPE1" => "Artist",
-    "TPE2" => "Band/orchestra/accompaniment",
-    "TPE3" => "Conductor/performer refinement",
-    "TPE4" => "Interpreted, remixed, or otherwise modified by",
-    "TPOS" => "Part of a set",
-    "TPUB" => "Publisher",
-    "TRCK" => "Track number/Position in set",
-    "TRDA" => "Recording dates",
-    "TRSN" => "Internet radio station name",
-    "TRSO" => "Internet radio station owner",
-    "TSIZ" => "Size",
-    "TSRC" => "ISRC (international standard recording code)",
-    "TSSE" => "Software/Hardware and settings used for encoding",
-    "TYER" => "Year",
-    "TXXX" => "User defined text information frame",
-    "UFID" => "Unique file identifier",
-    "USER" => "Terms of use",
-    "USLT" => "Unsychronized lyric/text transcription",
-    "WCOM" => "Commercial information",
-    "WCOP" => "Copyright/Legal information",
-    "WOAF" => "Official audio file webpage",
-    "WOAR" => "Official artist/performer webpage",
-    "WOAS" => "Official audio source webpage",
-    "WORS" => "Official internet radio station homepage",
-    "WPAY" => "Payment",
-    "WPUB" => "Publishers official webpage",
-    "WXXX" => "User defined URL link frame"
-  }
+  def tag_frame(<< 0, 0, 0, 0 >>, _), do: %{}
+
   def tag_frame("TXXX", <<
-      _encoding :: size(8),
+      encoding :: bytes-size(1),
       data      :: binary >>) do
 
-    null_index = find_null_index data
-    << desc :: binary-size(null_index), _null_marker, content :: binary>> = data
+    {desc, content} = split_at_null(data)
+    Map.put(%{}, desc, to_utf8(encoding, content))
+  end
 
+  def tag_frame("WXXX", <<
+      encoding :: bytes-size(1),
+      data      :: binary >>) do
+
+    {desc, content} = split_at_null(data)
     Map.put(%{}, desc, content)
   end
 
@@ -94,29 +23,21 @@ defmodule ID3v2Parser.TagFrame do
     genres = Enum.chunk_by(to_char_list(content), &(&1 == 0))
     |> Enum.reject(&(&1 == [0]))
 
-    Map.put(%{}, @id3v2_tag_frame_names["TCON"], genres)
+    Map.put(%{}, "TCON", genres)
   end
 
   def tag_frame("POPM", data) do
-    null_index = find_null_index data
-    <<
-      _user    :: bytes-size(null_index),
-      _null_marker,
-      rating   :: integer-size(8),
-      _counter :: binary >> = data
-
-    Map.put(%{}, @id3v2_tag_frame_names["POPM"], rating)
+    { _user, << rating :: integer-size(8), _counter :: binary >>} = split_at_null(data)
+    Map.put(%{}, "POPM", rating)
   end
 
   def tag_frame("COMM", <<
-    _encoding :: size(8),
+    encoding :: bytes-size(1),
     _language :: size(24),
     data      :: binary >>) do
 
-    null_index = find_null_index data
-    << desc :: binary-size(null_index), _, content :: binary>> = data
-
-    %{desc: desc, text: content}
+    {desc, content} = split_at_null(data)
+    %{desc: to_utf8(encoding, desc), text: to_utf8(encoding, content)}
   end
 
   @picture_type %{
@@ -143,36 +64,42 @@ defmodule ID3v2Parser.TagFrame do
     20 => "Publisher/Studio logotype"
   }
 
-  def tag_frame("APIC", << _encoding :: size(8), data :: binary >>) do
-    null_index = find_null_index data
-    <<
-      mime_type :: bytes-size(null_index),
-      _null,
-      picture_type :: integer-size(8),
-      desc_data :: binary >> = data
-
-    null_index = find_null_index desc_data
-    << description :: bytes-size(null_index), _null, picture_data :: binary >> = desc_data
+  def tag_frame("APIC", << _encoding :: bytes-size(1), data :: binary >>) do
+    { mime_type, << picture_type :: integer-size(8), desc_data :: binary >> } = split_at_null(data)
+    { description, picture_data } = split_at_null(desc_data)
 
     apic = %{type: @picture_type[picture_type], mime: mime_type, desc: description, file: picture_data}
-    Map.put(%{}, @id3v2_tag_frame_names["APIC"], apic)
+    Map.put(%{}, "APIC", [apic])
   end
 
   def tag_frame(id, data) do
     cond do
       Regex.match?(~r/[WT].../, id) ->
-        case data do
-            << 0x00, content :: binary >> ->
-                Map.put(%{}, @id3v2_tag_frame_names[id], content)
-            << content :: binary >> ->
-                Map.put(%{}, @id3v2_tag_frame_names[id], content)
-        end
+        Map.put(%{}, id, to_utf8(data))
       true ->
-        Map.put(%{}, @id3v2_tag_frame_names[id], data)
+        Map.put(%{}, id, data)
     end
   end
 
-  defp find_null_index(binary) do
-    Enum.find_index(:erlang.binary_to_list(binary), &(&1 == 0))
+  defp split_at_null(binary) do
+    {index , 1} = :binary.match binary, << 0 >>
+    << head :: bytes-size(index), 0x00, tail :: binary >> = binary
+    { head, tail }
+  end
+
+  defp to_utf8(<< encoding :: bytes-size(1), string :: bytes >>), do: to_utf8(encoding, string)
+  defp to_utf8(encoding, string) do
+    case encoding do
+      <<0x00>> -> # ISO-8859-1
+        Codepagex.to_string!(string, :iso_8859_1)
+      <<0x01>> -> # UCS-2 (UTF-16 with BOM)
+        :unicode.characters_to_binary(string, elem(:unicode.bom_to_encoding(string), 0))
+      <<0x02>> -> #UTF-16BE encoded Unicode without BOM
+        :unicode.characters_to_binary(string, {:utf16, :big})
+      <<0x03>> -> # Good old UTF-8
+        string
+      _ -> # No valid encoding, why are you doing this
+        encoding <> string
+    end
   end
 end

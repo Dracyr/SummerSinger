@@ -10,7 +10,20 @@ defmodule ID3v2Parser do
           tag_frames  :: binary-size(length),
           _audio_data :: binary >> = binary
 
-          {:ok, metadata_frames(tag_frames, %{})}
+          tag_frames = metadata_frames(tag_frames, %{})
+
+          {:ok,
+            %{
+              title: tag_frames["TIT2"],
+              artist: tag_frames["TPE1"],
+              album: tag_frames["TALB"],
+              year: tag_frames["TYER"],
+              rating: tag_frames["POPM"],
+              comment: tag_frames["COMM"],
+              album_art:  tag_frames["APIC"],
+              tag_frames: tag_frames,
+            }
+          }
       _ ->
         {:no_tag, :id3v2}
     end
@@ -40,7 +53,12 @@ defmodule ID3v2Parser do
       _flags :: bits-size(16),
       frame  :: binary-size(length),
       binary :: binary >>, metadata) do
-    metadata_frames(binary, Map.merge(metadata, TagFrame.tag_frame(id, frame)))
+
+    if id == "APIC" && !is_nil(metadata["APIC"]) do
+      metadata_frames(binary, Map.merge(metadata, metadata["APIC"] ++ TagFrame.tag_frame(id, frame)))
+    else
+      metadata_frames(binary, Map.merge(metadata, TagFrame.tag_frame(id, frame)))
+    end
   end
   defp metadata_frames(_, metadata), do: metadata
 
