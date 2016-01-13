@@ -19,7 +19,7 @@ defmodule GrooveLion.Mixfile do
   def application do
     [mod: {GrooveLion, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :porcelain]]
+                    :phoenix_ecto, :postgrex]]
   end
 
   # Specifies which paths to compile per environment
@@ -37,7 +37,6 @@ defmodule GrooveLion.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.9"},
      {:cowboy, "~> 1.0"},
-     {:porcelain, "~> 2.0"},
      {:codepagex, "~> 0.1.2"}
    ]
   end

@@ -1,81 +1,71 @@
 defmodule GrooveLion.AudioPlayer do
   alias Porcelain.Process, as: Proc
+  require IEx
 
   def start_link do
     {:ok, sup_pid} = Task.Supervisor.start_link(name: GrooveLion.AudioBackendSupervisor)
+
     {:ok, controller_pid} = Task.Supervisor.start_child(
-      GrooveLion.AudioBackendSupervisor, fn -> await_proc() end)
-    {:ok, backend_pid} = Task.Supervisor.start_child(
-      GrooveLion.AudioBackendSupervisor, GrooveLion.AudioPlayer, :start_backend, [controller_pid])
+      GrooveLion.AudioBackendSupervisor, fn -> start_loop() end)
 
     Process.register(controller_pid, :audio_player)
 
     {:ok, sup_pid}
   end
 
-  def start_backend(controller_pid) do
-    proc = %Proc{pid: backend_pid} =
-      Porcelain.spawn_shell("mpg123 -R", in: :receive, out: {:send, controller_pid})
-    {:ok, backend_pid}
-  end
-
-  defp await_proc() do
+  defp start_loop() do
     default_state = %{
       current_status: "stopped",
       start_time: nil, # Epoch in milliseconds
       duration: nil # In Milliseconds
     }
+    port = Port.open({:spawn, "mpg123 -R"}, [:use_stdio])
 
-    receive do
-      {pid, :data, :out, messages} ->
-        String.split(messages, "\n")
-        |> Enum.filter(fn(m) -> String.length(m) > 0 end)
-        |> Enum.reduce(default_state, fn(message, state) -> handle_message(message, state) end)
-        |> loop(%Proc{pid: pid})
-    end
+    loop(default_state, port)
   end
 
-  defp loop(state, proc) do
+  defp loop(state, port) do
     receive do
       {:status, caller} ->
         send caller, {:status, state}
-        loop(state, proc)
+        loop(state, port)
       {:playback, playback} ->
-        playback(state, proc, playback)
-        |> loop(proc)
+        playback(state, port, playback)
+        |> loop(port)
       {:load, path} ->
-        Proc.send_input(proc, "LOAD #{path}\n")
-        loop(state, proc)
+        Port.command(port, "LOAD #{path}\n")
+        loop(state, port)
       {:seek, percent, caller} ->
-        seek(state, proc, percent, caller)
-        |> loop(proc)
+        seek(state, port, percent, caller)
+        |> loop(port)
       {:quit} ->
-        Proc.send_input(proc, "QUIT\n")
-        loop(state, proc)
-      {pid, :data, :out, messages} ->
+        Port.command(port, "QUIT\n")
+        loop(state, port)
+      {^port, {:data, messages}} ->
+        messages = to_string(messages)
         String.split(messages, "\n")
         |> Enum.filter(fn(m) -> String.length(m) > 0 end)
         |> Enum.reduce(state, fn(message, state) -> handle_message(message, state) end)
-        |> loop(proc)
+        |> loop(port)
     end
   end
 
-  defp playback(state, proc, playback) do
+  defp playback(state, port, playback) do
     cond do
       playback == true && state[:current_status] == "paused" ->
-        Proc.send_input(proc, "PAUSE\n")
+        Port.command(port, "PAUSE\n")
       playback == false && state[:current_status] == "playing" ->
-        Proc.send_input(proc, "PAUSE\n")
+        Port.command(port, "PAUSE\n")
       true ->
         # No track loaded
     end
     state
   end
 
-  defp seek(state, proc, percent, caller) do
+  defp seek(state, port, percent, caller) do
     if state[:current_status] != "stopped" do
       target_duration = round(state[:duration] * percent)
-      Proc.send_input(proc, "JUMP #{target_duration / 1000}s\n") # Seconds
+      Port.command(port, "JUMP #{target_duration / 1000}s\n") # Seconds
 
       send caller, {:ok, state[:duration]}
       %{state | start_time: DateUtil.now - target_duration}

@@ -54,11 +54,10 @@ defmodule ID3v2Parser do
       frame  :: binary-size(length),
       binary :: binary >>, metadata) do
 
-    if id == "APIC" && !is_nil(metadata["APIC"]) do
-      metadata_frames(binary, Map.merge(metadata, metadata["APIC"] ++ TagFrame.tag_frame(id, frame)))
-    else
-      metadata_frames(binary, Map.merge(metadata, TagFrame.tag_frame(id, frame)))
-    end
+    metadata = Map.merge(metadata, TagFrame.tag_frame(id, frame), fn _k, v1, v2 ->
+      List.wrap(v1) ++ List.wrap(v2)
+    end)
+    metadata_frames(binary, metadata)
   end
   defp metadata_frames(_, metadata), do: metadata
 

@@ -28,6 +28,4 @@ config :phoenix, :generators,
   migration: true,
   binary_id: false
 
-config :porcelain, goon_warn_if_missing: false
-
 config :codepagex, :encodings, [:iso_8859_1, :ascii]

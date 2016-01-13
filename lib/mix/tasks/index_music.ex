@@ -21,24 +21,22 @@ defmodule Mix.Tasks.GrooveLion.IndexMusic do
   end
 
   defp add_file(file) do
-    binary_file = File.read!(file)
-
-    {:ok, metadata}  = ID3v2Parser.parse_binary(binary_file)
-    {:ok, mpeg_data} = MPEGParser.parse_binary(binary_file)
-
-    create_track(file, metadata, mpeg_data)
+    {:ok, audio_data, metadata} = MetadataParser.parse(file)
+    create_track(file, metadata, audio_data)
   end
 
-  defp create_track file, metadata, mpeg_data do
-    artist = Artist.find_or_create(metadata["Artist"])
-    album = Album.find_or_create(metadata["Album"], artist)
+  defp create_track file, metadata, audio_data do
+
+    artist = Artist.find_or_create(metadata[:artist])
+    album = Album.find_or_create(metadata[:album], artist)
 
     track = %Track{
-      title: metadata["Title"],
+      title: metadata[:title],
       artist_id: artist && artist.id,
       album_id: album && album.id,
       filename: file,
-      duration: round(mpeg_data.duration)
+      duration: audio_data.duration,
+      rating: metadata[:rating],
     }
 
     case Repo.insert(track) do
