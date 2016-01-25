@@ -1,6 +1,4 @@
 defmodule GrooveLion.AudioPlayer do
-  alias Porcelain.Process, as: Proc
-  require IEx
 
   def start_link do
     {:ok, sup_pid} = Task.Supervisor.start_link(name: GrooveLion.AudioBackendSupervisor)

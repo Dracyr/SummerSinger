@@ -24,7 +24,7 @@ export default class SeekSlider extends Component {
   }
 
   handleSeek(event) {
-    this.props.seek(event.pageX / document.documentElement.clientWidth);
+    this.props.seek(event.clientX / document.documentElement.clientWidth);
   }
 
   render() {
@@ -33,9 +33,9 @@ export default class SeekSlider extends Component {
     if (startTime && track) {
       if (playing) {
         let now = this.state.now;
-        durationPercent = (now - startTime) / track.duration;
+        durationPercent = (now - startTime) / (track.duration * 1000);
       } else {
-        durationPercent = pausedDuration / track.duration;
+        durationPercent = pausedDuration / (track.duration * 1000);
       }
     }
 

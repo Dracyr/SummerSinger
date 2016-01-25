@@ -1,5 +1,6 @@
 defmodule GrooveLion.Artist do
   use GrooveLion.Web, :model
+  alias GrooveLion.Artist
 
   schema "artists" do
     field :name, :string

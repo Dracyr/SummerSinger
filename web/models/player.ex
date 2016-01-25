@@ -51,12 +51,11 @@ defmodule GrooveLion.Player do
   end
 
   def get_queue do
-    Agent.get(__MODULE__, fn state ->
-      tracks = Enum.with_index(state[:queue]) |> Enum.map(fn {track_id, index} ->
-        Repo.get(Track, track_id) |> Repo.preload(:artist) |> Track.to_map(index)
-      end)
-      %{queue: tracks}
+    tracks = Enum.with_index(Queue.get_queue) |> Enum.map(fn {track_id, index} ->
+      Repo.get(Track, track_id) |> Repo.preload(:artist) |> Track.to_map(index)
     end)
+
+    %{queue: tracks}
   end
 
   def playback(playback) do
@@ -83,15 +82,14 @@ defmodule GrooveLion.Player do
   end
 
   def queue_track(track_id) do
-    Agent.update(__MODULE__, fn state ->
-      %{state | queue: (state[:queue] ++ [track_id])}
-    end)
+    Queue.queue_track(track_id)
   end
 
-  def play_track(queue_id) do
-    track_id = Agent.get(__MODULE__, fn state ->
-      Enum.fetch!(state[:queue], queue_id)
-    end)
+  def play_queued_track(queue_id) do
+    Queue.play_track(queue_id) |> play_track
+  end
+
+  def play_track(track_id) do
     track = Repo.get(Track, track_id)
     send :audio_player, {:load, track.filename}
 
@@ -106,33 +104,30 @@ defmodule GrooveLion.Player do
   end
 
   def previous_track do
-    queue_index = Agent.get(__MODULE__, fn state -> state[:queue_index] end)
-    case queue_index do
-      0 ->
-        play_track(queue_index)
-        {:ok}
-      _ when is_number(queue_index) ->
-        play_track(queue_index - 1)
-        {:ok}
-      _ ->
-        {:err}
+    case Queue.previous_track do
+      {:ok, track_id} ->
+        play_track(track_id)
+      {:no_track_available} ->
+        # Do nothing?
     end
   end
 
   def next_track(backend_next \\ false) do
-    {count, queue_index} = Agent.get(__MODULE__, fn state ->
-      {Enum.count(state[:queue]), state[:queue_index]}
-    end)
+    case Queue.next_track do
+      {:ok, track_id} ->
+        play_track(track_id)
 
-    if is_number(queue_index) && (queue_index + 1 < count) do
-      play_track(queue_index + 1)
-      {:ok}
-    else
-      {:err}
-    end
+        if backend_next == true do
+          GrooveLion.Endpoint.broadcast! "status:broadcast", "statusUpdate", get_status
+        end
 
-    if backend_next == true do
-      GrooveLion.Endpoint.broadcast! "status:broadcast", "statusUpdate", get_status
+        {:ok}
+      {:no_track_available} ->
+        if backend_next == true do
+          GrooveLion.Endpoint.broadcast! "status:broadcast", "statusUpdate", get_status
+        end
+
+        {:err}
     end
   end
 

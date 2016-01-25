@@ -1,5 +1,6 @@
 defmodule GrooveLion.Album do
   use GrooveLion.Web, :model
+  alias GrooveLion.Album
 
   schema "albums" do
     field :title, :string
@@ -27,7 +28,7 @@ defmodule GrooveLion.Album do
 
   def find_or_create(nil, _), do: nil
   def find_or_create(title, artist) do
-    album = GrooveLion.one(
+    album = Repo.one(
           from a in Album,
           where: a.title == ^title and a.artist_id == ^artist.id)
 

@@ -12,6 +12,7 @@ defmodule GrooveLion do
       # Start the Ecto repository
       worker(GrooveLion.Repo, []),
       worker(GrooveLion.AudioPlayer, []),
+      worker(GrooveLion.Queue, [[]]),
       worker(GrooveLion.Player, [])
       # Here you could define other workers and supervisors as children
       # worker(GrooveLion.Worker, [arg1, arg2, arg3]),

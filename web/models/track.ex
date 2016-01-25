@@ -5,7 +5,7 @@ defmodule GrooveLion.Track do
     field :title,    :string
     field :filename, :string
     field :metadata, :map
-    field :duration, :integer
+    field :duration, :float, null: false
     field :rating,   :integer
 
     belongs_to :artist, GrooveLion.Artist
@@ -46,7 +46,7 @@ defmodule GrooveLion.Track do
   end
 
   def filename_exists?(filename) do
-    case GrooveLion.Repo.get_by(__MODULE__, filename: filename) do
+    case Repo.get_by(__MODULE__, filename: filename) do
       nil -> false
       _   -> true
     end

@@ -19,6 +19,7 @@ defmodule GrooveLion.Web do
   def model do
     quote do
       use Ecto.Model
+      alias GrooveLion.Repo
     end
   end
 
