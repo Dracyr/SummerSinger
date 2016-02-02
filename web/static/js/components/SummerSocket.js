@@ -1,6 +1,6 @@
 import { socketStatusUpdate, queueUpdate } from '../actionCreators';
 
-import { Socket } from '../../../../deps/phoenix/web/static/js/phoenix';
+import { Socket } from 'phoenix';
 
 export default class SummerSocket {
   constructor(store) {
