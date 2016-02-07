@@ -1,6 +1,6 @@
 defmodule Mix.Tasks.GrooveLion.IndexMusic do
   use Mix.Task
-  use Ecto.Query
+  import Ecto.Query
 
   alias GrooveLion.Repo
   alias GrooveLion.Track
@@ -15,7 +15,7 @@ defmodule Mix.Tasks.GrooveLion.IndexMusic do
     |> Stream.run
   end
 
-   @@doc """
+   @doc """
       SELECT test_items.filename
           FROM (VALUES ('asd'), ('qwe'), ('/home/dracyr/Music/Osorterat/Atlas Genius/Atlas Genius - Back Seat.mp3'))
             AS test_items(filename)

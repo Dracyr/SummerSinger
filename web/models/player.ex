@@ -1,6 +1,8 @@
 defmodule GrooveLion.Player do
   alias GrooveLion.Track
   alias GrooveLion.Repo
+  alias GrooveLion.Queue
+  require Logger
 
   @doc """
   Frontend
@@ -31,38 +33,28 @@ defmodule GrooveLion.Player do
   def start_link do
     Agent.start_link(fn ->
       %{
-        queue: [],
-        queue_index: nil,
         playback: false,
         start_time: nil,
         paused_duration: 0,
       } end, name: __MODULE__)
   end
 
-  def get_status do
+  def status do
     Agent.get(__MODULE__, fn state ->
       %{
         playback: state[:playback],
         start_time: state[:start_time],
         paused_duration: state[:paused_duration],
-        queue_index: state[:queue_index],
       }
-    end)
-  end
-
-  def get_queue do
-    tracks = Enum.with_index(Queue.get_queue) |> Enum.map(fn {track_id, index} ->
-      Repo.get(Track, track_id) |> Repo.preload(:artist) |> Track.to_map(index)
-    end)
-
-    %{queue: tracks}
+    end) |> Map.merge(Queue.status)
   end
 
   def playback(playback) do
     send :audio_player, {:playback, playback}
+    queue_index = Queue.status()[:queue_index]
 
     Agent.update(__MODULE__, fn state ->
-      if is_nil(state[:queue_index]) do
+      if is_nil(queue_index) do
         state
       else
         case playback do
@@ -81,34 +73,31 @@ defmodule GrooveLion.Player do
     end)
   end
 
-  def queue_track(track_id) do
-    Queue.queue_track(track_id)
-  end
-
   def play_queued_track(queue_id) do
-    Queue.play_track(queue_id) |> play_track
+    Queue.track(queue_id) |> play_track
   end
 
   def play_track(track_id) do
-    track = Repo.get(Track, track_id)
+    track = Repo.get!(Track, track_id)
+    Logger.debug(inspect(track))
     send :audio_player, {:load, track.filename}
 
     Agent.update(__MODULE__, fn state ->
       %{state |
         playback: true,
         start_time: DateUtil.now,
-        paused_duration: 0,
-        queue_index: queue_id,
+        paused_duration: 0
       }
     end)
+
+    :ok
   end
 
   def previous_track do
     case Queue.previous_track do
       {:ok, track_id} ->
         play_track(track_id)
-      {:no_track_available} ->
-        # Do nothing?
+      _ -> :err
     end
   end
 
@@ -118,16 +107,16 @@ defmodule GrooveLion.Player do
         play_track(track_id)
 
         if backend_next == true do
-          GrooveLion.Endpoint.broadcast! "status:broadcast", "statusUpdate", get_status
+          GrooveLion.Endpoint.broadcast! "status:broadcast", "statusUpdate", status
         end
 
-        {:ok}
-      {:no_track_available} ->
+        :ok
+      :none ->
         if backend_next == true do
-          GrooveLion.Endpoint.broadcast! "status:broadcast", "statusUpdate", get_status
+          GrooveLion.Endpoint.broadcast! "status:broadcast", "statusUpdate", status
         end
 
-        {:err}
+        :err
     end
   end
 
@@ -143,8 +132,7 @@ defmodule GrooveLion.Player do
             paused_duration: target_duration
           }
         end)
-      {:err, reason} ->
-        # Fuck it
+      _ -> :err
     end
   end
 end

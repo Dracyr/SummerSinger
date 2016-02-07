@@ -46,7 +46,7 @@ export default class GrooveSocket {
   }
 
   requestPlayTrack(queueId) {
-    this.broadcastChannel.push('play_track', {queue_id: queueId});
+    this.broadcastChannel.push('play_queued_track', {queue_id: queueId});
   }
 
   requestPreviousTrack() {

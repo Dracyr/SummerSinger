@@ -26,7 +26,7 @@ class Library extends Component {
 
   render() {
     return (
-      <table className="table table-hover">
+      <table className="table table-hover track-list">
         <thead>
           <tr>
             <th>Title</th>
