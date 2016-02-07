@@ -30,7 +30,7 @@ export default class Sidebar extends Component {
           </li>
           <li onClick={() => switchView('QUEUE')}
               className={this.isActive('QUEUE')}>
-                Queues
+                Queue
           </li>
           <li onClick={() => switchView('LIBRARY')}
               className={this.isActive('LIBRARY')}>

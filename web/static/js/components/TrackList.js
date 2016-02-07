@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import { requestPlayTrack } from '../actionCreators';
 
-class QueueItem extends Component {
+class Track extends Component {
 
  render() {
-    const track = this.props.track;
+    const {track, keyAttr, currentKey, onClickHandler} = this.props;
 
     let currentTrack = '';
-    if (this.props.currentId === track.index) {
+    if (track[keyAttr] === currentKey) {
       currentTrack = <span className="playing-icon"><i className="fa fa-volume-up"></i></span>;
     }
 
     return (
-      <tr onClick={() => requestPlayTrack(track.index)}>
+      <tr onClick={(event) => onClickHandler(track)}>
         <td>
           {track.title}
           {currentTrack}
@@ -25,9 +24,9 @@ class QueueItem extends Component {
   }
 }
 
-class Queue extends Component {
+class TrackList extends Component {
   render() {
-    const { currentId, queueItems } = this.props;
+    const {tracks, keyAttr, currentKey, onClickHandler } = this.props;
 
     return (
       <table className="table table-hover track-list">
@@ -40,8 +39,12 @@ class Queue extends Component {
           </tr>
         </thead>
         <tbody>
-          {queueItems.map(function(queueItem) {
-            return <QueueItem key={queueItem.index} track={queueItem} currentId={currentId}/>;
+          {tracks.map(function(track) {
+            return <Track track={track}
+                          key={track[keyAttr]}
+                          keyAttr={keyAttr}
+                          currentKey={currentKey}
+                          onClickHandler={onClickHandler} />;
           })}
         </tbody>
       </table>
@@ -49,4 +52,4 @@ class Queue extends Component {
   }
 }
 
-export default Queue;
+export default TrackList;

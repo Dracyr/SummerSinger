@@ -1,10 +1,5 @@
 defmodule GrooveLion.Player do
-  alias GrooveLion.Track
-  alias GrooveLion.Repo
-  alias GrooveLion.Queue
-  require Logger
-
-  @doc """
+  @moduledoc ~S"""
   Frontend
     paused ->
       current_duration = paused_duration
@@ -28,8 +23,9 @@ defmodule GrooveLion.Player do
       start_time = now - target
       paused_duration = target
 
-
   """
+  alias GrooveLion.{Track, Repo, Queue}
+
   def start_link do
     Agent.start_link(fn ->
       %{
@@ -79,7 +75,6 @@ defmodule GrooveLion.Player do
 
   def play_track(track_id) do
     track = Repo.get!(Track, track_id)
-    Logger.debug(inspect(track))
     send :audio_player, {:load, track.filename}
 
     Agent.update(__MODULE__, fn state ->
@@ -102,37 +97,32 @@ defmodule GrooveLion.Player do
   end
 
   def next_track(backend_next \\ false) do
-    case Queue.next_track do
+    result = case Queue.next_track do
       {:ok, track_id} ->
         play_track(track_id)
-
-        if backend_next == true do
-          GrooveLion.Endpoint.broadcast! "status:broadcast", "statusUpdate", status
-        end
-
         :ok
       :none ->
-        if backend_next == true do
-          GrooveLion.Endpoint.broadcast! "status:broadcast", "statusUpdate", status
-        end
-
         :err
     end
+    if backend_next do
+      GrooveLion.Endpoint.broadcast! "status:broadcast", "statusUpdate", status
+    end
+
+    result
   end
 
   def seek(percent) do
-    send :audio_player, {:seek, percent, self()}
+    send :audio_player, {:seek, percent}
 
-    receive do
-      {:ok, duration} ->
-        Agent.update(__MODULE__, fn state ->
-          target_duration = round(duration * percent)
-          %{state |
-            start_time: DateUtil.now - target_duration,
-            paused_duration: target_duration
-          }
-        end)
-      _ -> :err
-    end
+    current_track_id = Queue.status |> Map.fetch!(:queue_index) |> Queue.track
+    track = Repo.get!(Track, current_track_id)
+    target_duration = (track.duration * 1000) * percent
+
+    Agent.update(__MODULE__, fn state ->
+      %{state |
+        start_time: DateUtil.now - target_duration,
+        paused_duration: target_duration
+      }
+    end)
   end
 end

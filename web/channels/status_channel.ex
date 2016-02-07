@@ -2,14 +2,14 @@ defmodule GrooveLion.RoomChannel do
   use Phoenix.Channel
   alias GrooveLion.{Player, Queue}
 
-  def join("status:broadcast", auth_msg, socket) do
+  def join("status:broadcast", _auth_msg, socket) do
     {:ok, %{
       statusUpdate: Player.status,
       queue: Queue.queue
       }, socket}
   end
 
-  def join("status:" <> _private_room_id, _auth_msg, socket) do
+  def join("status:" <> _private_room_id, _auth_msg, _socket) do
     {:error, %{reason: "unauthorized"}}
   end
 

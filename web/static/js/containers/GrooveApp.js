@@ -5,10 +5,10 @@ import { bindActionCreators } from 'redux';
 
 import Player     from '../components/Player';
 import Sidebar    from '../components/Sidebar';
-import Queue      from '../components/Queue';
 import Settings   from '../components/Settings';
 import Playlist   from '../components/Playlist';
-import Library   from '../components/Library';
+import Library    from '../components/Library';
+import TrackList    from '../components/TrackList';
 
 class GrooveApp extends React.Component {
 
@@ -30,7 +30,11 @@ class GrooveApp extends React.Component {
     let mainView;
     switch(view) {
       case 'QUEUE':
-        mainView = <Queue queueItems={queue} currentId={currentId}/>;
+        const {requestPlayTrack} = GrooveActions;
+        mainView = <TrackList tracks={queue}
+                    keyAttr={"index"}
+                    currentKey={currentId}
+                    onClickHandler={(track) => requestPlayTrack(track.index)}/>;
         break;
       case 'SETTINGS':
         var settings = {

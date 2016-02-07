@@ -33,8 +33,8 @@ defmodule GrooveLion.AudioPlayer do
       {:load, path} ->
         Port.command(port, "LOAD #{path}\n")
         loop(state, port)
-      {:seek, percent, caller} ->
-        seek(state, port, percent, caller)
+      {:seek, percent} ->
+        seek(state, port, percent)
         |> loop(port)
       {:quit} ->
         Port.command(port, "QUIT\n")
@@ -55,33 +55,30 @@ defmodule GrooveLion.AudioPlayer do
       playback == false && state[:current_status] == "playing" ->
         Port.command(port, "PAUSE\n")
       true ->
-        # No track loaded
+        IO.inspect("No track is loaded")
     end
     state
   end
 
-  defp seek(state, port, percent, caller) do
+  defp seek(state, port, percent) do
     if state[:current_status] != "stopped" do
-      target_duration = round(state[:duration] * percent)
+      target_duration = state[:duration] * percent
       Port.command(port, "JUMP #{target_duration / 1000}s\n") # Seconds
-
-      send caller, {:ok, state[:duration]}
       %{state | start_time: DateUtil.now - target_duration}
     else
-      send caller, {:err, "No Track"}
       state
     end
   end
 
   defp handle_message(message, state) do
     case message do
-      "@R " <> version ->
+      "@R " <> _version ->
         state
-      "@I ID3:" <> metadata ->
+      "@I ID3:" <> _metadata ->
         state
-      "@I " <> metadata ->
+      "@I " <> _metadata ->
         state
-      "@S " <> status ->
+      "@S " <> _status ->
         state
       "@F " <> status ->
         [rem_durr, curr_durr] = String.split(status)
@@ -108,7 +105,7 @@ defmodule GrooveLion.AudioPlayer do
           "2" -> "playing"
         end
         %{state | current_status: current_status}
-      "@E " <> error ->
+      "@E " <> _error ->
         state
       _ ->
         state

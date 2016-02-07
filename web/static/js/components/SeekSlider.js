@@ -24,6 +24,7 @@ export default class SeekSlider extends Component {
   }
 
   handleSeek(event) {
+    console.log(event.clientX / document.documentElement.clientWidth);
     this.props.seek(event.clientX / document.documentElement.clientWidth);
   }
 

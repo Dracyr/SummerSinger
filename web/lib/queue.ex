@@ -1,8 +1,5 @@
 defmodule GrooveLion.Queue do
-  alias GrooveLion.Track
-  alias GrooveLion.Repo
-  alias GrooveLion.Queue
-  require Logger
+  alias GrooveLion.{Track, Repo}
 
   def start_link(initial_queue) do
     Agent.start_link(fn ->
@@ -18,7 +15,7 @@ defmodule GrooveLion.Queue do
   def queue do
     queue = Agent.get(__MODULE__, &(Map.get(&1, :queue)))
 
-    tracks = queue |> Enum.with_index() |> Enum.map(fn {track_id, index} ->
+    tracks = queue |> Enum.with_index |> Enum.map(fn {track_id, index} ->
       Repo.get(Track, track_id) |> Repo.preload(:artist) |> Track.to_map(index)
     end)
 
@@ -27,7 +24,7 @@ defmodule GrooveLion.Queue do
 
   def status do
     Agent.get(__MODULE__, fn state ->
-      Map.take(state, [:queue_index, :repeat, :shuffle, :queue_history])
+      Map.take(state, [:queue_index, :repeat, :shuffle])
     end)
   end
 
@@ -49,7 +46,7 @@ defmodule GrooveLion.Queue do
     state = Agent.get(__MODULE__, &(&1))
 
     case state[:queue_history] do
-      [[index, track_id] | history] ->
+      [[index, _track_id] | history] ->
         Agent.update(__MODULE__, fn state ->
           %{state | queue_history: history, queue_index: index }
         end)
@@ -64,13 +61,18 @@ defmodule GrooveLion.Queue do
       state = cond do
         state[:queue_index] && (state[:queue_index] + 1 < Enum.count(state[:queue])) ->
           track_id = Enum.at(state[:queue], state[:queue_index] + 1)
+          history = ([[state[:queue_index] + 1, track_id]] ++ state[:queue_history])
           %{state |
             queue_index: state[:queue_index] + 1,
-            queue_history: ([[state[:queue_index] + 1, track_id]] ++ state[:queue_history])
+            queue_history: history
           }
         state[:repeat] ->
           track_id = Enum.at(state[:queue], 0)
-          %{state | queue_index: 0, queue_history: ([[state[:queue_index] + 1, track_id]] ++ state[:queue_history]) }
+          history = ([[state[:queue_index] + 1, track_id]] ++ state[:queue_history])
+          %{state |
+            queue_index: 0,
+            queue_history: history
+          }
         true ->
           %{state | queue_index: nil }
       end
