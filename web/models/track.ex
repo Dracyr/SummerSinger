@@ -1,5 +1,5 @@
-defmodule GrooveLion.Track do
-  use GrooveLion.Web, :model
+defmodule SummerSinger.Track do
+  use SummerSinger.Web, :model
 
   schema "tracks" do
     field :title,    :string
@@ -8,11 +8,11 @@ defmodule GrooveLion.Track do
     field :duration, :float, null: false
     field :rating,   :integer
 
-    belongs_to :artist, GrooveLion.Artist
-    belongs_to :album,  GrooveLion.Album
-    has_many   :images, GrooveLion.Image
+    belongs_to :artist, SummerSinger.Artist
+    belongs_to :album,  SummerSinger.Album
+    has_many   :images, SummerSinger.Image
 
-    has_many   :playlist_items, GrooveLion.PlaylistItem
+    has_many   :playlist_items, SummerSinger.PlaylistItem
     has_many   :playlists, through: [:playlist_items, :playlist]
 
     timestamps

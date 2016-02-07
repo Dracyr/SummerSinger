@@ -1,4 +1,4 @@
-defmodule GrooveLion.Repo.Migrations.CreateAlbums do
+defmodule SummerSinger.Repo.Migrations.CreateAlbums do
   use Ecto.Migration
 
   def change do

@@ -1,3 +1,3 @@
-defmodule GrooveLion.PageViewTest do
-  use GrooveLion.ConnCase, async: true
+defmodule SummerSinger.PageViewTest do
+  use SummerSinger.ConnCase, async: true
 end

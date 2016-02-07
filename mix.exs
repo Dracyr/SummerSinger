@@ -1,8 +1,8 @@
-defmodule GrooveLion.Mixfile do
+defmodule SummerSinger.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :groove_lion,
+    [app: :summer_singer,
      version: "0.0.1",
      elixir: "~> 1.0",
      elixirc_paths: elixirc_paths(Mix.env),
@@ -17,7 +17,7 @@ defmodule GrooveLion.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [mod: {GrooveLion, []},
+    [mod: {SummerSinger, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex]]
   end

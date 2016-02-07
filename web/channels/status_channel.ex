@@ -1,6 +1,6 @@
-defmodule GrooveLion.RoomChannel do
+defmodule SummerSinger.RoomChannel do
   use Phoenix.Channel
-  alias GrooveLion.{Player, Queue}
+  alias SummerSinger.{Player, Queue}
 
   def join("status:broadcast", _auth_msg, socket) do
     {:ok, %{

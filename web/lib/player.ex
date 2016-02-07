@@ -1,4 +1,4 @@
-defmodule GrooveLion.Player do
+defmodule SummerSinger.Player do
   @moduledoc ~S"""
   Frontend
     paused ->
@@ -24,7 +24,7 @@ defmodule GrooveLion.Player do
       paused_duration = target
 
   """
-  alias GrooveLion.{Track, Repo, Queue}
+  alias SummerSinger.{Track, Repo, Queue}
 
   def start_link do
     Agent.start_link(fn ->
@@ -105,7 +105,7 @@ defmodule GrooveLion.Player do
         :err
     end
     if backend_next do
-      GrooveLion.Endpoint.broadcast! "status:broadcast", "statusUpdate", status
+      SummerSinger.Endpoint.broadcast! "status:broadcast", "statusUpdate", status
     end
 
     result

@@ -1,4 +1,4 @@
-defmodule GrooveLion.Repo.Migrations.CreateArtists do
+defmodule SummerSinger.Repo.Migrations.CreateArtists do
   use Ecto.Migration
 
   def change do

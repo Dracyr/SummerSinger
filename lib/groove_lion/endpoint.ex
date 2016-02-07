@@ -1,14 +1,14 @@
-defmodule GrooveLion.Endpoint do
-  use Phoenix.Endpoint, otp_app: :groove_lion
+defmodule SummerSinger.Endpoint do
+  use Phoenix.Endpoint, otp_app: :summer_singer
 
-  socket "/socket", GrooveLion.UserSocket
+  socket "/socket", SummerSinger.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phoenix.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/", from: :groove_lion, gzip: false,
+    at: "/", from: :summer_singer, gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
@@ -32,8 +32,8 @@ defmodule GrooveLion.Endpoint do
 
   plug Plug.Session,
     store: :cookie,
-    key: "_groove_lion_key",
+    key: "_summer_singer_key",
     signing_salt: "QtvrNsvE"
 
-  plug GrooveLion.Router
+  plug SummerSinger.Router
 end

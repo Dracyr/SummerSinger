@@ -1,13 +1,13 @@
-defmodule GrooveLion.Album do
-  use GrooveLion.Web, :model
-  alias GrooveLion.Album
+defmodule SummerSinger.Album do
+  use SummerSinger.Web, :model
+  alias SummerSinger.Album
 
   schema "albums" do
     field :title, :string
     field :year,  :string
 
-    belongs_to :artist, GrooveLion.Artist
-    has_many   :tracks, GrooveLion.Track
+    belongs_to :artist, SummerSinger.Artist
+    has_many   :tracks, SummerSinger.Track
 
     timestamps
   end
@@ -34,7 +34,7 @@ defmodule GrooveLion.Album do
 
     case album do
       nil ->
-        %GrooveLion.Album{}
+        %SummerSinger.Album{}
         |> Album.changeset(%{title: title, artist_id: artist.id})
         |> Repo.insert!
       album -> album

@@ -1,8 +1,8 @@
-defmodule GrooveLion.PageControllerTest do
-  use GrooveLion.ConnCase
+defmodule SummerSinger.PageControllerTest do
+  use SummerSinger.ConnCase
 
   test "GET /" do
     conn = get conn(), "/"
-    assert html_response(conn, 200) =~ "GrooveLion"
+    assert html_response(conn, 200) =~ "SummerSinger"
   end
 end

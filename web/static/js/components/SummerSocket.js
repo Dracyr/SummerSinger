@@ -2,7 +2,7 @@ import { socketStatusUpdate, queueUpdate } from '../actionCreators';
 
 import { Socket } from '../../../../deps/phoenix/web/static/js/phoenix';
 
-export default class GrooveSocket {
+export default class SummerSocket {
   constructor(store) {
     this.store = store;
 

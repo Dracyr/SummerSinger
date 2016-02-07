@@ -1,11 +1,11 @@
-defmodule Mix.Tasks.GrooveLion.IndexMusic do
+defmodule Mix.Tasks.SummerSinger.IndexMusic do
   use Mix.Task
   import Ecto.Query
 
-  alias GrooveLion.Repo
-  alias GrooveLion.Track
-  alias GrooveLion.Artist
-  alias GrooveLion.Album
+  alias SummerSinger.Repo
+  alias SummerSinger.Track
+  alias SummerSinger.Artist
+  alias SummerSinger.Album
 
   def run(_args) do
     Mix.Task.run "app.start", []

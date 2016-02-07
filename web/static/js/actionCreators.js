@@ -1,6 +1,6 @@
 import * as actions from './actions';
 import fetch from 'isomorphic-fetch';
-import { getGrooveSocket } from './containers/App';
+import { getSummerSocket } from './containers/App';
 
 export function switchView(view) {
   return { type: actions.SWITCH_VIEW, view };
@@ -15,32 +15,32 @@ export function socketStatusUpdate(statusUpdate) {
 }
 
 export function requestPlayback(playback) {
-  getGrooveSocket().requestPlayback(playback);
+  getSummerSocket().requestPlayback(playback);
   return { type: actions.REQUEST_PLAYBACK };
 }
 
 export function requestQueueTrack(trackId) {
-  getGrooveSocket().requestQueueTrack(trackId);
+  getSummerSocket().requestQueueTrack(trackId);
   return { type: actions.REQUEST_QUEUE_TRACK };
 }
 
 export function requestPlayTrack(queueId) {
-  getGrooveSocket().requestPlayTrack(queueId);
+  getSummerSocket().requestPlayTrack(queueId);
   return { type: actions.REQUEST_PLAY_TRACK };
 }
 
 export function requestPreviousTrack() {
-  getGrooveSocket().requestPreviousTrack();
+  getSummerSocket().requestPreviousTrack();
   return { type: actions.REQUEST_PREVIOUS_TRACK };
 }
 
 export function requestNextTrack() {
-  getGrooveSocket().requestNextTrack();
+  getSummerSocket().requestNextTrack();
   return { type: actions.REQUEST_NEXT_TRACK };
 }
 
 export function requestSeek(percent) {
-  getGrooveSocket().requestSeek(percent);
+  getSummerSocket().requestSeek(percent);
   return { type: actions.REQUEST_SEEK };
 }
 

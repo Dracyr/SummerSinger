@@ -1,12 +1,12 @@
-defmodule GrooveLion.Artist do
-  use GrooveLion.Web, :model
-  alias GrooveLion.Artist
+defmodule SummerSinger.Artist do
+  use SummerSinger.Web, :model
+  alias SummerSinger.Artist
 
   schema "artists" do
     field :name, :string
 
-    has_many :albums, GrooveLion.Album
-    has_many :tracks, GrooveLion.Track
+    has_many :albums, SummerSinger.Album
+    has_many :tracks, SummerSinger.Track
     has_many :album_tracks, through: [:albums, :tracks]
 
     timestamps
@@ -30,7 +30,7 @@ defmodule GrooveLion.Artist do
   def find_or_create(name) do
     case Repo.get_by(Artist, name: name) do
       nil ->
-        %GrooveLion.Artist{}
+        %SummerSinger.Artist{}
         |> Artist.changeset(%{name: name})
         |> Repo.insert!
       artist -> artist

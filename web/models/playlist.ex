@@ -1,10 +1,10 @@
-defmodule GrooveLion.Playlist do
-  use GrooveLion.Web, :model
+defmodule SummerSinger.Playlist do
+  use SummerSinger.Web, :model
 
   schema "playlists" do
     field :title, :string
 
-    has_many :playlist_items, GrooveLion.PlaylistItem
+    has_many :playlist_items, SummerSinger.PlaylistItem
     has_many :tracks, through: [:playlist_items, :track]
 
     timestamps

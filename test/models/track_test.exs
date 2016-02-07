@@ -1,7 +1,7 @@
-defmodule GrooveLion.TrackTest do
-  use GrooveLion.ModelCase
+defmodule SummerSinger.TrackTest do
+  use SummerSinger.ModelCase
 
-  alias GrooveLion.Track
+  alias SummerSinger.Track
 
   @valid_attrs %{
     title: "Somebody new",

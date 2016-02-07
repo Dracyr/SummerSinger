@@ -1,7 +1,7 @@
-defmodule GrooveLion.PlaylistTest do
-  use GrooveLion.ModelCase
+defmodule SummerSinger.PlaylistTest do
+  use SummerSinger.ModelCase
 
-  alias GrooveLion.Playlist
+  alias SummerSinger.Playlist
 
   @valid_attrs %{title: "some content"}
   @invalid_attrs %{}

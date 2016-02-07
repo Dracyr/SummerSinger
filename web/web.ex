@@ -1,12 +1,12 @@
-defmodule GrooveLion.Web do
+defmodule SummerSinger.Web do
   @moduledoc """
   A module that keeps using definitions for controllers,
   views and so on.
 
   This can be used in your application as:
 
-      use GrooveLion.Web, :controller
-      use GrooveLion.Web, :view
+      use SummerSinger.Web, :controller
+      use SummerSinger.Web, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -19,7 +19,7 @@ defmodule GrooveLion.Web do
   def model do
     quote do
       use Ecto.Model
-      alias GrooveLion.Repo
+      alias SummerSinger.Repo
     end
   end
 
@@ -27,11 +27,11 @@ defmodule GrooveLion.Web do
     quote do
       use Phoenix.Controller
 
-      alias GrooveLion.Repo
+      alias SummerSinger.Repo
       import Ecto.Model
       import Ecto.Query, only: [from: 2]
 
-      import GrooveLion.Router.Helpers
+      import SummerSinger.Router.Helpers
     end
   end
 
@@ -45,7 +45,7 @@ defmodule GrooveLion.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import GrooveLion.Router.Helpers
+      import SummerSinger.Router.Helpers
     end
   end
 
@@ -59,7 +59,7 @@ defmodule GrooveLion.Web do
     quote do
       use Phoenix.Channel
 
-      alias GrooveLion.Repo
+      alias SummerSinger.Repo
       import Ecto.Model
       import Ecto.Query, only: [from: 2]
 

@@ -1,4 +1,4 @@
-defmodule GrooveLion.Repo.Migrations.AddAlbumToTracks do
+defmodule SummerSinger.Repo.Migrations.AddAlbumToTracks do
   use Ecto.Migration
 
   def change do

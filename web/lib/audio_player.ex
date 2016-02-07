@@ -1,10 +1,10 @@
-defmodule GrooveLion.AudioPlayer do
+defmodule SummerSinger.AudioPlayer do
 
   def start_link do
-    {:ok, sup_pid} = Task.Supervisor.start_link(name: GrooveLion.AudioBackendSupervisor)
+    {:ok, sup_pid} = Task.Supervisor.start_link(name: SummerSinger.AudioBackendSupervisor)
 
     {:ok, controller_pid} = Task.Supervisor.start_child(
-      GrooveLion.AudioBackendSupervisor, fn -> start_loop() end)
+      SummerSinger.AudioBackendSupervisor, fn -> start_loop() end)
 
     Process.register(controller_pid, :audio_player)
 
@@ -98,7 +98,7 @@ defmodule GrooveLion.AudioPlayer do
         current_status = case status do
           "0" ->
             if state[:status] != "stopped" do
-              GrooveLion.Player.next_track(true)
+              SummerSinger.Player.next_track(true)
             end
             "stopped"
           "1" -> "paused"

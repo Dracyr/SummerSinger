@@ -1,12 +1,12 @@
-defmodule GrooveLion.PlaylistView do
-  use GrooveLion.Web, :view
+defmodule SummerSinger.PlaylistView do
+  use SummerSinger.Web, :view
 
   def render("index.json", %{playlists: playlists}) do
-    %{data: render_many(playlists, GrooveLion.PlaylistView, "playlist.json")}
+    %{data: render_many(playlists, SummerSinger.PlaylistView, "playlist.json")}
   end
 
   def render("show.json", %{playlist: playlist}) do
-    %{data: render_one(playlist, GrooveLion.PlaylistView, "playlist.json")}
+    %{data: render_one(playlist, SummerSinger.PlaylistView, "playlist.json")}
   end
 
   def render("playlist.json", %{playlist: playlist}) do

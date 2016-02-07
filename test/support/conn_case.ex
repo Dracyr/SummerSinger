@@ -1,4 +1,4 @@
-defmodule GrooveLion.ConnCase do
+defmodule SummerSinger.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -20,20 +20,20 @@ defmodule GrooveLion.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
 
-      alias GrooveLion.Repo
+      alias SummerSinger.Repo
       import Ecto.Model
       import Ecto.Query, only: [from: 2]
 
-      import GrooveLion.Router.Helpers
+      import SummerSinger.Router.Helpers
 
       # The default endpoint for testing
-      @endpoint GrooveLion.Endpoint
+      @endpoint SummerSinger.Endpoint
     end
   end
 
   setup tags do
     unless tags[:async] do
-      Ecto.Adapters.SQL.restart_test_transaction(GrooveLion.Repo, [])
+      Ecto.Adapters.SQL.restart_test_transaction(SummerSinger.Repo, [])
     end
 
     :ok

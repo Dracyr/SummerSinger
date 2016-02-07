@@ -1,7 +1,7 @@
-defmodule GrooveLion.ArtistTest do
-  use GrooveLion.ModelCase
+defmodule SummerSinger.ArtistTest do
+  use SummerSinger.ModelCase
 
-  alias GrooveLion.Artist
+  alias SummerSinger.Artist
 
   @valid_attrs %{
     name: "Lady Gaga",

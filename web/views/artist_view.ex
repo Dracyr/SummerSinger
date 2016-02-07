@@ -1,14 +1,14 @@
-defmodule GrooveLion.ArtistView do
-  use GrooveLion.Web, :view
+defmodule SummerSinger.ArtistView do
+  use SummerSinger.Web, :view
 
   def render("index.json", %{artists: artists}) do
-    %{artists: render_many(artists, GrooveLion.ArtistView, "artist.json")}
+    %{artists: render_many(artists, SummerSinger.ArtistView, "artist.json")}
   end
 
   def render("show.json", %{artist: artist}) do
-    %{artist: render_one(artist, GrooveLion.ArtistView, "artist.json"),
-      tracks: render_many(artist.tracks, GrooveLion.TrackView, "track.json"),
-      albums: render_many(artist.albums, GrooveLion.AlbumView, "album.json")}
+    %{artist: render_one(artist, SummerSinger.ArtistView, "artist.json"),
+      tracks: render_many(artist.tracks, SummerSinger.TrackView, "track.json"),
+      albums: render_many(artist.albums, SummerSinger.AlbumView, "album.json")}
   end
 
   def render("artist.json", %{artist: artist}) do

@@ -1,4 +1,4 @@
-defmodule GrooveLion do
+defmodule SummerSinger do
   use Application
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
@@ -8,26 +8,26 @@ defmodule GrooveLion do
 
     children = [
       # Start the endpoint when the application starts
-      supervisor(GrooveLion.Endpoint, []),
+      supervisor(SummerSinger.Endpoint, []),
       # Start the Ecto repository
-      worker(GrooveLion.Repo, []),
-      worker(GrooveLion.AudioPlayer, []),
-      worker(GrooveLion.Queue, [[]]),
-      worker(GrooveLion.Player, [])
+      worker(SummerSinger.Repo, []),
+      worker(SummerSinger.AudioPlayer, []),
+      worker(SummerSinger.Queue, [[]]),
+      worker(SummerSinger.Player, [])
       # Here you could define other workers and supervisors as children
-      # worker(GrooveLion.Worker, [arg1, arg2, arg3]),
+      # worker(SummerSinger.Worker, [arg1, arg2, arg3]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: GrooveLion.Supervisor]
+    opts = [strategy: :one_for_one, name: SummerSinger.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
   def config_change(changed, _new, removed) do
-    GrooveLion.Endpoint.config_change(changed, removed)
+    SummerSinger.Endpoint.config_change(changed, removed)
     :ok
   end
 end

@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import DevTools from './DevTools';
 
-import GrooveApp from './GrooveApp';
+import SummerApp from './SummerApp';
 import configureStore from '../store/configureStore';
-import GrooveSocket from '../components/GrooveSocket';
+import SummerSocket from '../components/SummerSocket';
 
 const store = configureStore();
 
-const grooveSocket = new GrooveSocket(store);
-export function getGrooveSocket() {
-  return grooveSocket;
+const summerSocket = new SummerSocket(store);
+export function getSummerSocket() {
+  return summerSocket;
 }
 
 export default class App extends Component {
@@ -19,7 +19,7 @@ export default class App extends Component {
       <div>
         <Provider store={store}>
           <div>
-            <GrooveApp grooveSocket={grooveSocket} dispatch={store.dispatch} />
+            <SummerApp SummerSocket={SummerSocket} dispatch={store.dispatch} />
             <DevTools />
           </div>
         </Provider>

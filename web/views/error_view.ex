@@ -1,5 +1,5 @@
-defmodule GrooveLion.ErrorView do
-  use GrooveLion.Web, :view
+defmodule SummerSinger.ErrorView do
+  use SummerSinger.Web, :view
 
   def render("404.html", _assigns) do
     "Page not found"

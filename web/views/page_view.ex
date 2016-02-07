@@ -1,3 +1,3 @@
-defmodule GrooveLion.PageView do
-  use GrooveLion.Web, :view
+defmodule SummerSinger.PageView do
+  use SummerSinger.Web, :view
 end

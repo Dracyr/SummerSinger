@@ -1,5 +1,5 @@
-defmodule GrooveLion.Image do
-  use GrooveLion.Web, :model
+defmodule SummerSinger.Image do
+  use SummerSinger.Web, :model
 
   schema "images" do
     field :picture_type, :integer
@@ -7,7 +7,7 @@ defmodule GrooveLion.Image do
     field :description,  :string
     field :file,         :binary
 
-    belongs_to :track, GrooveLion.Track
+    belongs_to :track, SummerSinger.Track
 
     timestamps
   end

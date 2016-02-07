@@ -1,7 +1,7 @@
-defmodule GrooveLion.AlbumTest do
-  use GrooveLion.ModelCase
+defmodule SummerSinger.AlbumTest do
+  use SummerSinger.ModelCase
 
-  alias GrooveLion.Album
+  alias SummerSinger.Album
 
   @valid_attrs %{
     title: "The Fame",

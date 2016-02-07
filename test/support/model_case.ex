@@ -1,4 +1,4 @@
-defmodule GrooveLion.ModelCase do
+defmodule SummerSinger.ModelCase do
   @moduledoc """
   This module defines the test case to be used by
   model tests.
@@ -16,16 +16,16 @@ defmodule GrooveLion.ModelCase do
 
   using do
     quote do
-      alias GrooveLion.Repo
+      alias SummerSinger.Repo
       import Ecto.Model
       import Ecto.Query, only: [from: 2]
-      import GrooveLion.ModelCase
+      import SummerSinger.ModelCase
     end
   end
 
   setup tags do
     unless tags[:async] do
-      Ecto.Adapters.SQL.restart_test_transaction(GrooveLion.Repo, [])
+      Ecto.Adapters.SQL.restart_test_transaction(SummerSinger.Repo, [])
     end
 
     :ok

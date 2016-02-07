@@ -1,7 +1,7 @@
-defmodule GrooveLion.TrackControllerTest do
-  use GrooveLion.ConnCase
+defmodule SummerSinger.TrackControllerTest do
+  use SummerSinger.ConnCase
 
-  alias GrooveLion.Track
+  alias SummerSinger.Track
   @valid_attrs %{duration: 42, filename: "some content", metadata: %{}, rating: 42, title: "some content"}
   @invalid_attrs %{}
 

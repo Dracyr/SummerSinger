@@ -10,7 +10,7 @@ import Playlist   from '../components/Playlist';
 import Library    from '../components/Library';
 import TrackList    from '../components/TrackList';
 
-class GrooveApp extends React.Component {
+class SummerApp extends React.Component {
 
   render() {
     const {
@@ -18,7 +18,7 @@ class GrooveApp extends React.Component {
         view,
         playing,
         currentTrack,
-        grooveSocket,
+        SummerSocket,
         dispatch,
         library,
         queue,
@@ -93,4 +93,4 @@ function mapDispatch(dispatch) {
   };
 }
 
-export default connect(mapState, mapDispatch)(GrooveApp);
+export default connect(mapState, mapDispatch)(SummerApp);

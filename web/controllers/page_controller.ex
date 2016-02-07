@@ -1,5 +1,5 @@
-defmodule GrooveLion.PageController do
-  use GrooveLion.Web, :controller
+defmodule SummerSinger.PageController do
+  use SummerSinger.Web, :controller
 
   def index(conn, _params) do
     render conn, "index.html"

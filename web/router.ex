@@ -1,5 +1,5 @@
-defmodule GrooveLion.Router do
-  use GrooveLion.Web, :router
+defmodule SummerSinger.Router do
+  use SummerSinger.Web, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -13,14 +13,14 @@ defmodule GrooveLion.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", GrooveLion do
+  scope "/", SummerSinger do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
   end
 
   # Other scopes may use custom stacks.
-  scope "/api", GrooveLion do
+  scope "/api", SummerSinger do
     pipe_through :api
 
     resources "/tracks", TrackController, except: [:new, :edit]

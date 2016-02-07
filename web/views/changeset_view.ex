@@ -1,5 +1,5 @@
-defmodule GrooveLion.ChangesetView do
-  use GrooveLion.Web, :view
+defmodule SummerSinger.ChangesetView do
+  use SummerSinger.Web, :view
 
   def render("error.json", %{changeset: changeset}) do
     # When encoded, the changeset returns its errors

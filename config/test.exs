@@ -2,7 +2,7 @@ use Mix.Config
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :groove_lion, GrooveLion.Endpoint,
+config :summer_singer, SummerSinger.Endpoint,
   http: [port: 4001],
   server: false
 
@@ -10,9 +10,9 @@ config :groove_lion, GrooveLion.Endpoint,
 config :logger, level: :warn
 
 # Configure your database
-config :groove_lion, GrooveLion.Repo,
+config :summer_singer, SummerSinger.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
-  database: "groove_lion_test",
+  database: "summer_singer_test",
   pool: Ecto.Adapters.SQL.Sandbox

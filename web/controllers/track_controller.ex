@@ -1,7 +1,7 @@
-defmodule GrooveLion.TrackController do
-  use GrooveLion.Web, :controller
+defmodule SummerSinger.TrackController do
+  use SummerSinger.Web, :controller
 
-  alias GrooveLion.Track
+  alias SummerSinger.Track
 
   plug :scrub_params, "track" when action in [:create, :update]
 
@@ -22,7 +22,7 @@ defmodule GrooveLion.TrackController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(GrooveLion.ChangesetView, "error.json", changeset: changeset)
+        |> render(SummerSinger.ChangesetView, "error.json", changeset: changeset)
     end
   end
 
@@ -41,7 +41,7 @@ defmodule GrooveLion.TrackController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(GrooveLion.ChangesetView, "error.json", changeset: changeset)
+        |> render(SummerSinger.ChangesetView, "error.json", changeset: changeset)
     end
   end
 

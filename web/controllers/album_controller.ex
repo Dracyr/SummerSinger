@@ -1,7 +1,7 @@
-defmodule GrooveLion.AlbumController do
-  use GrooveLion.Web, :controller
+defmodule SummerSinger.AlbumController do
+  use SummerSinger.Web, :controller
 
-  alias GrooveLion.Album
+  alias SummerSinger.Album
 
   plug :scrub_params, "album" when action in [:create, :update]
 
@@ -22,7 +22,7 @@ defmodule GrooveLion.AlbumController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(GrooveLion.ChangesetView, "error.json", changeset: changeset)
+        |> render(SummerSinger.ChangesetView, "error.json", changeset: changeset)
     end
   end
 
@@ -41,7 +41,7 @@ defmodule GrooveLion.AlbumController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(GrooveLion.ChangesetView, "error.json", changeset: changeset)
+        |> render(SummerSinger.ChangesetView, "error.json", changeset: changeset)
     end
   end
 

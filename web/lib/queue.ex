@@ -1,5 +1,5 @@
-defmodule GrooveLion.Queue do
-  alias GrooveLion.{Track, Repo}
+defmodule SummerSinger.Queue do
+  alias SummerSinger.{Track, Repo}
 
   def start_link(initial_queue) do
     Agent.start_link(fn ->

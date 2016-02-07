@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.GrooveLion.Digest do
+defmodule Mix.Tasks.SummerSinger.Digest do
   use Mix.Task
 
   def run(args) do

@@ -1,4 +1,4 @@
-defmodule GrooveLion.Repo.Migrations.AddDurationToTracks do
+defmodule SummerSinger.Repo.Migrations.AddDurationToTracks do
   use Ecto.Migration
 
     def change do

@@ -1,7 +1,7 @@
-defmodule GrooveLion.PlaylistControllerTest do
-  use GrooveLion.ConnCase
+defmodule SummerSinger.PlaylistControllerTest do
+  use SummerSinger.ConnCase
 
-  alias GrooveLion.Playlist
+  alias SummerSinger.Playlist
   @valid_attrs %{title: "some content"}
   @invalid_attrs %{}
 
