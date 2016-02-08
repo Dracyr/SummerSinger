@@ -1,17 +1,19 @@
 defmodule Mix.Tasks.SummerSinger.IndexMusic do
-  use Mix.Task
   import Ecto.Query
+  use Mix.Task
+  alias SummerSinger.{Repo, Track, Artist, Album}
 
-  alias SummerSinger.Repo
-  alias SummerSinger.Track
-  alias SummerSinger.Artist
-  alias SummerSinger.Album
-
-  def run(_args) do
+  def run([path | _args]) do
     Mix.Task.run "app.start", []
-    find_tracks("/home/dracyr/Music/")
+    find_tracks(path)
     |> Stream.filter(&(is_nil(Repo.get_by(Track, filename: &1))))
     |> Stream.each(&add_track(&1))
+    |> Stream.run
+
+    path
+    |> Path.join("**/*.{m3u}")
+    |> Path.wildcard()
+    |> Stream.each(&Playlist.create(&1, path))
     |> Stream.run
   end
 

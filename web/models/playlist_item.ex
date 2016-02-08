@@ -2,7 +2,6 @@ defmodule SummerSinger.PlaylistItem do
   use SummerSinger.Web, :model
 
   schema "playlist_items" do
-    field :title, :string
     belongs_to :playlist, SummerSinger.Playlist
     belongs_to :track, SummerSinger.Track
 

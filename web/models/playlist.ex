@@ -1,8 +1,10 @@
 defmodule SummerSinger.Playlist do
   use SummerSinger.Web, :model
+  alias SummerSinger.{Playlist, PlaylistItem, Repo, Track}
 
   schema "playlists" do
     field :title, :string
+    field :path, :string
 
     has_many :playlist_items, SummerSinger.PlaylistItem
     has_many :tracks, through: [:playlist_items, :track]
@@ -22,5 +24,33 @@ defmodule SummerSinger.Playlist do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+  end
+
+  def create(playlist_path, root_path) do
+    changeset = Playlist.changeset(%Playlist{}, %{
+      path: Path.absname(playlist_path, root_path),
+      title: Path.basename(playlist_path, Path.extname(playlist_path))
+    })
+
+    case Repo.insert(changeset) do
+      {:ok, playlist} ->
+        tracks = File.read!(playlist_path)
+        |> String.split(<< "\n" >>)
+        |> Enum.reject(&(String.at(&1, 0) == "#" || String.length(&1) == 0))
+        |> Enum.map(&( Path.absname(&1, root_path) ))
+        |> Enum.each(fn track_path ->
+          track = Repo.get_by(Track, filename: track_path)
+
+          if !is_nil(track) do
+            PlaylistItem.changeset(%PlaylistItem{}, %{
+              playlist: playlist,
+              track: track
+            }) |> Repo.insert
+          end
+        end)
+      {:error, changeset} ->
+        :error
+    end
+    # Create Playlist
   end
 end
