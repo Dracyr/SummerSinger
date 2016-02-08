@@ -4,7 +4,7 @@ defmodule SummerSinger.RoomChannel do
 
   def join("status:broadcast", _auth_msg, socket) do
     {:ok, %{
-      statusUpdate: Player.status,
+      statusUpdate: current_status,
       queue: Queue.queue
       }, socket}
   end
@@ -16,7 +16,7 @@ defmodule SummerSinger.RoomChannel do
   def handle_in("playback", %{"playback" => playback}, socket) do
     Player.playback(playback)
 
-    broadcast! socket, "statusUpdate", Player.status
+    broadcast! socket, "statusUpdate", current_status
     {:noreply, socket}
   end
 
@@ -30,14 +30,14 @@ defmodule SummerSinger.RoomChannel do
   def handle_in("play_queued_track", %{"queue_id" => queue_id}, socket) do
     Player.play_queued_track(queue_id)
 
-    broadcast! socket, "statusUpdate", Player.status
+    broadcast! socket, "statusUpdate", current_status
     {:noreply, socket}
   end
 
   def handle_in("previous_track", %{}, socket) do
     case Player.previous_track() do
       :ok ->
-        broadcast! socket, "statusUpdate", Player.status
+        broadcast! socket, "statusUpdate", current_status
        _ ->
         {:noreply, socket}
     end
@@ -48,7 +48,7 @@ defmodule SummerSinger.RoomChannel do
   def handle_in("next_track", %{}, socket) do
     case Player.next_track() do
       :ok ->
-        broadcast! socket, "statusUpdate", Player.status
+        broadcast! socket, "statusUpdate", current_status
        _ ->
         {:noreply, socket}
     end
@@ -59,7 +59,11 @@ defmodule SummerSinger.RoomChannel do
   def handle_in("seek", %{"percent" => percent}, socket) do
     Player.seek(percent)
 
-    broadcast! socket, "statusUpdate", Player.status
+    broadcast! socket, "statusUpdate", current_status
     {:noreply, socket}
+  end
+
+  defp current_status do
+    Player.status |> Map.merge(%{current_time: DateUtil.now})
   end
 end

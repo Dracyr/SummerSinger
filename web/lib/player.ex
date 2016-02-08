@@ -104,6 +104,7 @@ defmodule SummerSinger.Player do
       :none ->
         :err
     end
+
     if backend_next do
       SummerSinger.Endpoint.broadcast! "status:broadcast", "statusUpdate", status
     end

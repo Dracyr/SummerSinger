@@ -5,6 +5,7 @@ const initialState = {
   view: 'QUEUE',
   playing: false,
   currentTrack: null,
+  serverTime: null,
   queueIndex: null,
   startTime: null,
   pausedDuration: null,
@@ -20,13 +21,15 @@ function grooveReducer(state = initialState, action) {
       return { ...state, view: action.view };
     case actions.SOCKET_STATUS_UPDATE:
       currentTrack = state.queue[action.statusUpdate.queue_index] || null;
+      const normalizedStartTime = (Date.now() - action.statusUpdate.current_time) + action.statusUpdate.start_time;
       return {
         ...state,
         playing: action.statusUpdate.playback,
         currentTrack: currentTrack,
         queueIndex: action.statusUpdate.queue_index,
-        startTime: action.statusUpdate.start_time,
-        pausedDuration: action.statusUpdate.paused_duration
+        startTime: normalizedStartTime,
+        pausedDuration: action.statusUpdate.paused_duration,
+        serverTime: action.statusUpdate.current_time
       };
     case actions.RECEIVE_LIBRARY:
       return { ...state, library: action.library };
