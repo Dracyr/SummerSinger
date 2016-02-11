@@ -1,7 +1,7 @@
 defmodule Mix.Tasks.SummerSinger.IndexMusic do
   import Ecto.Query
   use Mix.Task
-  alias SummerSinger.{Repo, Track, Artist, Album}
+  alias SummerSinger.{Repo, Track, Artist, Album, Playlist}
 
   def run([path | _args]) do
     Mix.Task.run "app.start", []

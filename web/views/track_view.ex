@@ -10,10 +10,12 @@ defmodule SummerSinger.TrackView do
   end
 
   def render("track.json", %{track: track}) do
-    %{id: track.id,
+    %{
+      id: track.id,
       title: track.title,
       artist: track.artist.name,
       duration: track.duration,
-      rating: track.rating}
+      rating: track.rating
+    }
   end
 end

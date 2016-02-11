@@ -32,12 +32,10 @@ defmodule SummerSinger.Album do
           from a in Album,
           where: a.title == ^title and a.artist_id == ^artist.id)
 
-    case album do
-      nil ->
-        %SummerSinger.Album{}
-        |> Album.changeset(%{title: title, artist_id: artist.id})
-        |> Repo.insert!
-      album -> album
+    if is_nil(album) do
+      Repo.insert!(%SummerSinger.Album{title: title, artist_id: artist.id})
+    else
+      album
     end
   end
 end

@@ -8,7 +8,7 @@ defmodule SummerSinger.PlaylistItem do
     timestamps
   end
 
-  @required_fields ~w(title)
+  @required_fields ~w(playlist track)
   @optional_fields ~w()
 
   @doc """
