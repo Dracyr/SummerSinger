@@ -40,8 +40,10 @@ defmodule SummerSinger.Track do
      %{
       id: track.id,
       title: track.title,
-      artist: track.artist.name,
-      duration: track.duration
+      artist: track.artist && track.artist.name,
+      album: track.album && track.album.title,
+      duration: track.duration,
+      rating: track.rating
     }
   end
 

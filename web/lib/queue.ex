@@ -17,7 +17,7 @@ defmodule SummerSinger.Queue do
     queue = Agent.get(__MODULE__, &(Map.get(&1, :queue)))
 
     tracks = queue |> Enum.with_index |> Enum.map(fn {track_id, index} ->
-      Repo.get(Track, track_id) |> Repo.preload(:artist) |> Track.to_map(index)
+      Repo.get(Track, track_id) |> Repo.preload([:artist, :album]) |> Track.to_map(index)
     end)
 
     %{queue: tracks}
