@@ -46,8 +46,13 @@ defmodule SummerSinger.Player do
   end
 
   def playback(playback) do
-    send :audio_player, {:playback, playback}
     queue_index = Queue.status()[:queue_index]
+    if queue_index do
+      send :audio_player, {:playback, playback}
+    else
+      next_track()
+    end
+
 
     Agent.update(__MODULE__, fn state ->
       if is_nil(queue_index) do
@@ -100,13 +105,10 @@ defmodule SummerSinger.Player do
     result = case Queue.next_track do
       {:ok, track_id} ->
         play_track(track_id)
+        if backend_next, do: SummerSinger.Endpoint.broadcast! "status:broadcast", "statusUpdate", status
         :ok
       :none ->
         :err
-    end
-
-    if backend_next do
-      SummerSinger.Endpoint.broadcast! "status:broadcast", "statusUpdate", status
     end
 
     result
