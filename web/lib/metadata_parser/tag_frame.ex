@@ -4,27 +4,32 @@ defmodule ID3v2Parser.TagFrame do
 
   def tag_frame("TXXX", <<
       encoding :: bytes-size(1),
-      data      :: binary >>) do
+      data      :: binary >>) when encoding == 0x00 or encoding == 0x01 do
 
     {desc, content} = split_at_null(data)
     Map.put(%{}, desc, to_utf8(encoding, content))
   end
+  def tag_frame("TXXX", _data), do: %{}
 
   def tag_frame("WXXX", <<
       encoding :: bytes-size(1),
-      data      :: binary >>) do
+      data      :: binary >>) when encoding == 0x00 or encoding == 0x01 do
 
     {desc, content} = split_at_null(data)
     Map.put(%{}, desc, content)
   end
+  def tag_frame("WXXX", _data), do: %{}
 
-  def tag_frame("TCON", data) do
-    << 0x00, content :: binary >> = data
-    genres = Enum.chunk_by(to_char_list(content), &(&1 == 0))
+  def tag_frame("TCON", <<
+      encoding :: bytes-size(1),
+      data     :: binary >>) when encoding == 0x00 or encoding == 0x01 do
+
+    genres = Enum.chunk_by(to_char_list(data), &(&1 == 0))
     |> Enum.reject(&(&1 == [0]))
 
     Map.put(%{}, "TCON", genres)
   end
+  def tag_frame("TCON", _data), do: %{}
 
   def tag_frame("POPM", data) do
     { _user, << rating :: integer-size(8), _counter :: binary >>} = split_at_null(data)
@@ -34,11 +39,12 @@ defmodule ID3v2Parser.TagFrame do
   def tag_frame("COMM", <<
     encoding :: bytes-size(1),
     _language :: size(24),
-    data      :: binary >>) do
+    data      :: binary >>) when encoding == 0x00 or encoding == 0x01 do
 
     {desc, content} = split_at_null(data)
     %{desc: to_utf8(encoding, desc), text: to_utf8(encoding, content)}
   end
+  def tag_frame("COMM", _data), do: %{}
 
   @picture_type %{
     00 => "Other",
@@ -64,13 +70,17 @@ defmodule ID3v2Parser.TagFrame do
     20 => "Publisher/Studio logotype"
   }
 
-  def tag_frame("APIC", << _encoding :: bytes-size(1), data :: binary >>) do
+  def tag_frame("APIC", <<
+      encoding :: bytes-size(1),
+      data :: binary >>) when encoding == 0x00 or encoding == 0x01 do
+
     { mime_type, << picture_type :: integer-size(8), desc_data :: binary >> } = split_at_null(data)
     { description, picture_data } = split_at_null(desc_data)
 
     apic = %{type: @picture_type[picture_type], mime: mime_type, desc: description, file: picture_data}
     Map.put(%{}, "APIC", [apic])
   end
+  def tag_frame("APIC", _data), do: %{}
 
   def tag_frame(id, data) do
     cond do
