@@ -8,14 +8,12 @@ defmodule ID3v2Parser.TagFrame do
     end
   end
 
-  def tag_frame(<< 0, 0, 0, 0 >>, _), do: %{}
-
   def tag_frame("TXXX", <<
       encoding :: integer-size(8),
       data      :: binary >>) when valid_encoding(encoding) do
 
     {desc, content} = split_at_null(data)
-    Map.put(%{}, desc, to_utf8(encoding, content))
+    Map.put(%{}, desc, to_utf8(content, encoding))
   end
   def tag_frame("TXXX", _data), do: %{}
 
@@ -32,7 +30,10 @@ defmodule ID3v2Parser.TagFrame do
       encoding :: integer-size(8),
       data     :: binary >>) when valid_encoding(encoding) do
 
-    genres = Enum.chunk_by(to_char_list(data), &(&1 == 0))
+    genres = data
+    |> to_utf8(encoding)
+    |> to_char_list
+    |> Enum.chunk_by(&(&1 == 0))
     |> Enum.reject(&(&1 == [0]))
 
     Map.put(%{}, "TCON", genres)
@@ -50,7 +51,7 @@ defmodule ID3v2Parser.TagFrame do
     data      :: binary >>) when valid_encoding(encoding) do
 
     {desc, content} = split_at_null(data)
-    %{desc: to_utf8(encoding, desc), text: to_utf8(encoding, content)}
+    %{desc: to_utf8(desc, encoding), text: to_utf8(content, encoding)}
   end
   def tag_frame("COMM", _data), do: %{}
 
@@ -105,8 +106,8 @@ defmodule ID3v2Parser.TagFrame do
     { head, tail }
   end
 
-  defp to_utf8(<< encoding :: integer-size(8), string :: bytes >>), do: to_utf8(encoding, string)
-  defp to_utf8(encoding, string) do
+  defp to_utf8(<< encoding :: integer-size(8), string :: bytes >>), do: to_utf8(string, encoding)
+  defp to_utf8(string, encoding) do
     case encoding do
       0 -> # ISO-8859-1
         Codepagex.to_string!(string, :iso_8859_1)
@@ -116,8 +117,8 @@ defmodule ID3v2Parser.TagFrame do
         :unicode.characters_to_binary(string, {:utf16, :big})
       3 -> # Good old UTF-8
         string
-      _ -> # No valid encoding, why are you doing this
-        encoding <> string
+      _ -> # No valid encoding, why are you doing this.
+        raise "Invalid encoding: " <> encoding
     end
   end
 end
