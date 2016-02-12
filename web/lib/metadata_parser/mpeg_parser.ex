@@ -61,7 +61,7 @@ defmodule MPEGParser do
             _binary      :: binary >> = audio_data
 
           frame_header = parse_frame_header(frame_header)
-          duration = get_duration(frame_header[:bitrate], byte_size(binary), audio_data)
+          duration = get_duration(frame_header[:bitrate], frame_header[:samplerate], byte_size(binary), audio_data, frame_header[:encoding])
 
           {:ok, Map.merge(frame_header, %{duration: duration})}
       _ ->
@@ -69,13 +69,36 @@ defmodule MPEGParser do
     end
   end
 
-  defp get_duration(bitrate, file_size, audio_data) do
+  @doc """
+    http://www.codeproject.com/Articles/8295/MPEG-Audio-Frame-Header#XINGHeader
+  """
+  defp get_duration(bitrate, samplerate, file_size, audio_data, mpeg_version) do
+    # Should be on byte 36 in first audio frame
+    xing_match = :binary.match(audio_data, [<< "Xing" >>])
     cond do
-      # Should be on byte 36 in first frame
-      :nomatch != :binary.match(audio_data, [<< "Xing" >>]) ->
-        raise "VBR FILE, implement duration"
+      :nomatch != xing_match ->
+        {tag_position, 4} = xing_match
+        xing_header = :binary.part(audio_data, tag_position, 120)
+        << "Xing",
+          _unused_flags :: bytes-size(3),
+          flags :: bytes-size(1),
+          frame_data :: binary >> = xing_header
+
+        << _unused :: bits-size(4),
+          frame_flag :: integer-size(1),
+          bytes_flag :: integer-size(1),
+          toc_flag :: integer-size(1),
+          quality_flag :: integer-size(1) >> = flags
+
+        if frame_flag == 1 && bytes_flag == 1 do
+          << frames :: integer-size(32), bytes :: integer-size(32), frame_data :: binary >> = frame_data
+          (frames * samples_per_frame(mpeg_version)) / samplerate
+        else
+          # raise "VBR Xing FILE, no duration"
+          0
+        end
       :nomatch != :binary.match(audio_data, [<< "VBRI" >>]) ->
-        raise "VBR FILE, implement duration"
+        raise "VBR VBRI FILE, implement duration"
       true -> # CBR File
         file_size / (bitrate * 1000 / 8)
     end
@@ -128,5 +151,21 @@ defmodule MPEGParser do
         {"MPEG Version 2"}   -> 1
         {"MPEG Version 2.5"} -> 2
       end)
+  end
+
+  defp samples_per_frame(encoding) do
+    %{"layer" => layer, "version" => version} = Regex.named_captures(~r/MPEG Version (?<version>[12\.5]{1,3}) Layer (?<layer>I{1,3})/, encoding)
+    case {layer, version} do
+      {"I", _}       ->
+        384
+      {"II", _}      ->
+        1152
+      {"III", "1"}   ->
+        1152
+      {"III", "2"}   ->
+        576
+      {"III", "2.5"} ->
+        576
+    end
   end
 end
