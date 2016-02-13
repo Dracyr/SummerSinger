@@ -6,7 +6,7 @@ defmodule SummerSinger.AlbumView do
   end
 
   def render("show.json", %{album: album}) do
-    %{data: render_one(album, SummerSinger.AlbumView, "album_tracks.json")}
+    %{data: render_one(album, SummerSinger.AlbumView, "album_details.json")}
   end
 
   def render("album.json", %{album: album}) do
@@ -17,7 +17,7 @@ defmodule SummerSinger.AlbumView do
     }
   end
 
-  def render("album_tracks.json", %{album: album}) do
+  def render("album_details.json", %{album: album}) do
     %{
       id: album.id,
       title: album.title,

@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch';
 
-export const REQUEST_LIBRARY_TRACKS = 'REQUEST_LIBRARY_TRACKS';
-export const RECEIVE_LIBRARY_TRACKS = 'RECEIVE_LIBRARY_TRACKS';
+export const REQUEST_LIBRARY = 'REQUEST_LIBRARY';
+export const RECEIVE_LIBRARY  = 'RECEIVE_LIBRARY';
 
 export const REQUEST_PLAYLISTS = 'REQUEST_PLAYLISTS';
 export const RECEIVE_PLAYLISTS = 'RECEIVE_PLAYLISTS';
@@ -9,28 +9,31 @@ export const RECEIVE_PLAYLISTS = 'RECEIVE_PLAYLISTS';
 export const REQUEST_PLAYLIST = 'REQUEST_PLAYLIST';
 export const RECEIVE_PLAYLIST = 'RECEIVE_PLAYLIST';
 
+export const REQUEST_ARTIST_DETAILS = 'REQUEST_ARTIST_DETAILS';
+export const RECEIVE_ARTIST_DETAILS = 'RECEIVE_ARTIST_DETAILS';
 
-function requestLibraryTracks() {
-  return { type: REQUEST_LIBRARY_TRACKS };
+function requestLibrary(libraryType) {
+  return { type: REQUEST_LIBRARY, libraryType };
 }
 
-function receiveLibraryTracks(tracks) {
-  return { type: RECEIVE_LIBRARY_TRACKS, tracks };
+function receiveLibrary(libraryType, library) {
+  return { type: RECEIVE_LIBRARY, libraryType: libraryType, library };
 }
 
-export function fetchLibraryTracks() {
+export function fetchLibrary(libraryType) {
   return (dispatch, getState) => {
-    if (getState().library.tracks.length > 0) {
+    if (getState().library[libraryType].length > 0) {
       return;
     }
 
-    dispatch(requestLibraryTracks());
+    dispatch(requestLibrary(libraryType));
 
-    return fetch('http://localhost:4000/api/tracks')
+    return fetch('http://localhost:4000/api/' + libraryType)
       .then(response => response.json())
-      .then(json => dispatch(receiveLibraryTracks(json.data)));
+      .then(json => dispatch(receiveLibrary(libraryType, json.data)));
   };
 }
+
 
 function requestPlaylists() {
   return { type: REQUEST_PLAYLISTS };
@@ -79,3 +82,30 @@ export function fetchPlaylist(playlist_id) {
       .then(json => dispatch(receivePlaylist(json.data)));
   };
 }
+
+function requestArtistDetails(artist_id) {
+  return { type: REQUEST_ARTIST_DETAILS, artist_id };
+}
+
+function receiveArtistDetails(artist) {
+  return { type: RECEIVE_ARTIST_DETAILS, artist };
+}
+
+export function fetchArtistDetails(artist_id) {
+  return (dispatch, getState) => {
+    const artist = getState().library.artists.find((artist) => {
+      return artist.id === artist_id ? artist : false;
+    });
+
+    if (artist.tracks && artist.tracks.length > 0) {
+      return;
+    }
+
+    dispatch(requestArtistDetails(artist_id));
+
+    return fetch('http://localhost:4000/api/artists/' + artist_id)
+      .then(response => response.json())
+      .then(json => dispatch(receiveArtistDetails(json.data)));
+  };
+}
+

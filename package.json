@@ -26,12 +26,13 @@
   "dependencies": {
     "font-awesome": "^4.3.0",
     "isomorphic-fetch": "^2.2.0",
+    "material-ui": "^0.14.4",
+    "phoenix": "file:deps/phoenix",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.1",
     "redux": "^3.0.5",
-    "redux-thunk": "^1.0.2",
-    "phoenix": "file:deps/phoenix"
+    "redux-thunk": "^1.0.2"
   },
   "scripts": {
     "watch:css": "node_modules/node-sass/bin/node-sass --watch --source-map true web/static/css/app.scss priv/static/css/app.css"

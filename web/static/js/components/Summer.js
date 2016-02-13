@@ -44,8 +44,13 @@ class Summer extends React.Component {
                             fetchPlaylist={actions.library.fetchPlaylist} />;
         break;
       case 'LIBRARY':
-        mainView = <Library library={library}
-                            fetchLibraryTracks={actions.library.fetchLibraryTracks} />;
+        mainView = (
+            <Library library={library}
+                    fetchLibrary={actions.library.fetchLibrary}
+                    switchLibraryView={actions.views.switchLibraryView}
+                    fetchArtistDetails={actions.library.fetchArtistDetails}
+                    libraryView={views.libraryView} />
+          );
         break;
       default:
         mainView = '';
