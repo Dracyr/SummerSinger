@@ -1,10 +1,18 @@
 defmodule ID3v2Parser.TagFrame do
+  defmacro valid_encoding(encoding) do
+    quote do
+      unquote(encoding) == 0 or
+      unquote(encoding) == 1 or
+      unquote(encoding) == 2 or
+      unquote(encoding) == 3
+    end
+  end
 
   def tag_frame(<< 0, 0, 0, 0 >>, _), do: %{}
 
   def tag_frame("TXXX", <<
-      encoding :: bytes-size(1),
-      data      :: binary >>) when encoding == 0x00 or encoding == 0x01 do
+      encoding :: integer-size(8),
+      data      :: binary >>) when valid_encoding(encoding) do
 
     {desc, content} = split_at_null(data)
     Map.put(%{}, desc, to_utf8(encoding, content))
@@ -12,8 +20,8 @@ defmodule ID3v2Parser.TagFrame do
   def tag_frame("TXXX", _data), do: %{}
 
   def tag_frame("WXXX", <<
-      encoding :: bytes-size(1),
-      data      :: binary >>) when encoding == 0x00 or encoding == 0x01 do
+      encoding :: integer-size(8),
+      data      :: binary >>) when valid_encoding(encoding) do
 
     {desc, content} = split_at_null(data)
     Map.put(%{}, desc, content)
@@ -21,8 +29,8 @@ defmodule ID3v2Parser.TagFrame do
   def tag_frame("WXXX", _data), do: %{}
 
   def tag_frame("TCON", <<
-      encoding :: bytes-size(1),
-      data     :: binary >>) when encoding == 0x00 or encoding == 0x01 do
+      encoding :: integer-size(8),
+      data     :: binary >>) when valid_encoding(encoding) do
 
     genres = Enum.chunk_by(to_char_list(data), &(&1 == 0))
     |> Enum.reject(&(&1 == [0]))
@@ -37,9 +45,9 @@ defmodule ID3v2Parser.TagFrame do
   end
 
   def tag_frame("COMM", <<
-    encoding :: bytes-size(1),
+    encoding :: integer-size(8),
     _language :: size(24),
-    data      :: binary >>) when encoding == 0x00 or encoding == 0x01 do
+    data      :: binary >>) when valid_encoding(encoding) do
 
     {desc, content} = split_at_null(data)
     %{desc: to_utf8(encoding, desc), text: to_utf8(encoding, content)}
@@ -71,8 +79,8 @@ defmodule ID3v2Parser.TagFrame do
   }
 
   def tag_frame("APIC", <<
-      encoding :: bytes-size(1),
-      data :: binary >>) when encoding == 0x00 or encoding == 0x01 do
+      encoding :: integer-size(8),
+      data :: binary >>) when valid_encoding(encoding) do
 
     { mime_type, << picture_type :: integer-size(8), desc_data :: binary >> } = split_at_null(data)
     { description, picture_data } = split_at_null(desc_data)
@@ -97,16 +105,16 @@ defmodule ID3v2Parser.TagFrame do
     { head, tail }
   end
 
-  defp to_utf8(<< encoding :: bytes-size(1), string :: bytes >>), do: to_utf8(encoding, string)
+  defp to_utf8(<< encoding :: integer-size(8), string :: bytes >>), do: to_utf8(encoding, string)
   defp to_utf8(encoding, string) do
     case encoding do
-      <<0x00>> -> # ISO-8859-1
+      0 -> # ISO-8859-1
         Codepagex.to_string!(string, :iso_8859_1)
-      <<0x01>> -> # UCS-2 (UTF-16 with BOM)
+      1 -> # UCS-2 (UTF-16 with BOM)
         :unicode.characters_to_binary(string, elem(:unicode.bom_to_encoding(string), 0))
-      <<0x02>> -> #UTF-16BE encoded Unicode without BOM
+      2 -> #UTF-16BE encoded Unicode without BOM
         :unicode.characters_to_binary(string, {:utf16, :big})
-      <<0x03>> -> # Good old UTF-8
+      3 -> # Good old UTF-8
         string
       _ -> # No valid encoding, why are you doing this
         encoding <> string

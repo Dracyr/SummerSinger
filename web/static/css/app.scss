@@ -21,13 +21,15 @@ body {
 
 .wrapper {
   display: flex;
-  min-height: 100vh;
   background: #ddd;
 }
 
 .main-content {
   padding: 20px 60px 0px 60px;
   flex-grow: 1;
+
+  overflow-y: scroll;
+  height: calc(100vh - 80px);
 
   background: #EEE;
 }

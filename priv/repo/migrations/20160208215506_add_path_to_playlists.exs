@@ -3,7 +3,8 @@ defmodule SummerSinger.Repo.Migrations.AddPathToPlaylists do
 
   def change do
     alter table(:playlists) do
-      add :path, :string
+      add :path, :string, null: false
     end
+    create unique_index(:playlists, [:path])
   end
 end
