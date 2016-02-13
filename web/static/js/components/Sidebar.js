@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
-import { switchPlaylist } from '../actions/views';
 
 class SidebarPlaylist extends Component {
   render() {
-    const { playlist } = this.props;
+    const {
+      playlist,
+      switchPlaylist,
+      currentPlaylist,
+      playlistView
+    } = this.props;
+
+    const active = playlistView && currentPlaylist && currentPlaylist.id === playlist.id ? 'active' : '';
     return (
-      <li onClick={() => switchPlaylist(playlist.id)}>
+      <li onClick={() => switchPlaylist(playlist.id)}
+          className={active}>
         {playlist.title}
       </li>
     );
@@ -13,30 +20,37 @@ class SidebarPlaylist extends Component {
 }
 
 export default class Sidebar extends Component {
-  isActive(view) {
-    return this.props.view === view ? 'active' : '';
+  isActive(view, currentView) {
+    return currentView === view ? 'active' : '';
   }
 
   render() {
-    const { switchView, playlists } = this.props;
+    const {
+      switchView,
+      switchPlaylist,
+      playlists,
+      currentPlaylist,
+      view
+    } = this.props;
+    let isActive = this.isActive;
 
     return (
       <div className="sidebar">
         <ul className="sidebar-links list-unstyled">
           <li onClick={() => switchView('NOW_PLAYING')}
-              className={this.isActive('NOW_PLAYING')}>
+              className={isActive('NOW_PLAYING', view)}>
                 Now Playing
           </li>
           <li onClick={() => switchView('QUEUE')}
-              className={this.isActive('QUEUE')}>
+              className={isActive('QUEUE', view)}>
                 Queue
           </li>
           <li onClick={() => switchView('LIBRARY')}
-              className={this.isActive('LIBRARY')}>
+              className={isActive('LIBRARY', view)}>
                 Library
           </li>
           <li onClick={() => switchView('SETTINGS')}
-              className={this.isActive('SETTINGS')}>
+              className={isActive('SETTINGS', view)}>
                 Settings
           </li>
         </ul>
@@ -50,7 +64,13 @@ export default class Sidebar extends Component {
         <div className="playlist-tab">
           <ul className="playlist-list list-unstyled">
             {playlists.map(function(playlist, index) {
-              return (<SidebarPlaylist key={index} playlist={playlist}/>);
+              return (
+                <SidebarPlaylist key={index}
+                                playlist={playlist}
+                                currentPlaylist={currentPlaylist}
+                                switchPlaylist={switchPlaylist}
+                                playlistView={isActive('PLAYLIST', view) === 'active'} />
+              );
             })}
           </ul>
         </div>

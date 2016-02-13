@@ -61,7 +61,9 @@
   cursor: pointer;
   margin-bottom: 4px;
   font-weight: 300;
-  &:hover {
+
+  &:hover,
+  &.active {
     color: $color-primary;
   }
 }

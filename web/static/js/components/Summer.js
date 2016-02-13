@@ -14,32 +14,37 @@ class Summer extends React.Component {
   render() {
     const {
         actions,
-        view,
-        currentTrack,
-        library,
-        queue,
-        playlists,
+        views,
+        player,
+        library
       } = this.props;
 
-    let currentId = currentTrack ? currentTrack.index : '';
+    actions.library.fetchPlaylists();
+
+    const currentPlaylist = library.playlists.find((playlist) => {
+      return playlist.id === views.playlist ? playlist : false;
+    });
+
+
     let mainView;
-    switch(view) {
+    switch(views.view) {
       case 'QUEUE':
-        mainView = <TrackList tracks={queue}
+        const currentId = player.currentTrack ? player.currentTrack.index : '';
+        mainView = <TrackList tracks={player.queue}
                     keyAttr={"index"}
                     currentKey={currentId}
                     onClickHandler={(track) => actions.player.requestPlayTrack(track.index)}/>;
         break;
       case 'SETTINGS':
-        var settings = {
+        let settings = {
           'hwPlayback': true,
           'hwVolume': 1
         };
         mainView = <Settings settings={settings}/>;
         break;
       case 'PLAYLIST':
-        let playlist = '';
-        mainView = <Playlist playlist={playlist}/>;
+        mainView = <Playlist playlist={currentPlaylist}
+                            fetchPlaylist={actions.library.fetchPlaylist} />;
         break;
       case 'LIBRARY':
         mainView = <Library library={library}
@@ -53,9 +58,11 @@ class Summer extends React.Component {
       <div>
         <Player />
         <div className="wrapper">
-          <Sidebar view={view}
+          <Sidebar view={views.view}
                   switchView={actions.views.switchView}
-                  playlists={playlists} />
+                  switchPlaylist={actions.views.switchPlaylist}
+                  playlists={library.playlists}
+                  currentPlaylist={currentPlaylist} />
           <div className="main-content">
             {mainView}
           </div>

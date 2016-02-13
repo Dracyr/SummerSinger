@@ -23,8 +23,6 @@ export default class SummerSocket {
     broadcastChannel.on('statusUpdate', this.statusUpdate.bind(this));
     broadcastChannel.on('queueUpdate', this.queueUpdate.bind(this));
 
-    this.store.dispatch(fetchPlaylists());
-
     this.state = this.state.bind(this);
   }
 

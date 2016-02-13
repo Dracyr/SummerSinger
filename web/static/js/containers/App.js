@@ -10,16 +10,9 @@ import Summer from '../components/Summer';
 
 function mapState(state) {
   return {
-    view: state.views.view,
-    playing: state.player.playing,
-    currentTrack: state.player.currentTrack,
-    queueIndex: state.player.queueIndex,
-    startTime: state.player.startTime,
-    pausedDuration: state.player.pausedDuration,
-    duration: state.player.duration,
-    library: state.library,
-    queue: state.player.queue,
-    playlists: state.library.playlists
+    views: state.views,
+    player: state.player,
+    library: state.library
   };
 }
 
@@ -28,7 +21,7 @@ function mapDispatch(dispatch) {
     actions:  {
       player:   bindActionCreators(PlayerActions, dispatch),
       library:  bindActionCreators(LibraryActions, dispatch),
-      views:     bindActionCreators(ViewsActions, dispatch)
+      views:    bindActionCreators(ViewsActions, dispatch)
     }
   };
 }
