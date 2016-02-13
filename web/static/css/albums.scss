@@ -1,0 +1,24 @@
+.card-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.card {
+  width: 150px;
+  background-color: #ffffff;
+  // transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.12);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 10px;
+
+  &.expanded {
+    width: 100%;
+    padding: 25px;
+  }
+}
+
+.card-content {
+  padding: 5px;
+}
