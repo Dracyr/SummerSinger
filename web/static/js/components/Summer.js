@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import * as GrooveActions from '../actionCreators';
+import { requestPlayTrack } from '../actions/player';
 import { bindActionCreators } from 'redux';
 
 import Player     from '../components/Player';
@@ -10,31 +9,26 @@ import Playlist   from '../components/Playlist';
 import Library    from '../components/Library';
 import TrackList    from '../components/TrackList';
 
-class SummerApp extends React.Component {
+class Summer extends React.Component {
 
   render() {
     const {
         actions,
         view,
-        playing,
         currentTrack,
-        SummerSocket,
-        dispatch,
         library,
         queue,
-        startTime,
-        pausedDuration
+        playlists,
       } = this.props;
 
     let currentId = currentTrack ? currentTrack.index : '';
     let mainView;
     switch(view) {
       case 'QUEUE':
-        const {requestPlayTrack} = GrooveActions;
         mainView = <TrackList tracks={queue}
                     keyAttr={"index"}
                     currentKey={currentId}
-                    onClickHandler={(track) => requestPlayTrack(track.index)}/>;
+                    onClickHandler={(track) => actions.player.requestPlayTrack(track.index)}/>;
         break;
       case 'SETTINGS':
         var settings = {
@@ -48,7 +42,8 @@ class SummerApp extends React.Component {
         mainView = <Playlist playlist={playlist}/>;
         break;
       case 'LIBRARY':
-        mainView = <Library library={library} dispatch={dispatch} />;
+        mainView = <Library library={library}
+                            fetchLibraryTracks={actions.library.fetchLibraryTracks} />;
         break;
       default:
         mainView = '';
@@ -56,14 +51,11 @@ class SummerApp extends React.Component {
 
     return (
       <div>
-        <Player
-          actions={actions}
-          playing={playing}
-          startTime={startTime}
-          pausedDuration={pausedDuration}
-          track={currentTrack} />
+        <Player />
         <div className="wrapper">
-          <Sidebar view={view} switchView={actions.switchView}/>
+          <Sidebar view={view}
+                  switchView={actions.views.switchView}
+                  playlists={playlists} />
           <div className="main-content">
             {mainView}
           </div>
@@ -73,24 +65,4 @@ class SummerApp extends React.Component {
   }
 }
 
-function mapState(state) {
-  return {
-    view: state.default.view,
-    playing: state.default.playing,
-    currentTrack: state.default.currentTrack,
-    queueIndex: state.default.queueIndex,
-    startTime: state.default.startTime,
-    pausedDuration: state.default.pausedDuration,
-    duration: state.default.duration,
-    library: state.default.library,
-    queue: state.default.queue
-  };
-}
-
-function mapDispatch(dispatch) {
-  return {
-    actions: bindActionCreators(GrooveActions, dispatch)
-  };
-}
-
-export default connect(mapState, mapDispatch)(SummerApp);
+export default Summer;

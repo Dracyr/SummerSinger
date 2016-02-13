@@ -1,22 +1,26 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as PlayerActions from '../actions/player';
+
 import SeekSlider from './SeekSlider';
 
-export default class Player extends React.Component {
+class Player extends React.Component {
 
   render() {
-    const { actions, playing, track, startTime, pausedDuration } = this.props;
+    const { actions, playing, currentTrack, startTime, pausedDuration } = this.props;
 
     const playingClass = playing ? 'fa fa-pause' : 'fa fa-play';
 
     let playerCenter = '';
-    if (track) {
+    if (currentTrack) {
       playerCenter = (
         <div className='player-center'>
           <div className='song'>
-            {track.artist} - {track.title}
+            {currentTrack.artist} - {currentTrack.title}
           </div>
           <div className='album'>
-            {track.album}
+            {currentTrack.album}
           </div>
         </div>
       );
@@ -27,11 +31,11 @@ export default class Player extends React.Component {
         <div className='now-playing'>
           <div id='player-controls'>
             <i className='fa fa-fast-backward'
-                onClick={() => actions.requestPreviousTrack() }></i>
+               onClick={() => actions.requestPreviousTrack() }></i>
             <i className={playingClass}
-                onClick={() => actions.requestPlayback(!playing) }></i>
+               onClick={() => actions.requestPlayback(!playing) }></i>
             <i className='fa fa-fast-forward'
-                onClick={() => actions.requestNextTrack() }></i>
+               onClick={() => actions.requestNextTrack() }></i>
           </div>
           <div className='player-info'>
             <div className='player-left-wrapper'></div>
@@ -46,8 +50,26 @@ export default class Player extends React.Component {
                     playing={playing}
                     startTime={startTime}
                     pausedDuration={pausedDuration}
-                    track={track} />
+                    track={currentTrack} />
       </div>
     );
   }
 }
+
+function mapState(state) {
+  return {
+    playing: state.player.playing,
+    currentTrack: state.player.currentTrack,
+    startTime: state.player.startTime,
+    pausedDuration: state.player.pausedDuration,
+    queue: state.player.queue
+  };
+}
+
+function mapDispatch(dispatch) {
+  return {
+    actions: bindActionCreators(PlayerActions, dispatch)
+  };
+}
+
+export default connect(mapState, mapDispatch)(Player);

@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import { switchPlaylist } from '../actions/views';
 
 class SidebarPlaylist extends Component {
   render() {
+    const { playlist } = this.props;
     return (
-      <li>{this.props.playlist.name}</li>
+      <li onClick={() => switchPlaylist(playlist.id)}>
+        {playlist.title}
+      </li>
     );
   }
 }
@@ -14,12 +18,7 @@ export default class Sidebar extends Component {
   }
 
   render() {
-    let playlists = [
-      {name: 'hej'},
-      {name: 'asd'}
-    ];
-
-    const {switchView} = this.props;
+    const { switchView, playlists } = this.props;
 
     return (
       <div className="sidebar">

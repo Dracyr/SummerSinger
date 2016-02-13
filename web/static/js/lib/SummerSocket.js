@@ -1,4 +1,5 @@
-import { socketStatusUpdate, queueUpdate } from '../actionCreators';
+import { socketStatusUpdate, queueUpdate } from '../actions/player';
+import { fetchPlaylists } from '../actions/library';
 
 import { Socket } from 'phoenix';
 
@@ -16,11 +17,13 @@ export default class SummerSocket {
     broadcastChannel.join().receive('ok', initInfo => {
       this.store.dispatch(socketStatusUpdate(initInfo.statusUpdate));
       this.store.dispatch(queueUpdate(initInfo.queue.queue));
-      console.log('Connected to broadcast channel');
+      console.log('Summer connected to broadcast channel');
     });
 
     broadcastChannel.on('statusUpdate', this.statusUpdate.bind(this));
     broadcastChannel.on('queueUpdate', this.queueUpdate.bind(this));
+
+    this.store.dispatch(fetchPlaylists());
 
     this.state = this.state.bind(this);
   }

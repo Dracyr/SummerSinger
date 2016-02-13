@@ -1,5 +1,11 @@
 'use strict';
 
+/*
+  This file is now unused, but it serves as an
+  example on how to stream audio over http
+  should that be needed later again
+*/
+
 module.exports = (function() {
   function StreamAudio(url) {
     this.url = url;

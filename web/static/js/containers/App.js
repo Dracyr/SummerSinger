@@ -1,30 +1,36 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import DevTools from './DevTools';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as PlayerActions from '../actions/player';
+import * as LibraryActions from '../actions/library';
+import * as ViewsActions from '../actions/views';
 
-import SummerApp from './SummerApp';
-import configureStore from '../store/configureStore';
-import SummerSocket from '../components/SummerSocket';
+import Summer from '../components/Summer';
 
-const store = configureStore();
-
-const summerSocket = new SummerSocket(store);
-export function getSummerSocket() {
-  return summerSocket;
+function mapState(state) {
+  return {
+    view: state.views.view,
+    playing: state.player.playing,
+    currentTrack: state.player.currentTrack,
+    queueIndex: state.player.queueIndex,
+    startTime: state.player.startTime,
+    pausedDuration: state.player.pausedDuration,
+    duration: state.player.duration,
+    library: state.library,
+    queue: state.player.queue,
+    playlists: state.library.playlists
+  };
 }
 
-export default class App extends Component {
-  render() {
-    return (
-      <div>
-        <Provider store={store}>
-          <div>
-            <SummerApp SummerSocket={SummerSocket} dispatch={store.dispatch} />
-            <DevTools />
-          </div>
-        </Provider>
-      </div>
-    );
-  }
+function mapDispatch(dispatch) {
+  return {
+    actions:  {
+      player:   bindActionCreators(PlayerActions, dispatch),
+      library:  bindActionCreators(LibraryActions, dispatch),
+      views:     bindActionCreators(ViewsActions, dispatch)
+    }
+  };
 }
 
+export default connect(mapState, mapDispatch)(Summer);

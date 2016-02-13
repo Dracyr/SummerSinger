@@ -1,5 +1,11 @@
 'use strict';
 
+/*
+  This file is unused, but it serves as an
+  example on how to do websockets without phoenix,
+  should that be needed later
+*/
+
 var WebSocketConnection,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 

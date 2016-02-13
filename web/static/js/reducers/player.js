@@ -1,25 +1,19 @@
-import { combineReducers } from 'redux';
-import * as actions from './actions';
+import { SOCKET_STATUS_UPDATE, QUEUE_UPDATE } from '../actions/player';
 
-const initialState = {
-  view: 'QUEUE',
+const initialPlayer = {
   playing: false,
   currentTrack: null,
   serverTime: null,
   queueIndex: null,
   startTime: null,
   pausedDuration: null,
-  library: [],
   queue: [],
 };
 
-function grooveReducer(state = initialState, action) {
+export default function player(state = initialPlayer, action) {
   let currentTrack;
-
   switch (action.type) {
-    case actions.SWITCH_VIEW:
-      return { ...state, view: action.view };
-    case actions.SOCKET_STATUS_UPDATE:
+    case SOCKET_STATUS_UPDATE:
       currentTrack = state.queue[action.statusUpdate.queue_index] || null;
       const normalizedStartTime = (Date.now() - action.statusUpdate.current_time) + action.statusUpdate.start_time;
       return {
@@ -31,14 +25,10 @@ function grooveReducer(state = initialState, action) {
         pausedDuration: action.statusUpdate.paused_duration,
         serverTime: action.statusUpdate.current_time
       };
-    case actions.RECEIVE_LIBRARY:
-      return { ...state, library: action.library };
-    case actions.QUEUE_UPDATE:
+    case QUEUE_UPDATE:
       currentTrack = action.queue[state.queueIndex] || null;
       return { ...state, queue: action.queue, currentTrack: currentTrack };
     default:
       return state;
   }
 }
-
-export default grooveReducer;

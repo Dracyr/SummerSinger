@@ -1,5 +1,11 @@
 'use strict';
 
+/*
+  This file is now unused, but it serves as an
+  example on how one could sort queues
+  should that be needed again later
+*/
+
 module.exports = (function() {
   function QueueWrapper() {
     this.queue    = null;

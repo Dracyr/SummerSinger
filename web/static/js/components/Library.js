@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
-import { fetchLibrary, requestQueueTrack } from '../actionCreators';
+import { requestQueueTrack } from '../actions/player';
 import TrackList from './TrackList';
 
 class Library extends Component {
   componentDidMount() {
-    if (this.props.library.length === 0) {
-      this.props.dispatch(fetchLibrary());
-    }
+    this.props.fetchLibraryTracks();
   }
 
   render() {
+    const { library } = this.props;
     return (
-      <TrackList tracks={this.props.library}
+      <TrackList tracks={library.tracks}
                   keyAttr={"id"}
                   onClickHandler={(track) => requestQueueTrack(track.id)} />
     );
