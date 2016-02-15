@@ -20,6 +20,11 @@ class SidebarPlaylist extends Component {
 }
 
 export default class Sidebar extends Component {
+
+  componentDidMount() {
+    this.props.fetchPlaylists();
+  }
+
   isActive(view, currentView) {
     return currentView === view ? 'active' : '';
   }

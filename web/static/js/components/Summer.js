@@ -7,7 +7,7 @@ import Sidebar    from '../components/Sidebar';
 import Settings   from '../components/Settings';
 import Playlist   from '../components/Playlist';
 import Library    from '../components/Library';
-import TrackList    from '../components/TrackList';
+import TrackList  from '../components/TrackList';
 
 class Summer extends React.Component {
 
@@ -19,12 +19,9 @@ class Summer extends React.Component {
         library
       } = this.props;
 
-    actions.library.fetchPlaylists();
-
     const currentPlaylist = library.playlists.find((playlist) => {
       return playlist.id === views.playlist ? playlist : false;
     });
-
 
     let mainView;
     switch(views.view) {
@@ -61,6 +58,7 @@ class Summer extends React.Component {
           <Sidebar view={views.view}
                   switchView={actions.views.switchView}
                   switchPlaylist={actions.views.switchPlaylist}
+                  fetchPlaylists={actions.library.fetchPlaylists}
                   playlists={library.playlists}
                   currentPlaylist={currentPlaylist} />
           <div className="main-content">
