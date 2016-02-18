@@ -8,9 +8,6 @@ import TrackList from './TrackList';
 import AlbumList from './AlbumList';
 import ArtistList from './ArtistList';
 
-
-
-
 class Library extends Component {
   componentDidMount() {
     this.props.fetchLibrary('tracks');
@@ -19,9 +16,8 @@ class Library extends Component {
   }
 
   render() {
-    const { library, libraryView, switchLibraryView, fetchArtistDetails } = this.props;
-    console.log(libraryView);
-
+    const { library, libraryView, switchLibraryView, currentKey } = this.props;
+    console.log(currentKey);
     return (
       <Tabs value={libraryView}>
         <Tab label="Tracks"
@@ -29,6 +25,7 @@ class Library extends Component {
             onClick={() => switchLibraryView('TRACKS')}>
           <TrackList tracks={library.tracks}
                       keyAttr={"id"}
+                      currentKey={currentKey}
                       onClickHandler={(track) => requestQueueTrack(track.id)} />
         </Tab>
         <Tab label="Albums"
@@ -39,7 +36,8 @@ class Library extends Component {
         <Tab label="Artists"
             value="ARTISTS"
             onClick={() => switchLibraryView('ARTISTS')}>
-          <ArtistList artists={library.artists} fetchArtistDetails={fetchArtistDetails} />
+          <ArtistList artists={library.artists}
+                      currentKey={currentKey} />
         </Tab>
       </Tabs>
     );

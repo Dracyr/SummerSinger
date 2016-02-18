@@ -26,10 +26,10 @@ class Summer extends React.Component {
     let mainView;
     switch(views.view) {
       case 'QUEUE':
-        const currentId = player.currentTrack ? player.currentTrack.index : '';
+        const currentIndex = player.currentTrack ? player.currentTrack.index : '';
         mainView = <TrackList tracks={player.queue}
                     keyAttr={"index"}
-                    currentKey={currentId}
+                    currentKey={currentIndex}
                     onClickHandler={(track) => actions.player.requestPlayTrack(track.index)}/>;
         break;
       case 'SETTINGS':
@@ -44,11 +44,14 @@ class Summer extends React.Component {
                             fetchPlaylist={actions.library.fetchPlaylist} />;
         break;
       case 'LIBRARY':
+        const currentId = player.currentTrack ? player.currentTrack.id : '';
+
         mainView = (
             <Library library={library}
                     fetchLibrary={actions.library.fetchLibrary}
                     switchLibraryView={actions.views.switchLibraryView}
                     fetchArtistDetails={actions.library.fetchArtistDetails}
+                    currentKey={currentId}
                     libraryView={views.libraryView} />
           );
         break;

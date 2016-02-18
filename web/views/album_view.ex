@@ -6,18 +6,10 @@ defmodule SummerSinger.AlbumView do
   end
 
   def render("show.json", %{album: album}) do
-    %{data: render_one(album, SummerSinger.AlbumView, "album_details.json")}
+    %{data: render_one(album, SummerSinger.AlbumView, "album.json")}
   end
 
   def render("album.json", %{album: album}) do
-    %{
-      id: album.id,
-      title: album.title,
-      year: album.year
-    }
-  end
-
-  def render("album_details.json", %{album: album}) do
     %{
       id: album.id,
       title: album.title,
@@ -25,5 +17,4 @@ defmodule SummerSinger.AlbumView do
       tracks: render_many(album.tracks, SummerSinger.TrackView, "track.json")
     }
   end
-
 end

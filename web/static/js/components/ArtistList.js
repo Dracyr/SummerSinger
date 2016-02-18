@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import TrackList from './TrackList';
+import { requestQueueTrack } from '../actions/player';
 
 class ArtistCard extends Component {
-
   render() {
-    const { artist, active, clickHandler, selected, fetchArtistDetails } = this.props;
-    this.props.fetchArtistDetails(this.props.artist.id);
+    const { artist, active, clickHandler, selected, currentKey } = this.props;
 
     if (selected) {
       return (
@@ -17,7 +16,10 @@ class ArtistCard extends Component {
             </h3>
           </div>
           <div className="col-md-8">
-            <TrackList tracks={artist.tracks || []} />
+            <TrackList tracks={artist.tracks || []}
+                        keyAttr="id"
+                        currentKey={currentKey}
+                        onClickHandler={(track) => requestQueueTrack(track.id)} />
           </div>
         </div>
       );
@@ -37,7 +39,6 @@ class ArtistCard extends Component {
 class ArtistList extends Component {
   constructor(props) {
     super(props);
-    console.log("getinintial");
     this.state = {selected: null};
   }
 
@@ -48,7 +49,7 @@ class ArtistList extends Component {
   }
 
   render() {
-    const { artists, fetchArtistDetails } = this.props;
+    const { artists, currentKey } = this.props;
     const { selected } = this.state;
     const setActive = this.setActiveCard.bind(this);
 
@@ -59,7 +60,7 @@ class ArtistList extends Component {
                   key={artist.id}
                   artist={artist}
                   selected={selected == artist.id}
-                  fetchArtistDetails={fetchArtistDetails}
+                  currentKey={currentKey}
                   clickHandler={setActive} />;
         })}
       </div>

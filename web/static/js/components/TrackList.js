@@ -25,7 +25,10 @@ class Track extends Component {
     const {track, keyAttr, currentKey, onClickHandler} = this.props;
 
     let currentTrack = '';
+    console.log(currentKey);
+    console.log(track[keyAttr]);
     if (track[keyAttr] === currentKey) {
+
       currentTrack = <span className="playing-icon"><i className="fa fa-volume-up"></i></span>;
     }
 

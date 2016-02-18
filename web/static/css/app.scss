@@ -36,8 +36,11 @@ body {
 }
 
 .playing-icon {
-  position: absolute;
-  left: 330px;
-  font-size: 23px;
+  position: relative;
+  height: 0px;
+  left: -40px;
+  margin-right: -40px;
   margin-top: -6px;
+  float: left;
+  font-size: 23px;
 }

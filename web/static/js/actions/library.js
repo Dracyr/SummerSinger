@@ -9,9 +9,6 @@ export const RECEIVE_PLAYLISTS = 'RECEIVE_PLAYLISTS';
 export const REQUEST_PLAYLIST = 'REQUEST_PLAYLIST';
 export const RECEIVE_PLAYLIST = 'RECEIVE_PLAYLIST';
 
-export const REQUEST_ARTIST_DETAILS = 'REQUEST_ARTIST_DETAILS';
-export const RECEIVE_ARTIST_DETAILS = 'RECEIVE_ARTIST_DETAILS';
-
 function requestLibrary(libraryType) {
   return { type: REQUEST_LIBRARY, libraryType };
 }
@@ -82,30 +79,3 @@ export function fetchPlaylist(playlist_id) {
       .then(json => dispatch(receivePlaylist(json.data)));
   };
 }
-
-function requestArtistDetails(artist_id) {
-  return { type: REQUEST_ARTIST_DETAILS, artist_id };
-}
-
-function receiveArtistDetails(artist) {
-  return { type: RECEIVE_ARTIST_DETAILS, artist };
-}
-
-export function fetchArtistDetails(artist_id) {
-  return (dispatch, getState) => {
-    const artist = getState().library.artists.find((artist) => {
-      return artist.id === artist_id ? artist : false;
-    });
-
-    if (artist.tracks && artist.tracks.length > 0) {
-      return;
-    }
-
-    dispatch(requestArtistDetails(artist_id));
-
-    return fetch('http://localhost:4000/api/artists/' + artist_id)
-      .then(response => response.json())
-      .then(json => dispatch(receiveArtistDetails(json.data)));
-  };
-}
-

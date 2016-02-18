@@ -1,12 +1,12 @@
 defmodule SummerSinger.ArtistController do
   use SummerSinger.Web, :controller
 
-  alias SummerSinger.Artist
+  alias SummerSinger.{Artist, Album, Track}
 
   plug :scrub_params, "artist" when action in [:create, :update]
 
   def index(conn, _params) do
-    artists = Repo.all(Artist)
+    artists = Repo.all(artist_query)
     render(conn, "index.json", artists: artists)
   end
 
@@ -27,7 +27,7 @@ defmodule SummerSinger.ArtistController do
   end
 
   def show(conn, %{"id" => id}) do
-    artist = Repo.get!(Artist, id) |> Repo.preload([:albums, :tracks])
+    artist = Repo.get(artist_query, id)
     render(conn, "show.json", artist: artist)
   end
 
@@ -53,5 +53,13 @@ defmodule SummerSinger.ArtistController do
     Repo.delete!(artist)
 
     send_resp(conn, :no_content, "")
+  end
+
+  defp artist_query do
+    album_query = from a in Album, preload: [:tracks]
+    track_query = from t in Track, where: is_nil(t.album_id)
+    artist_query = from artist in Artist,
+      order_by: artist.name,
+      preload: [albums: ^album_query, tracks: ^track_query]
   end
 end

@@ -6,7 +6,7 @@ defmodule SummerSinger.AlbumController do
   plug :scrub_params, "album" when action in [:create, :update]
 
   def index(conn, _params) do
-    albums = Repo.all(Album)
+    albums = Repo.all(Album) |> Repo.preload(:tracks)
     render(conn, "index.json", albums: albums)
   end
 
