@@ -13,7 +13,8 @@ defmodule SummerSinger do
       worker(SummerSinger.Repo, []),
       worker(SummerSinger.AudioPlayer, []),
       worker(SummerSinger.Queue, [[]]),
-      worker(SummerSinger.Player, [])
+      worker(SummerSinger.Player, []),
+      worker(SummerSinger.IndexMusicSupervisor, []),
       # Here you could define other workers and supervisors as children
       # worker(SummerSinger.Worker, [arg1, arg2, arg3]),
     ]

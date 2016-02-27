@@ -3,7 +3,7 @@ defmodule SummerSinger.Artist do
   alias SummerSinger.Artist
 
   schema "artists" do
-    field :name, :string
+    field :name, :string, unique: true
 
     has_many :albums, SummerSinger.Album
     has_many :tracks, SummerSinger.Track
@@ -24,15 +24,21 @@ defmodule SummerSinger.Artist do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+    |> unique_constraint(:name)
   end
 
   def find_or_create(nil), do: nil
   def find_or_create(name) do
     case Repo.get_by(Artist, name: name) do
       nil ->
-        %SummerSinger.Artist{}
-        |> Artist.changeset(%{name: name})
-        |> Repo.insert!
+        try do
+          %SummerSinger.Artist{}
+          |> Artist.changeset(%{name: name})
+          |> Repo.insert!
+        rescue
+          e in Ecto.InvalidChangesetError ->
+            raise "Artist already created!"
+        end
       artist -> artist
     end
   end
