@@ -9,6 +9,9 @@ export const RECEIVE_PLAYLISTS = 'RECEIVE_PLAYLISTS';
 export const REQUEST_PLAYLIST = 'REQUEST_PLAYLIST';
 export const RECEIVE_PLAYLIST = 'RECEIVE_PLAYLIST';
 
+export const REQUEST_SEARCH = 'REQUEST_SEARCH';
+export const RECEIVE_SEARCH = 'RECEIVE_SEARCH';
+
 function requestLibrary(libraryType) {
   return { type: REQUEST_LIBRARY, libraryType };
 }
@@ -77,5 +80,24 @@ export function fetchPlaylist(playlist_id) {
     return fetch('http://localhost:4000/api/playlists/' + playlist_id)
       .then(response => response.json())
       .then(json => dispatch(receivePlaylist(json.data)));
+  };
+}
+
+function requestSearch(search_term) {
+  return { type: REQUEST_SEARCH, search_term };
+}
+
+function receiveSearch(search) {
+  return { type: RECEIVE_SEARCH, search };
+}
+
+export function fetchSearch(search_term) {
+  return (dispatch, getState) => {
+
+    dispatch(requestSearch(search_term));
+
+    return fetch('http://localhost:4000/api/tracks?search=' + search_term)
+      .then(response => response.json())
+      .then(json => dispatch(receiveSearch(json.data)));
   };
 }

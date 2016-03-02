@@ -5,8 +5,14 @@ defmodule SummerSinger.TrackController do
 
   plug :scrub_params, "track" when action in [:create, :update]
 
-  def index(conn, _params) do
-    tracks = Repo.all(Track) |> Repo.preload(:artist)
+  def index(conn, params) do
+    IO.inspect(params)
+    tracks = case params["search"] do
+      nil ->
+        tracks = Repo.all(Track)
+      search_term ->
+        tracks = Track.search(search_term)
+    end |> Repo.preload(:artist)
     render(conn, "index.json", tracks: tracks)
   end
 

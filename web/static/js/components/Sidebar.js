@@ -19,6 +19,52 @@ class SidebarPlaylist extends Component {
   }
 }
 
+class SidebarSearch extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: 'Search'};
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+    if (event.target.value.length >= 3) {
+      this.search(event.target.value);
+    }
+  }
+
+  handleKeyPress(event) {
+    if (event.key === 'Enter') {
+      this.search(this.state.value);
+    }
+  }
+
+  search(search_term) {
+    this.props.search(search_term);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.active !== prevProps.active) {
+      const value = this.props.active ? '' : 'Search';
+      this.setState({value: value});
+    }
+  }
+
+  render() {
+    const handleKeyPress = this.handleKeyPress.bind(this);
+    const {switchView, active, searchTrack} = this.props;
+
+    return (
+      <li onClick={() => switchView('SEARCH')}
+          className={active ? 'search active' : 'search'}>
+        <input type="text"
+              value={this.state.value}
+              onChange={this.handleChange.bind(this)}
+              onKeyPress={this.handleKeyPress.bind(this)} />
+      </li>
+    );
+  }
+}
+
 export default class Sidebar extends Component {
 
   componentDidMount() {
@@ -35,13 +81,15 @@ export default class Sidebar extends Component {
       switchPlaylist,
       playlists,
       currentPlaylist,
-      view
+      view,
+      search
     } = this.props;
     let isActive = this.isActive;
 
     return (
       <div className="sidebar">
         <ul className="sidebar-links list-unstyled">
+          <SidebarSearch switchView={switchView} active={view === 'SEARCH'} search={search} />
           <li onClick={() => switchView('NOW_PLAYING')}
               className={isActive('NOW_PLAYING', view)}>
                 Now Playing

@@ -2,13 +2,15 @@ import {
   RECEIVE_LIBRARY,
   RECEIVE_PLAYLISTS,
   RECEIVE_PLAYLIST,
+  RECEIVE_SEARCH
 } from '../actions/library';
 
 const initialLibrary = {
   tracks: [],
   albums: [],
   artists: [],
-  playlists: []
+  playlists: [],
+  search: []
 };
 
 export default function library(state = initialLibrary, action) {
@@ -27,6 +29,8 @@ export default function library(state = initialLibrary, action) {
         return playlist;
       });
       return { ...state, playlists: playlists };
+    case RECEIVE_SEARCH:
+      return { ...state, search: action.search };
     default:
       return state;
   }

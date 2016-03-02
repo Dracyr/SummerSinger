@@ -17,18 +17,35 @@
                 color 100ms ease-in,
                 padding-top 100ms ease-in-out,
                 padding-bottom 100ms ease-in-out;
-
+    input {
+      transition: background 100ms ease-in;
+    }
 
     &:hover {
       background: $color-primary;
       color: #FFF;
+      input { background: $color-primary; }
     }
 
     &.active {
       border-left: 10px solid $color-primary;
       padding: 4px 0 4px 30px;
+      input { background: $color-primary; }
     }
+
   }
+
+  li.search.active {
+    background: $color-primary;
+    color: #FFF;
+  }
+}
+
+.search input {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
 }
 
 .playlist-chat {

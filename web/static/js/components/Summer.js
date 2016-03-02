@@ -24,6 +24,7 @@ class Summer extends React.Component {
     });
 
     let mainView;
+    const currentId = player.currentTrack ? player.currentTrack.id : '';
     switch(views.view) {
       case 'QUEUE':
         const currentIndex = player.currentTrack ? player.currentTrack.index : '';
@@ -44,7 +45,6 @@ class Summer extends React.Component {
                             fetchPlaylist={actions.library.fetchPlaylist} />;
         break;
       case 'LIBRARY':
-        const currentId = player.currentTrack ? player.currentTrack.id : '';
 
         mainView = (
             <Library library={library}
@@ -54,6 +54,12 @@ class Summer extends React.Component {
                     currentKey={currentId}
                     libraryView={views.libraryView} />
           );
+        break;
+      case 'SEARCH':
+        mainView = <TrackList tracks={library.search}
+                    keyAttr={"id"}
+                    currentKey={currentId}
+                    onClickHandler={(track) => actions.player.requestQueueTrack(track.id)}/>;
         break;
       default:
         mainView = '';
@@ -67,6 +73,7 @@ class Summer extends React.Component {
                   switchView={actions.views.switchView}
                   switchPlaylist={actions.views.switchPlaylist}
                   fetchPlaylists={actions.library.fetchPlaylists}
+                  search={actions.library.fetchSearch}
                   playlists={library.playlists}
                   currentPlaylist={currentPlaylist} />
           <div className="main-content">

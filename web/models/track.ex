@@ -1,5 +1,6 @@
 defmodule SummerSinger.Track do
   use SummerSinger.Web, :model
+  alias SummerSinger.Track
 
   schema "tracks" do
     field :title,    :string
@@ -52,5 +53,15 @@ defmodule SummerSinger.Track do
       nil -> false
       _   -> true
     end
+  end
+
+  def search(search_term) do
+    search(Track, search_term) |> Repo.all
+  end
+
+  def search(query, search_term, limit \\ 0.3) do
+    from track in query,
+    where: fragment("similarity(?,?) > ?", track.title, ^search_term, ^limit),
+    order_by: fragment("similarity(?,?) DESC", track.title, ^search_term)
   end
 end
