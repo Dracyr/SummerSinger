@@ -51,27 +51,35 @@ class TrackList extends Component {
   render() {
     const {tracks, keyAttr, currentKey, onClickHandler } = this.props;
 
-    return (
-      <table className="table table-hover track-list">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Artist</th>
-            <th>Album</th>
-            <th>Rating</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tracks.map(function(track) {
-            return <Track track={track}
-                          key={track[keyAttr]}
-                          keyAttr={keyAttr}
-                          currentKey={currentKey}
-                          onClickHandler={onClickHandler} />;
-          })}
-        </tbody>
-      </table>
-    );
+    if (tracks.length > 0) {
+      return (
+        <table className="table table-hover track-list">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Artist</th>
+              <th>Album</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tracks.map(function(track) {
+              return <Track track={track}
+                            key={track[keyAttr]}
+                            keyAttr={keyAttr}
+                            currentKey={currentKey}
+                            onClickHandler={onClickHandler} />;
+            })}
+          </tbody>
+        </table>
+      );
+    } else {
+      return (
+        <div className="no_tracks_banner">
+          No tracks in selection :(
+        </div>
+      );
+    }
   }
 }
 

@@ -26,9 +26,10 @@ class SidebarSearch extends Component {
   }
 
   handleChange(event) {
-    this.setState({value: event.target.value});
-    if (event.target.value.length >= 3) {
-      this.search(event.target.value);
+    const value = event.target.value;
+    this.setState({value: value});
+    if (value.length >= 3) {
+      this.search(value);
     }
   }
 
