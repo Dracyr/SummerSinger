@@ -1,5 +1,6 @@
 defmodule SummerSinger.TrackController do
   use SummerSinger.Web, :controller
+  import Ecto.Query
 
   alias SummerSinger.Track
 
@@ -9,7 +10,7 @@ defmodule SummerSinger.TrackController do
     IO.inspect(params)
     tracks = case params["search"] do
       nil ->
-        tracks = Repo.all(Track)
+        tracks = limit_tracks
       search_term ->
         tracks = Track.search(search_term)
     end |> Repo.preload(:artist)
@@ -59,5 +60,10 @@ defmodule SummerSinger.TrackController do
     Repo.delete!(track)
 
     send_resp(conn, :no_content, "")
+  end
+
+  defp limit_tracks do
+    Repo.all from t in Track,
+    preload: [:album] #, limit: 500
   end
 end

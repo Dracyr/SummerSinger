@@ -59,7 +59,7 @@ defmodule SummerSinger.Track do
     search(Track, search_term) |> Repo.all
   end
 
-  def search(query, search_term, limit \\ 0.3) do
+  def search(query, search_term, limit \\ 0.25) do
     from track in query,
     where: fragment("similarity(?,?) > ?", track.title, ^search_term, ^limit),
     order_by: fragment("similarity(?,?) DESC", track.title, ^search_term)

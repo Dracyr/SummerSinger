@@ -27,6 +27,7 @@ defmodule SummerSinger.Album do
   end
 
   def find_or_create(nil, _), do: nil
+  def find_or_create(nil, nil), do: nil
   def find_or_create(title, artist) do
     album = Repo.one(
           from a in Album,

@@ -23,8 +23,13 @@ defmodule SummerSinger.IndexMusicWorker do
 
   defp add_track(track_path) do
     IO.inspect("Adding '" <> track_path <> "'")
-    {:ok, audio_data, metadata} = MetadataParser.parse(track_path)
-    create_track(track_path, metadata, audio_data)
+    try do
+      {:ok, audio_data, metadata} = MetadataParser.parse(track_path)
+      create_track(track_path, metadata, audio_data)
+    rescue
+      e in _ ->
+        IO.puts("Error adding track " <> track_path)
+    end
   end
 
   defp get_artist_and_album(artist_name, album_name) do

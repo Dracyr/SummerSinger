@@ -76,7 +76,7 @@ class Summer extends React.Component {
                   search={actions.library.fetchSearch}
                   playlists={library.playlists}
                   currentPlaylist={currentPlaylist} />
-          <div className="main-content">
+          <div id="main-content">
             {mainView}
           </div>
         </div>

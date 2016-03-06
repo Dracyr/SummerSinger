@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactList from 'react-list';
 
 class StarRating extends Component {
 
@@ -34,44 +35,54 @@ class Track extends Component {
     }
 
     return (
-      <tr onClick={(event) => onClickHandler(track)}>
-        <td>
+      <div className="tr track" onClick={(event) => onClickHandler(track)}>
+        <div className="td td-title"><div>
           {track.title}
           {currentTrack}
-        </td>
-        <td>{track.artist}</td>
-        <td>{track.album}</td>
-        <td><StarRating rating={track.rating}></StarRating></td>
-      </tr>
+        </div></div>
+        <div className="td td-artist"><div>{track.artist}</div></div>
+        <div className="td td-album"><div>{track.album}</div></div>
+        <div className="td td-rating"><StarRating rating={track.rating}></StarRating></div>
+      </div>
     );
   }
 }
 
 class TrackList extends Component {
+
+  renderItem(index, key) {
+    const {tracks, keyAttr, currentKey, onClickHandler } = this.props;
+    const track = tracks[index];
+    return <Track
+              track={track}
+              key={track[keyAttr]}
+              keyAttr={keyAttr}
+              currentKey={currentKey}
+              onClickHandler={onClickHandler} />;
+  }
+
   render() {
     const {tracks, keyAttr, currentKey, onClickHandler } = this.props;
 
     if (tracks.length > 0) {
       return (
-        <table className="table table-hover track-list">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Artist</th>
-              <th>Album</th>
-              <th>Rating</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tracks.map(function(track) {
-              return <Track track={track}
-                            key={track[keyAttr]}
-                            keyAttr={keyAttr}
-                            currentKey={currentKey}
-                            onClickHandler={onClickHandler} />;
-            })}
-          </tbody>
-        </table>
+        <div className="table display-table table-hover track-list">
+          <div className="thead">
+            <div className="tr">
+              <div className="td td-title">Title</div>
+              <div className="td td-artist">Artist</div>
+              <div className="td td-album">Album</div>
+              <div className="td td-rating">Rating</div>
+            </div>
+          </div>
+          <ReactList
+            itemRenderer={(index, key) => this.renderItem(index, key)}
+            itemsRenderer={(items,ref) => <div className="tbody" ref={ref}>{items}</div>}
+            length={tracks.length}
+
+            type='uniform'
+          />
+        </div>
       );
     } else {
       return (

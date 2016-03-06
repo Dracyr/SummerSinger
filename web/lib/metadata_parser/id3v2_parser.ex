@@ -52,7 +52,7 @@ defmodule ID3v2Parser do
       length :: integer-size(32),
       _flags :: bits-size(16),
       frame  :: binary-size(length),
-      binary :: binary >>, metadata) do
+      binary :: binary >>, metadata) when id != << 0,0,0,0 >> and byte_size(id) == 4 do
 
     metadata = Map.merge(metadata, TagFrame.tag_frame(id, frame), fn _k, v1, v2 ->
       List.wrap(v1) ++ List.wrap(v2)
