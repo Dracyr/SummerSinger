@@ -109,10 +109,8 @@ export default class Sidebar extends Component {
           </li>
         </ul>
 
-        <div className="playlist-chat">
-          <span className="playlists active">Playlists</span>
-          <span className="divider">|</span>
-          <span className="chat">Chat</span>
+        <div className="sidebar-playlist-header">
+          Playlists
         </div>
 
         <div className="playlist-tab">

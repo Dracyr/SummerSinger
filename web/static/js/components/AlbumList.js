@@ -9,7 +9,7 @@ class AlbumCard extends Component {
     return (
       <div className="card">
         <div className="card-image">
-          <img src="http://placehold.it/150x150" width="150" height="150"></img>
+          <img src="/images/album_placeholder.png" width="150" height="150"></img>
         </div>
         <div className="card-content">{album.title}</div>
       </div>

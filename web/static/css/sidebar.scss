@@ -48,25 +48,11 @@
   outline: none;
 }
 
-.playlist-chat {
-  text-align: center;
+.sidebar-playlist-header {
+  margin-left: 40px;
   margin-top: 40px;
-  margin-bottom: 15px;
-  font-size: 20px;
-
-  & > * {cursor: pointer;}
-
-  .playlists:hover,
-  .playlists.active,
-  .chat:active,
-  .chat:hover {
-    color: $color-primary;
-  }
-
-  .divider {
-    margin-left: 5px;
-    margin-right: 5px;
-  }
+  margin-bottom: 5px;
+  font-size: 22px;
 }
 
 .playlist-tab {
@@ -75,6 +61,7 @@
 }
 
 .playlist-list li {
+  transition: color 50ms ease;
   cursor: pointer;
   margin-bottom: 4px;
   font-weight: 300;

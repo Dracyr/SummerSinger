@@ -7,33 +7,14 @@ class ArtistCard extends Component {
   render() {
     const { artist, active, clickHandler, selected, currentKey } = this.props;
 
-    if (selected && false) {
-      return (
-        <div className="card expanded row">
-          <div className="col-md-4">
-            <img src="http://placehold.it/150x150" width="150" height="150"></img>
-            <h3>
-              {artist.name}
-            </h3>
-          </div>
-          <div className="col-md-8">
-            <TrackList tracks={artist.tracks || []}
-                        keyAttr="id"
-                        currentKey={currentKey}
-                        onClickHandler={(track) => requestQueueTrack(track.id)} />
-          </div>
+    return (
+      <div className="card" onClick={() => clickHandler(artist.id)}>
+        <div className="card-image">
+          <img src="/images/album_placeholder.png" width="150" height="150"></img>
         </div>
-      );
-    } else {
-      return (
-        <div className="card" onClick={() => clickHandler(artist.id)}>
-          <div className="card-image">
-            <img src="http://placehold.it/150x150" width="150" height="150"></img>
-          </div>
-          <div className="card-content">{artist.name}</div>
-        </div>
-      );
-    }
+        <div className="card-content">{artist.name}</div>
+      </div>
+    );
   }
 }
 

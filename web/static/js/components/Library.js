@@ -10,58 +10,49 @@ import ArtistList from './ArtistList';
 
 class Library extends Component {
   componentDidMount() {
-    // this.props.fetchLibrary('tracks');
-    // this.props.fetchLibrary('albums');
-    this.props.fetchLibrary('artists');
+    this.props.fetchLibrary(this.props.libraryView.toLowerCase());
   }
 
   componentDidUpdate() {
-    if (this.props.libraryView === 'ALBUMS') {
-      this.props.fetchLibrary('albums');
-    }
-    if (this.props.libraryView === 'ARTISTS') {
-      this.props.fetchLibrary('artists');
-    }
+    this.props.fetchLibrary(this.props.libraryView.toLowerCase());
   }
 
   render() {
     const { library, libraryView, switchLibraryView, currentKey } = this.props;
-    return <ArtistList artists={library.artists}
-                        currentKey={currentKey} />;
 
-    // return (
-    //   <TrackList tracks={library.tracks}
-    //               keyAttr={"id"}
-    //               currentKey={currentKey}
-    //               onClickHandler={(track) => requestQueueTrack(track.id)} />
-    // );
+    const libraryHeader = (
+      <div>
+        <h1 className="library-header">
+          <span onClick={() => switchLibraryView('TRACKS')} className={libraryView == 'TRACKS' ? '' : 'inactive'}>Tracks </span>
+          <span onClick={() => switchLibraryView('ALBUMS')} className={libraryView == 'ALBUMS' ? '' : 'inactive'}>Albums </span>
+          <span onClick={() => switchLibraryView('ARTISTS')} className={libraryView == 'ARTISTS' ? '' : 'inactive'}>Artists </span>
+        </h1>
+      </div>
+    );
 
-    // render() {
-    //   const { library, libraryView, switchLibraryView, currentKey } = this.props;
-    //   console.log(currentKey);
-    //   return (
-    //     <Tabs value={libraryView}>
-    //       <Tab label="Tracks"
-    //           value="TRACKS"
-    //           onClick={() => switchLibraryView('TRACKS')}>
-    //         <TrackList tracks={library.tracks}
-    //                     keyAttr={"id"}
-    //                     currentKey={currentKey}
-    //                     onClickHandler={(track) => requestQueueTrack(track.id)} />
-    //       </Tab>
-    //       <Tab label="Albums"
-    //           value="ALBUMS"
-    //           onClick={() => switchLibraryView('ALBUMS')}>
-    //         <AlbumList albums={library.albums} />;
-    //       </Tab>
-    //       <Tab label="Artists"
-    //           value="ARTISTS"
-    //           onClick={() => switchLibraryView('ARTISTS')}>
-    //         <ArtistList artists={library.artists}
-    //                     currentKey={currentKey} />
-    //       </Tab>
-    //     </Tabs>
-    //   );
+    let currentView = '';
+    switch(libraryView) {
+      case 'TRACKS':
+        currentView = <TrackList
+          tracks={library.tracks}
+          keyAttr={"id"}
+          currentKey={currentKey}
+          onClickHandler={(track) => requestQueueTrack(track.id)} />;
+        break;
+      case 'ALBUMS':
+        currentView = <AlbumList albums={library.albums} />;
+        break;
+      case 'ARTISTS':
+        currentView = <ArtistList artists={library.artists} currentKey={currentKey} />;
+        break;
+    }
+
+    return (
+      <div>
+        {libraryHeader}
+        {currentView}
+      </div>
+    );
   }
 }
 

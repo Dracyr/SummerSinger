@@ -27,7 +27,7 @@ defmodule SummerSinger.PlaylistController do
   end
 
   def show(conn, %{"id" => id}) do
-    playlist = Repo.get!(Playlist, id) |> Repo.preload(tracks: [:artist])
+    playlist = Repo.get!(Playlist, id) |> Repo.preload(tracks: [:artist, :album])
     render(conn, "show.json", playlist: playlist)
   end
 

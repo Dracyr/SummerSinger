@@ -80,7 +80,7 @@ body {
   padding: 8px;
   border-top: 1px solid #ddd;
   height: 40px;
-  // min-width: 81px;
+
   & > div {
     max-height: 23px;
     overflow: hidden;
@@ -107,8 +107,6 @@ body {
 }
 
 .thead {
-  // display: table-header-group;
-
   .td {
     vertical-align: bottom;
     border-bottom: 2px solid #ddd;
@@ -116,6 +114,12 @@ body {
   }
 }
 
-.tbody {
-  // display: table-row-group;
+.library-header {
+  border-bottom: 1px solid #DDD;
+
+  span {
+    transition: all 350ms ease;
+    cursor: pointer;
+    &.inactive { opacity: .3; }
+  }
 }
