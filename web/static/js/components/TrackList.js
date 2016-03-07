@@ -36,12 +36,12 @@ class Track extends Component {
 
     return (
       <div className="tr track" onClick={(event) => onClickHandler(track)}>
-        <div className="td td-title"><div>
+        <div className="td td-title" alt={track.title}><div>
           {track.title}
           {currentTrack}
         </div></div>
-        <div className="td td-artist"><div>{track.artist}</div></div>
-        <div className="td td-album"><div>{track.album}</div></div>
+        <div className="td td-artist" alt={track.artist}><div>{track.artist}</div></div>
+        <div className="td td-album" alt={track.album}><div>{track.album}</div></div>
         <div className="td td-rating"><StarRating rating={track.rating}></StarRating></div>
       </div>
     );
@@ -66,7 +66,7 @@ class TrackList extends Component {
 
     if (tracks.length > 0) {
       return (
-        <div className="table display-table table-hover track-list">
+        <div className="display-table track-list">
           <div className="thead">
             <div className="tr">
               <div className="td td-title">Title</div>
@@ -79,7 +79,6 @@ class TrackList extends Component {
             itemRenderer={(index, key) => this.renderItem(index, key)}
             itemsRenderer={(items,ref) => <div className="tbody" ref={ref}>{items}</div>}
             length={tracks.length}
-
             type='uniform'
           />
         </div>
@@ -87,7 +86,7 @@ class TrackList extends Component {
     } else {
       return (
         <div className="no_tracks_banner">
-          No tracks in selection :(
+          No tracks.
         </div>
       );
     }

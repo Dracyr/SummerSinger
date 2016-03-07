@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactList from 'react-list';
 
 class AlbumCard extends Component {
 
@@ -8,7 +9,7 @@ class AlbumCard extends Component {
     return (
       <div className="card">
         <div className="card-image">
-          <img src="http://placehold.it/150x150"></img>
+          <img src="http://placehold.it/150x150" width="150" height="150"></img>
         </div>
         <div className="card-content">{album.title}</div>
       </div>
@@ -21,11 +22,14 @@ export default class AlbumList extends Component {
     const { albums } = this.props;
 
     return (
-      <div className="card-list">
-        {albums.map(function(album) {
-          return <AlbumCard key={album.id} album={album} />;
-        })}
-      </div>
+      <ReactList
+        itemRenderer={(index, key) => <AlbumCard key={key} album={albums[index]} />}
+        itemsRenderer={(items,ref) => <div className="card-list" ref={ref}>{items}</div>}
+        length={albums.length}
+        axis='y'
+        type='uniform'
+        useTranslate3d={true}
+      />
     );
   }
 }

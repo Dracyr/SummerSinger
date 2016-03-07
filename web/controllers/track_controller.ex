@@ -64,6 +64,6 @@ defmodule SummerSinger.TrackController do
 
   defp limit_tracks do
     Repo.all from t in Track,
-    preload: [:album] #, limit: 500
+    preload: [:album]
   end
 end

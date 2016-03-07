@@ -11,7 +11,7 @@ defmodule SummerSinger.IndexMusicWorker do
   end
 
   def handle_call(data, from, state) do
-    if is_nil(Repo.get_by(Track, filename: data)) do
+    if is_nil(Repo.get_by(Track, filename: data, log: false)) do
       add_track(data)
     end
     {:reply, data, state}
@@ -22,13 +22,14 @@ defmodule SummerSinger.IndexMusicWorker do
   end
 
   defp add_track(track_path) do
-    IO.inspect("Adding '" <> track_path <> "'")
-    try do
-      {:ok, audio_data, metadata} = MetadataParser.parse(track_path)
-      create_track(track_path, metadata, audio_data)
-    rescue
-      e in _ ->
-        IO.puts("Error adding track " <> track_path)
+    Repo.transaction fn ->
+      IO.inspect("Adding '" <> track_path <> "'")
+      case MetadataParser.parse(track_path) do
+        {:ok, audio_data, metadata} ->
+          create_track(track_path, metadata, audio_data)
+        {:err, _reason} ->
+          IO.inspect("Error, could not add track: " <> track_path)
+      end
     end
   end
 
@@ -57,7 +58,7 @@ defmodule SummerSinger.IndexMusicWorker do
       rating: metadata[:rating],
     }
 
-    case Repo.insert(track) do
+    case Repo.insert(track, log: false) do
       {:ok, _track} ->
         IO.puts "Added: " <> track_path
       {:error, changeset} ->

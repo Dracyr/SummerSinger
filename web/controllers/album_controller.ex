@@ -1,12 +1,12 @@
 defmodule SummerSinger.AlbumController do
   use SummerSinger.Web, :controller
-
+  import Ecto.Query
   alias SummerSinger.Album
 
   plug :scrub_params, "album" when action in [:create, :update]
 
   def index(conn, _params) do
-    albums = Repo.all(Album) |> Repo.preload(:tracks)
+    albums = Repo.all(Album) |> Repo.preload([:tracks, :artist])
     render(conn, "index.json", albums: albums)
   end
 

@@ -8,6 +8,11 @@ export default class Playlist extends Component {
     fetchPlaylist(playlist.id);
   }
 
+  componentDidUpdate() {
+    const {playlist, fetchPlaylist} = this.props;
+    fetchPlaylist(playlist.id);
+  }
+
   render() {
     const { playlist } = this.props;
 

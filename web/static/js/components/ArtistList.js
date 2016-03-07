@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactList from 'react-list';
 import TrackList from './TrackList';
 import { requestQueueTrack } from '../actions/player';
 
@@ -6,11 +7,11 @@ class ArtistCard extends Component {
   render() {
     const { artist, active, clickHandler, selected, currentKey } = this.props;
 
-    if (selected) {
+    if (selected && false) {
       return (
         <div className="card expanded row">
           <div className="col-md-4">
-            <img src="http://placehold.it/150x150"></img>
+            <img src="http://placehold.it/150x150" width="150" height="150"></img>
             <h3>
               {artist.name}
             </h3>
@@ -27,7 +28,7 @@ class ArtistCard extends Component {
       return (
         <div className="card" onClick={() => clickHandler(artist.id)}>
           <div className="card-image">
-            <img src="http://placehold.it/150x150"></img>
+            <img src="http://placehold.it/150x150" width="150" height="150"></img>
           </div>
           <div className="card-content">{artist.name}</div>
         </div>
@@ -54,16 +55,14 @@ class ArtistList extends Component {
     const setActive = this.setActiveCard.bind(this);
 
     return (
-      <div className="card-list">
-        {artists.map(function(artist) {
-          return <ArtistCard
-                  key={artist.id}
-                  artist={artist}
-                  selected={selected == artist.id}
-                  currentKey={currentKey}
-                  clickHandler={setActive} />;
-        })}
-      </div>
+      <ReactList
+        itemRenderer={(index, key) => <ArtistCard key={key} artist={artists[index]} selected={selected == artists[index].id} currentKey={currentKey} clickHandler={setActive} />}
+        itemsRenderer={(items,ref) => <div className="card-list" ref={ref}>{items}</div>}
+        length={artists.length}
+        axis='y'
+        type='uniform'
+        useTranslate3d={true}
+      />
     );
   }
 }

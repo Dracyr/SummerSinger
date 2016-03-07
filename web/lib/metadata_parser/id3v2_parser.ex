@@ -1,31 +1,41 @@
 defmodule ID3v2Parser do
   alias ID3v2Parser.TagFrame
+  alias ID3v2Parser.TagFrameError
 
   def parse_binary(binary) do
     case parse_header(binary) do
       {:ok, header_info} ->
-        length = header_info[:length]
-        <<
-          _header     :: binary-size(10),
-          tag_frames  :: binary-size(length),
-          _audio_data :: binary >> = binary
-
-          tag_frames = metadata_frames(tag_frames, %{})
-
-          {:ok,
-            %{
-              title: tag_frames["TIT2"],
-              artist: tag_frames["TPE1"],
-              album: tag_frames["TALB"],
-              year: tag_frames["TYER"],
-              rating: tag_frames["POPM"],
-              comment: tag_frames["COMM"],
-              album_art:  tag_frames["APIC"],
-              tag_frames: tag_frames,
-            }
-          }
+        parse_binary(binary, header_info)
       _ ->
         {:no_tag, :id3v2}
+    end
+  end
+
+  defp parse_binary(binary, header_info) do
+    length = header_info[:length]
+    <<
+      _header     :: binary-size(10),
+      tag_frames  :: binary-size(length),
+      _audio_data :: binary >> = binary
+
+    try do
+      tag_frames = metadata_frames(tag_frames, %{})
+
+      {:ok,
+        %{
+          title: tag_frames["TIT2"],
+          artist: tag_frames["TPE1"],
+          album: tag_frames["TALB"],
+          year: tag_frames["TYER"],
+          rating: tag_frames["POPM"],
+          comment: tag_frames["COMM"],
+          album_art:  tag_frames["APIC"],
+          tag_frames: tag_frames,
+        }
+      }
+    rescue
+      e in ID3v2Parser.TagFrameError ->
+        {:error, e.message}
     end
   end
 

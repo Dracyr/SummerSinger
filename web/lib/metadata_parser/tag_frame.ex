@@ -1,6 +1,4 @@
 defmodule ID3v2Parser.TagFrame do
-  require IEx
-
   defmacro valid_encoding(encoding) do
     quote do
       unquote(encoding) == 0 or
@@ -115,6 +113,7 @@ defmodule ID3v2Parser.TagFrame do
   end
 
   defp to_utf8(<< encoding :: integer-size(8), string :: bytes >>), do: to_utf8(string, encoding)
+  defp to_utf8(<< _invalid_text :: bytes >>), do: raise ID3v2Parser.TagFrameError, "invalid encoding"
   defp to_utf8(string, encoding) do
     case encoding do
       0 -> # ISO-8859-1
@@ -126,8 +125,14 @@ defmodule ID3v2Parser.TagFrame do
       3 -> # Good old UTF-8
         string
       _ -> # No valid encoding, why are you doing this.
-        # raise "Invalid encoding: " <> encoding
-        string
+        raise ID3v2Parser.TagFrameError, "invalid encoding"
     end
+  end
+end
+
+defmodule ID3v2Parser.TagFrameError do
+  defexception [:message]
+  def exception(value) do
+    %ID3v2Parser.TagFrameError{message: "invalid id3v2 frame, #{value}"}
   end
 end

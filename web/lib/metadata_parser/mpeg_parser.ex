@@ -62,22 +62,33 @@ defmodule MPEGParser do
   def parse_binary(binary) do
     case ID3v2Parser.parse_header(binary) do
       {:ok, header_info} ->
-        length = header_info[:length]
-        << _header     :: binary-size(10),
-          _tag_frames  :: binary-size(length),
-          audio_data   :: binary >> = binary
-
-          {frame_offset, 1} = :binary.match(audio_data, [<< 0xFFF >>])
-          << _offset     :: bytes-size(frame_offset),
-            frame_header :: bytes-size(4),
-            _binary      :: binary >> = audio_data
-
-          frame_header = parse_frame_header(frame_header)
-          duration = get_duration(frame_header[:bitrate], frame_header[:samplerate], byte_size(binary), audio_data, frame_header[:encoding])
-
-          {:ok, Map.merge(frame_header, %{duration: duration})}
+        parse_binary(binary, header_info)
       _ ->
-        {:err}
+        {:error, "Could not parse header"}
+    end
+  end
+
+  defp parse_binary(binary, header_info) do
+    try do
+      length = header_info[:length]
+      << _header     :: binary-size(10),
+        _tag_frames  :: binary-size(length),
+        audio_data   :: binary >> = binary
+
+      {frame_offset, 1} = :binary.match(audio_data, [<< 0xFFF >>])
+      << _offset     :: bytes-size(frame_offset),
+        frame_header :: bytes-size(4),
+        _binary      :: binary >> = audio_data
+
+      frame_header = parse_frame_header(frame_header)
+      duration = get_duration(frame_header[:bitrate], frame_header[:samplerate], byte_size(binary), audio_data, frame_header[:encoding])
+
+      {:ok, Map.merge(frame_header, %{duration: duration})}
+    rescue
+      e in MPEGParserError ->
+        {:error, e.message}
+      e in _ ->
+        {:error, "Error reading mpeg data"}
     end
   end
 
@@ -147,19 +158,19 @@ defmodule MPEGParser do
     _original   :: bits-size(1),
     _empasis    :: bits-size(2) >>) do
 
-    bitrate = cond do
-      !is_nil(version) && !is_nil(layer) ->
-        parse_bitrate(bitrate, mpeg_version(version), layer_description(layer))
-      true ->
-        0
-    end
+    try do
+      bitrate = parse_bitrate(bitrate, mpeg_version(version), layer_description(layer))
 
-    %{
-      encoding: mpeg_version(version) <> " " <> layer_description(layer),
-      bitrate: bitrate,
-      samplerate: parse_samplerate(samplerate, mpeg_version(version)),
-      channel: channel_mode(channel)
-    }
+      %{
+        encoding: mpeg_version(version) <> " " <> layer_description(layer),
+        bitrate: bitrate,
+        samplerate: parse_samplerate(samplerate, mpeg_version(version)),
+        channel: channel_mode(channel)
+      }
+    rescue
+      e in CaseClauseError ->
+        raise MPEGParserError, inspect(e.term)
+    end
   end
 
   def parse_bitrate(bitrate_index, version, layer) do
@@ -176,7 +187,6 @@ defmodule MPEGParser do
         {"MPEG Version 2.5", "Layer II"}  -> 4
         {"MPEG Version 2",   "Layer III"} -> 4
         {"MPEG Version 2.5", "Layer III"} -> 4
-        {_ , _ }                          -> nil # Why
       end)
   end
 
@@ -186,7 +196,6 @@ defmodule MPEGParser do
         {"MPEG Version 1"}   -> 0
         {"MPEG Version 2"}   -> 1
         {"MPEG Version 2.5"} -> 2
-        {_ } -> nil
       end)
   end
 
@@ -204,5 +213,12 @@ defmodule MPEGParser do
       {"III", "2.5"} ->
         576
     end
+  end
+end
+
+defmodule MPEGParserError do
+  defexception [:message]
+  def exception(value) do
+    %MPEGParserError{message: "invalid mpeg header, got: #{value}"}
   end
 end

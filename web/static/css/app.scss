@@ -102,6 +102,7 @@ body {
   &.td-rating {
     width: 25%;
     max-width: 25%;
+    min-width: 81px;
   }
 }
 
@@ -116,5 +117,5 @@ body {
 }
 
 .tbody {
-  display: table-row-group;
+  // display: table-row-group;
 }

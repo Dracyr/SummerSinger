@@ -67,10 +67,10 @@ function receivePlaylist(playlist) {
 
 export function fetchPlaylist(playlist_id) {
   return (dispatch, getState) => {
-
     const playlist = getState().library.playlists.find((playlist) => {
       return playlist.id === playlist_id ? playlist : false;
     });
+
     if (playlist.tracks && playlist.tracks.length > 0) {
       return;
     }

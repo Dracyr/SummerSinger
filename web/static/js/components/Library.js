@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
 
-
 import { requestQueueTrack } from '../actions/player';
 import TrackList from './TrackList';
 import AlbumList from './AlbumList';
@@ -11,19 +10,31 @@ import ArtistList from './ArtistList';
 
 class Library extends Component {
   componentDidMount() {
-    this.props.fetchLibrary('tracks');
+    // this.props.fetchLibrary('tracks');
     // this.props.fetchLibrary('albums');
-    // this.props.fetchLibrary('artists');
+    this.props.fetchLibrary('artists');
+  }
+
+  componentDidUpdate() {
+    if (this.props.libraryView === 'ALBUMS') {
+      this.props.fetchLibrary('albums');
+    }
+    if (this.props.libraryView === 'ARTISTS') {
+      this.props.fetchLibrary('artists');
+    }
   }
 
   render() {
     const { library, libraryView, switchLibraryView, currentKey } = this.props;
-    return (
-      <TrackList tracks={library.tracks}
-                  keyAttr={"id"}
-                  currentKey={currentKey}
-                  onClickHandler={(track) => requestQueueTrack(track.id)} />
-    );
+    return <ArtistList artists={library.artists}
+                        currentKey={currentKey} />;
+
+    // return (
+    //   <TrackList tracks={library.tracks}
+    //               keyAttr={"id"}
+    //               currentKey={currentKey}
+    //               onClickHandler={(track) => requestQueueTrack(track.id)} />
+    // );
 
     // render() {
     //   const { library, libraryView, switchLibraryView, currentKey } = this.props;
