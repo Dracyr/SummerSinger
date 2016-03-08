@@ -11,22 +11,16 @@
     "eslint": "^1.10.3",
     "eslint-plugin-babel": "^3.0.0",
     "eslint-plugin-react": "^3.11.3",
-    "express": "^4.13.3",
     "node-sass": "^3.3.2",
     "react-transform-catch-errors": "^1.0.2",
     "react-transform-hmr": "^1.0.1",
     "redbox-react": "^1.0.1",
-    "redux-devtools": "^3.0.0",
-    "redux-devtools-dock-monitor": "^1.0.1",
-    "redux-devtools-log-monitor": "^1.0.1",
     "webpack": "^1.12.9",
-    "webpack-dev-middleware": "^1.4.0",
-    "webpack-hot-middleware": "^2.6.0"
+    "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
     "font-awesome": "^4.3.0",
     "isomorphic-fetch": "^2.2.0",
-    "material-ui": "^0.14.4",
     "phoenix": "file:deps/phoenix",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
@@ -37,7 +31,7 @@
     "redux-thunk": "^1.0.2"
   },
   "scripts": {
-    "watch:css": "node_modules/node-sass/bin/node-sass --watch --source-map true web/static/css/app.scss priv/static/css/app.css",
+    "watch:css": "node_modules/node-sass/bin/node-sass --watch --source-map-contents true web/static/css/app.scss priv/static/css/app.css",
     "compile:css": "node_modules/node-sass/bin/node-sass web/static/css/app.scss priv/static/css/app.css",
     "compile": "npm run compile:css; webpack -p"
   }

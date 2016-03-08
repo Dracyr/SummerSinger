@@ -5,6 +5,7 @@ var config = require('./webpack.config');
 var compiler = webpack(config);
 var server = new WebpackDevServer(compiler, {
   hot: true,
+  quiet: true,
   stats: { colors: true },
 });
 
