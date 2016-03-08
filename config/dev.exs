@@ -13,22 +13,14 @@ config :summer_singer, SummerSinger.Endpoint,
   cache_static_lookup: false,
   check_origin: false,
   watchers: [
-    node: ["devServer.js"],
+    node: ["dev-server.js"],
     npm: ["run", "watch:css"]
-    # sass: [
-    #   "node_modules/node-sass/bin/node-sass",
-    #   "--watch",
-    #   "web/static/css/app.scss",
-    #   "priv/static/css/app.css"
-    # ]
-    # "node_modules/node-sass/bin/node-sass --watch --source-map true web/static/css/app.scss priv/static/css/app.css",
   ]
 
 # Watch static and templates for browser reloading.
 config :summer_singer, SummerSinger.Endpoint,
   live_reload: [
     patterns: [
-     # ~r{priv/static/.*(js|css|png|jpeg|jpg|gif)$},
       ~r{priv/static/.*(css)$},
       ~r{web/views/.*(ex)$},
       ~r{web/templates/.*(eex)$}
