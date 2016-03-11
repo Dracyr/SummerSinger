@@ -24,8 +24,8 @@ export function switchLibraryView(libraryView) {
   return { type: SWITCH_LIBRARY_VIEW, libraryView };
 }
 
-function requestLibrary(libraryType, requested) {
-  return { type: REQUEST_LIBRARY, libraryType: libraryType, requested: requested };
+function requestLibrary(libraryType, offset) {
+  return { type: REQUEST_LIBRARY, libraryType: libraryType, offset: offset };
 }
 
 function receiveLibrary(libraryType, full = true, total, library) {

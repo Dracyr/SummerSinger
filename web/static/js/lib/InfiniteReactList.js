@@ -6,7 +6,6 @@ export default class extends ReactList {
 
     const { from, size } = this.state;
     const { isRowLoaded } = this.props;
-
     const threshold = 5;
     if (this.props.localLength < this.props.length &&
           !isRowLoaded(from + size + threshold)) {

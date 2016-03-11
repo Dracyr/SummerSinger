@@ -10,13 +10,10 @@ import {
 const initialLibrary = {
   libraryView: 'TRACKS',
   totalTracks: 0,
-  requestedTracks: 0,
   tracks: [],
   totalAlbums: 0,
-  requestedAlbums: 0,
   albums: [],
   totalArtists: 0,
-  requestedArtists: 0,
   artists: [],
   playlists: [],
   search: []

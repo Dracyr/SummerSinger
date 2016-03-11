@@ -15,7 +15,7 @@ import ArtistList from './ArtistList';
 class Library extends Component {
   constructor() {
     super();
-    this.loadMoreTracks = _.throttle(this.loadMoreTracks, 50);
+    this.loadMoreTracks = _.throttle(this.loadMoreRows, 50);
   }
 
   componentDidMount() {
@@ -27,14 +27,14 @@ class Library extends Component {
       const view = this.props.libraryView.toLowerCase();
       const collection = this.props[view];
       if (collection.length < 50) {
-        this.props.fetchLibrary(view, 0, 50);
+        this.props.actions.fetchLibrary(view, 0, 50);
       }
     }
   }
 
-  loadMoreTracks(from, size) {
-    const trackCount = this.props.tracks.length;
-    this.props.actions.fetchLibrary('tracks', trackCount, size);
+  loadMoreRows(type, from, size) {
+    const count = this.props[type].length;
+    this.props.actions.fetchLibrary(type, count, size);
   }
 
   render() {
@@ -58,14 +58,21 @@ class Library extends Component {
           totalTracks={total.tracks}
           keyAttr={"id"}
           currentKey={currentKey}
-          loadMoreRows={(offset, size) => this.loadMoreTracks(offset, size)}
+          loadMoreRows={(offset, size) => this.loadMoreRows('tracks', offset, size)}
           onClickHandler={(track) => requestQueueTrack(track.id)} />;
         break;
       case 'ALBUMS':
-        currentView = <AlbumList albums={albums} />;
+        currentView = <AlbumList
+                        albums={albums}
+                        totalAlbums={total.albums}
+                        loadMoreRows={(offset, size) => this.loadMoreRows('albums', offset, size)} />;
         break;
       case 'ARTISTS':
-        currentView = <ArtistList artists={artists} currentKey={currentKey} />;
+        currentView = <ArtistList
+                        artists={artists}
+                        currentKey={currentKey}
+                        totalArtists={total.artists}
+                        loadMoreRows={(offset, size) => this.loadMoreRows('artists', offset, size)} />;
         break;
     }
 

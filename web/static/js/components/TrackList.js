@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import InfiniteReactList from '../lib/InfiniteReactList';
+import { PlaceholderText } from '../lib/Util';
 
 class StarRating extends Component {
 
@@ -45,19 +46,6 @@ class Track extends Component {
         <div className="td td-rating"><StarRating rating={track.rating}></StarRating></div>
       </div>
     );
-  }
-}
-
-class PlaceholderText extends Component {
-
-  render() {
-    const style = {
-      width: '50%',
-      height: '1em',
-      display: 'inline-block',
-      'backgroundColor': '#ddd'
-    };
-    return <div style={style}></div>;
   }
 }
 

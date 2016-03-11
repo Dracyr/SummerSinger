@@ -5,9 +5,10 @@ defmodule SummerSinger.AlbumController do
 
   plug :scrub_params, "album" when action in [:create, :update]
 
-  def index(conn, _params) do
-    albums = Repo.all(Album) |> Repo.preload(tracks: [:artist, :album])
-    render(conn, "index.json", albums: albums)
+  def index(conn, params) do
+    albums = limit_albums(params["offset"], params["limit"])
+    album_count = Repo.all(from t in Album, select: count(t.id)) |> Enum.at(0)
+    render(conn, "index.json", albums: albums, album_count: album_count)
   end
 
   def create(conn, %{"album" => album_params}) do
@@ -53,5 +54,16 @@ defmodule SummerSinger.AlbumController do
     Repo.delete!(album)
 
     send_resp(conn, :no_content, "")
+  end
+
+  defp limit_albums(offset, limit) when is_nil(offset) and is_nil(limit) do
+    Repo.all from a in Album,
+    preload: [:artist, tracks: [:album, :artist]]
+  end
+
+  defp limit_albums(offset, limit) do
+    Repo.all from a in Album,
+    offset: ^offset, limit: ^limit,
+    preload: [:artist, tracks: [:album, :artist]]
   end
 end

@@ -5,9 +5,10 @@ defmodule SummerSinger.ArtistController do
 
   plug :scrub_params, "artist" when action in [:create, :update]
 
-  def index(conn, _params) do
-    artists = Repo.all(artist_query) |> Repo.preload([:tracks, albums: [:artist, :tracks]])
-    render(conn, "index.json", artists: artists)
+  def index(conn, params) do
+    artists = limit_artists(params["offset"], params["limit"])
+    artist_count = Repo.all(from t in Artist, select: count(t.id)) |> Enum.at(0)
+    render(conn, "index.json", artists: artists, artist_count: artist_count)
   end
 
   def create(conn, %{"artist" => artist_params}) do
@@ -27,6 +28,10 @@ defmodule SummerSinger.ArtistController do
   end
 
   def show(conn, %{"id" => id}) do
+    artist_query = from artist in Artist,
+      order_by: artist.name,
+      preload: [:tracks, albums: [tracks: :artist]]
+
     artist = Repo.get(artist_query, id)
     render(conn, "show.json", artist: artist)
   end
@@ -55,9 +60,12 @@ defmodule SummerSinger.ArtistController do
     send_resp(conn, :no_content, "")
   end
 
-  defp artist_query do
-    artist_query = from artist in Artist,
-      order_by: artist.name,
-      preload: [:tracks, albums: [tracks: :artist]]
+  defp limit_artists(offset, limit) when is_nil(offset) and is_nil(limit) do
+    Repo.all Artist
+  end
+
+  defp limit_artists(offset, limit) do
+    Repo.all from a in Artist,
+      offset: ^offset, limit: ^limit
   end
 end
