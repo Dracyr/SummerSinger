@@ -19,7 +19,7 @@ defmodule SummerSinger.Mixfile do
   def application do
     [mod: {SummerSinger, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :poolboy]]
+                    :phoenix_ecto, :postgrex, :poolboy, :codepagex]]
   end
 
   # Specifies which paths to compile per environment
@@ -38,7 +38,8 @@ defmodule SummerSinger.Mixfile do
      {:gettext, "~> 0.9"},
      {:cowboy, "~> 1.0"},
      {:codepagex, "~> 0.1.2"},
-     { :poolboy, "~> 1.5" }
+     {:poolboy, "~> 1.5"},
+     {:exrm, "~> 1.0.0-rc7"}
    ]
   end
 

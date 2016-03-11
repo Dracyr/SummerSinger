@@ -14,9 +14,8 @@
   <body>
     <div id="container">
     </div>
-    <%#= @inner %>
 
-    <%= if Mix.env == :dev do %>
+    <%= if Application.get_env(:summer_singer, :env) == :dev do %>
       <script src='http://localhost:4001/bundle.js'></script>
     <% else %>
       <script src="<%= static_path(@conn, "/js/bundle.js") %>"></script>
