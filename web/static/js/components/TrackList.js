@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import InfiniteReactList from '../lib/InfiniteReactList';
-import { VirtualScroll } from 'react-virtualized';
 
 class StarRating extends Component {
 
