@@ -46,14 +46,15 @@ class Summer extends React.Component {
         break;
       case 'LIBRARY':
 
-        mainView = (
-            <Library library={library}
-                    fetchLibrary={actions.library.fetchLibrary}
-                    switchLibraryView={actions.views.switchLibraryView}
-                    fetchArtistDetails={actions.library.fetchArtistDetails}
-                    currentKey={currentId}
-                    libraryView={views.libraryView} />
-          );
+        // mainView = (
+        //     <Library library={library}
+        //             fetchLibrary={actions.library.fetchLibrary}
+        //             switchLibraryView={actions.views.switchLibraryView}
+        //             fetchArtistDetails={actions.library.fetchArtistDetails}
+        //             currentKey={currentId}
+        //             libraryView={views.libraryView} />
+        //   );
+        mainView = <Library currentKey={currentId} />;
         break;
       case 'SEARCH':
         mainView = <TrackList tracks={library.search}

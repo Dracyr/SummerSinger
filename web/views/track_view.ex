@@ -1,8 +1,11 @@
 defmodule SummerSinger.TrackView do
   use SummerSinger.Web, :view
 
-  def render("index.json", %{tracks: tracks}) do
-    %{data: render_many(tracks, SummerSinger.TrackView, "track.json")}
+  def render("index.json", %{tracks: tracks, track_count: track_count}) do
+    %{
+      total: track_count,
+      data: render_many(tracks, SummerSinger.TrackView, "track.json")
+    }
   end
 
   def render("show.json", %{track: track}) do

@@ -1,5 +1,7 @@
 import fetch from 'isomorphic-fetch';
 
+export const SWITCH_LIBRARY_VIEW = 'SWITCH_LIBRARY_VIEW';
+
 export const REQUEST_LIBRARY = 'REQUEST_LIBRARY';
 export const RECEIVE_LIBRARY  = 'RECEIVE_LIBRARY';
 
@@ -12,28 +14,40 @@ export const RECEIVE_PLAYLIST = 'RECEIVE_PLAYLIST';
 export const REQUEST_SEARCH = 'REQUEST_SEARCH';
 export const RECEIVE_SEARCH = 'RECEIVE_SEARCH';
 
-function requestLibrary(libraryType) {
-  return { type: REQUEST_LIBRARY, libraryType };
+export const LibraryViews = {
+  TRACKS: 'TRACKS',
+  ARTISTS: 'ARTISTS',
+  ALBUMS: 'ALBUMS'
+};
+
+export function switchLibraryView(libraryView) {
+  return { type: SWITCH_LIBRARY_VIEW, libraryView };
 }
 
-function receiveLibrary(libraryType, library) {
-  return { type: RECEIVE_LIBRARY, libraryType: libraryType, library };
+function requestLibrary(libraryType, requested) {
+  return { type: REQUEST_LIBRARY, libraryType: libraryType, requested: requested };
 }
 
-export function fetchLibrary(libraryType) {
+function receiveLibrary(libraryType, full = true, total, library) {
+  return { type: RECEIVE_LIBRARY, libraryType: libraryType, full: full, total: total, library };
+}
+
+export function fetchLibrary(libraryType, offset = 0, limit = 0) {
   return (dispatch, getState) => {
-    if (getState().library[libraryType].length > 0) {
+    const total = offset + limit;
+    if (getState().library[libraryType].length >= total) {
       return;
     }
 
-    dispatch(requestLibrary(libraryType));
+    dispatch(requestLibrary(libraryType, total));
 
-    return fetch('http://localhost:4000/api/' + libraryType)
+    const full = total === 0;
+    const query = full ? '' : '?offset=' + offset + '&limit=' + limit;
+    return fetch('http://localhost:4000/api/' + libraryType + query)
       .then(response => response.json())
-      .then(json => dispatch(receiveLibrary(libraryType, json.data)));
+      .then(json => dispatch(receiveLibrary(libraryType, full, json.total, json.data)));
   };
 }
-
 
 function requestPlaylists() {
   return { type: REQUEST_PLAYLISTS };

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import ReactList from 'react-list';
+import InfiniteReactList from '../lib/InfiniteReactList';
+import { VirtualScroll } from 'react-virtualized';
 
 class StarRating extends Component {
 
@@ -48,21 +49,55 @@ class Track extends Component {
   }
 }
 
+class PlaceholderText extends Component {
+
+  render() {
+    const style = {
+      width: '50%',
+      height: '1em',
+      display: 'inline-block',
+      'backgroundColor': '#ddd'
+    };
+    return <div style={style}></div>;
+  }
+}
+
 class TrackList extends Component {
 
+  loadMoreRows(from, size) {
+    const { loadMoreRows } = this.props;
+    loadMoreRows && loadMoreRows(from, size);
+  }
+
+  isRowLoaded(index) {
+    return !!this.props.tracks[index];
+  }
+
   renderItem(index, key) {
-    const {tracks, keyAttr, currentKey, onClickHandler } = this.props;
-    const track = tracks[index];
-    return <Track
-              track={track}
-              key={track[keyAttr]}
-              keyAttr={keyAttr}
-              currentKey={currentKey}
-              onClickHandler={onClickHandler} />;
+    if (this.isRowLoaded(index)) {
+      const {tracks, keyAttr, currentKey, onClickHandler } = this.props;
+      const track = tracks[index];
+      return <Track
+                track={track}
+                key={track[keyAttr]}
+                keyAttr={keyAttr}
+                currentKey={currentKey}
+                onClickHandler={onClickHandler} />;
+    } else {
+      return (
+        <div className="tr track" key={key}>
+          <div className="td td-title"><div><PlaceholderText/></div></div>
+          <div className="td td-artist"><div><PlaceholderText/></div></div>
+          <div className="td td-album"><div></div></div>
+          <div className="td td-rating"><StarRating rating={0}></StarRating></div>
+        </div>
+      );
+    }
   }
 
   render() {
     const {tracks, keyAttr, currentKey, onClickHandler } = this.props;
+    const trackCount = this.props.totalTracks || tracks.length;
 
     if (tracks.length > 0) {
       return (
@@ -75,11 +110,14 @@ class TrackList extends Component {
               <div className="td td-rating">Rating</div>
             </div>
           </div>
-          <ReactList
+          <InfiniteReactList
             itemRenderer={(index, key) => this.renderItem(index, key)}
-            itemsRenderer={(items,ref) => <div className="tbody" ref={ref}>{items}</div>}
-            length={tracks.length}
+            itemsRenderer={(items, ref) => <div className="tbody" ref={ref}>{items}</div>}
+            length={trackCount}
+            localLength={tracks.length}
             type='uniform'
+            isRowLoaded={(index) => this.isRowLoaded(index)}
+            loadMoreRows={(from, size) => this.loadMoreRows(from, size)}
           />
         </div>
       );

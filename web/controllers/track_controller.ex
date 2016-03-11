@@ -10,11 +10,12 @@ defmodule SummerSinger.TrackController do
     IO.inspect(params)
     tracks = case params["search"] do
       nil ->
-        tracks = limit_tracks
+        tracks = limit_tracks(params["offset"], params["limit"])
       search_term ->
         tracks = Track.search(search_term)
     end |> Repo.preload(:artist)
-    render(conn, "index.json", tracks: tracks)
+    track_count = Repo.all(from t in Track, select: count(t.id)) |> Enum.at(0)
+    render(conn, "index.json", tracks: tracks, track_count: track_count)
   end
 
   def create(conn, %{"track" => track_params}) do
@@ -62,8 +63,14 @@ defmodule SummerSinger.TrackController do
     send_resp(conn, :no_content, "")
   end
 
-  defp limit_tracks do
+  defp limit_tracks(offset, limit) when is_nil(offset) and is_nil(limit) do
     Repo.all from t in Track,
+    preload: [:artist, :album]
+  end
+
+  defp limit_tracks(offset, limit) do
+    Repo.all from t in Track,
+    offset: ^offset, limit: ^limit,
     preload: [:artist, :album]
   end
 end

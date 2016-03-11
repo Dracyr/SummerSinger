@@ -21,6 +21,7 @@
   "dependencies": {
     "font-awesome": "^4.3.0",
     "isomorphic-fetch": "^2.2.0",
+    "lodash": "^4.6.1",
     "phoenix": "file:deps/phoenix",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",

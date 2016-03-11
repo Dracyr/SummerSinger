@@ -6,8 +6,7 @@ import {
 
 const initialState = {
   view: 'QUEUE',
-  playlist: null,
-  libraryView: 'TRACKS'
+  playlist: null
 };
 
 export default function views(state = initialState, action) {
@@ -16,8 +15,6 @@ export default function views(state = initialState, action) {
       return { ...state, view: action.view };
     case SWITCH_PLAYLIST:
       return { ...state, view: 'PLAYLIST', playlist: action.playlist };
-    case SWITCH_LIBRARY_VIEW:
-      return { ...state, libraryView: action.libraryView };
     default:
       return state;
   }

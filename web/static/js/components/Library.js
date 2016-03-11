@@ -1,28 +1,51 @@
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as PlayerActions from '../actions/player';
+import * as LibraryActions from '../actions/library';
+import * as ViewsActions from '../actions/views';
+import _ from 'lodash';
 
+import { switchLibraryView } from '../actions/library';
 import { requestQueueTrack } from '../actions/player';
 import TrackList from './TrackList';
 import AlbumList from './AlbumList';
 import ArtistList from './ArtistList';
 
 class Library extends Component {
-  componentDidMount() {
-    this.props.fetchLibrary(this.props.libraryView.toLowerCase());
+  constructor() {
+    super();
+    this.loadMoreTracks = _.throttle(this.loadMoreTracks, 50);
   }
 
-  componentDidUpdate() {
-    this.props.fetchLibrary(this.props.libraryView.toLowerCase());
+  componentDidMount() {
+    this.props.actions.fetchLibrary(this.props.libraryView.toLowerCase(), 0, 50);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.libraryView !== this.props.libraryView) {
+      const view = this.props.libraryView.toLowerCase();
+      const collection = this.props[view];
+      if (collection.length < 50) {
+        this.props.fetchLibrary(view, 0, 50);
+      }
+    }
+  }
+
+  loadMoreTracks(from, size) {
+    const trackCount = this.props.tracks.length;
+    this.props.actions.fetchLibrary('tracks', trackCount, size);
   }
 
   render() {
-    const { library, libraryView, switchLibraryView, currentKey } = this.props;
+    const { tracks, albums, artists, libraryView, actions, total, currentKey } = this.props;
 
     const libraryHeader = (
       <div>
         <h1 className="library-header">
-          <span onClick={() => switchLibraryView('TRACKS')} className={libraryView == 'TRACKS' ? '' : 'inactive'}>Tracks </span>
-          <span onClick={() => switchLibraryView('ALBUMS')} className={libraryView == 'ALBUMS' ? '' : 'inactive'}>Albums </span>
-          <span onClick={() => switchLibraryView('ARTISTS')} className={libraryView == 'ARTISTS' ? '' : 'inactive'}>Artists </span>
+          <span onClick={() => actions.switchLibraryView('TRACKS')} className={libraryView == 'TRACKS' ? '' : 'inactive'}>Tracks </span>
+          <span onClick={() => actions.switchLibraryView('ALBUMS')} className={libraryView == 'ALBUMS' ? '' : 'inactive'}>Albums </span>
+          <span onClick={() => actions.switchLibraryView('ARTISTS')} className={libraryView == 'ARTISTS' ? '' : 'inactive'}>Artists </span>
         </h1>
       </div>
     );
@@ -31,16 +54,18 @@ class Library extends Component {
     switch(libraryView) {
       case 'TRACKS':
         currentView = <TrackList
-          tracks={library.tracks}
+          tracks={tracks}
+          totalTracks={total.tracks}
           keyAttr={"id"}
           currentKey={currentKey}
+          loadMoreRows={(offset, size) => this.loadMoreTracks(offset, size)}
           onClickHandler={(track) => requestQueueTrack(track.id)} />;
         break;
       case 'ALBUMS':
-        currentView = <AlbumList albums={library.albums} />;
+        currentView = <AlbumList albums={albums} />;
         break;
       case 'ARTISTS':
-        currentView = <ArtistList artists={library.artists} currentKey={currentKey} />;
+        currentView = <ArtistList artists={artists} currentKey={currentKey} />;
         break;
     }
 
@@ -53,4 +78,24 @@ class Library extends Component {
   }
 }
 
-export default Library;
+function mapState(state) {
+  return {
+    libraryView: state.library.libraryView,
+    tracks: state.library.tracks,
+    albums: state.library.albums,
+    artists: state.library.artists,
+    total: {
+      tracks: state.library.totalTracks,
+      albums: state.library.totalAlbums,
+      artists: state.library.totalArtists
+    }
+  };
+}
+
+function mapDispatch(dispatch) {
+  return {
+    actions:  bindActionCreators(LibraryActions, dispatch)
+  };
+}
+
+export default connect(mapState, mapDispatch)(Library);
