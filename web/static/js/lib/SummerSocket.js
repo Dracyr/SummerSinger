@@ -4,11 +4,14 @@ import { fetchPlaylists } from '../actions/library';
 import { Socket } from 'phoenix';
 
 export default class SummerSocket {
-  constructor(store) {
-    this.store = store;
-
+  constructor() {
     let socket = new Socket('/socket');
     this.socket = socket;
+  }
+
+  initialize(store) {
+    this.store = store;
+    const socket = this.socket;
 
     socket.connect();
     let broadcastChannel = socket.channel('status:broadcast', {});

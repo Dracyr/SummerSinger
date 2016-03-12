@@ -2,7 +2,6 @@ var path    = require('path');
 var webpack = require('webpack');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
-
 var env = process.env.MIX_ENV || 'dev';
 var prod = env === 'prod';
 var publicPath = 'http://localhost:4001/';
@@ -37,8 +36,12 @@ module.exports = {
   module: {
     loaders: [{
       test: /\.js$/,
-      loaders: ['babel'],
-      exclude: /node_modules/
+      loader: 'babel',
+      exclude: /node_modules/,
+      query: {
+        presets: ['react', 'es2015'],
+        plugins: ['transform-object-rest-spread']
+      }
     }]
   }
 };

@@ -6,9 +6,9 @@ import App from './containers/App';
 import configureStore from './configureStore';
 import SummerSocket from './lib/SummerSocket';
 
-const store = configureStore();
+const summerSocket = new SummerSocket();
+const store = configureStore(summerSocket);
 
-const summerSocket = new SummerSocket(store);
 export function getSummerSocket() {
   return summerSocket;
 }

@@ -3,11 +3,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as PlayerActions from '../actions/player';
 import * as LibraryActions from '../actions/library';
-import * as ViewsActions from '../actions/views';
 import _ from 'lodash';
 
-import { switchLibraryView } from '../actions/library';
-import { requestQueueTrack } from '../actions/player';
 import TrackList from './TrackList';
 import AlbumList from './AlbumList';
 import ArtistList from './ArtistList';
@@ -59,7 +56,7 @@ class Library extends Component {
           keyAttr={"id"}
           currentKey={currentKey}
           loadMoreRows={(offset, size) => this.loadMoreRows('tracks', offset, size)}
-          onClickHandler={(track) => requestQueueTrack(track.id)} />;
+          onClickHandler={(track) => actions.requestQueueTrack(track.id)} />;
         break;
       case 'ALBUMS':
         currentView = <AlbumList
@@ -101,7 +98,7 @@ function mapState(state) {
 
 function mapDispatch(dispatch) {
   return {
-    actions:  bindActionCreators(LibraryActions, dispatch)
+    actions:  bindActionCreators(Object.assign({}, LibraryActions, PlayerActions), dispatch)
   };
 }
 

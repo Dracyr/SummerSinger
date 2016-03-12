@@ -19,7 +19,7 @@ defmodule SummerSinger.Mixfile do
   def application do
     [mod: {SummerSinger, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :poolboy, :codepagex]]
+                    :phoenix_ecto, :postgrex, :poolboy, :codepagex, :connection]]
   end
 
   # Specifies which paths to compile per environment
@@ -51,6 +51,8 @@ defmodule SummerSinger.Mixfile do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-     "ecto.reset": ["ecto.drop", "ecto.setup"]]
+     "ecto.reset": ["ecto.drop", "ecto.setup"],
+     "phoenix.digest": "summer_singer.digest"
+    ]
   end
 end

@@ -45,22 +45,14 @@ class Summer extends React.Component {
                             fetchPlaylist={actions.library.fetchPlaylist} />;
         break;
       case 'LIBRARY':
-
-        // mainView = (
-        //     <Library library={library}
-        //             fetchLibrary={actions.library.fetchLibrary}
-        //             switchLibraryView={actions.views.switchLibraryView}
-        //             fetchArtistDetails={actions.library.fetchArtistDetails}
-        //             currentKey={currentId}
-        //             libraryView={views.libraryView} />
-        //   );
         mainView = <Library currentKey={currentId} />;
         break;
       case 'SEARCH':
-        mainView = <TrackList tracks={library.search}
-                    keyAttr={"id"}
-                    currentKey={currentId}
-                    onClickHandler={(track) => actions.player.requestQueueTrack(track.id)}/>;
+        // mainView = <TrackList tracks={library.search}
+        //             keyAttr={"id"}
+        //             currentKey={currentId}
+        //             onClickHandler={(track) => actions.player.requestQueueTrack(track.id)}/>;
+        mainView = <Search currentKey={currentId} />;
         break;
       default:
         mainView = '';
