@@ -12,7 +12,7 @@ defmodule SummerSinger.Album do
     timestamps
   end
 
-  @required_fields ~w(title)
+  @required_fields ~w(title artist_id)
   @optional_fields ~w(year)
 
   @doc """
@@ -24,19 +24,35 @@ defmodule SummerSinger.Album do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+    |> unique_constraint(:title, name: :albums_title_artist_id_index)
   end
 
   def find_or_create(nil, _), do: nil
   def find_or_create(nil, nil), do: nil
   def find_or_create(title, artist) do
-    album = Repo.one(
-          from a in Album,
-          where: a.title == ^title and a.artist_id == ^artist.id)
+    try do
+      transaction = Repo.transaction(fn ->
+        album = Repo.one from a in Album,
+          where: a.title == ^title and a.artist_id == ^artist.id
 
-    if is_nil(album) do
-      Repo.insert!(%SummerSinger.Album{title: title, artist_id: artist.id})
-    else
-      album
+        if is_nil(album) do
+          %Album{}
+          |> Album.changeset(%{title: title, artist_id: artist.id})
+          |> Repo.insert!
+        else
+          album
+        end
+      end)
+
+      case transaction do
+        {:ok, artist} ->
+          artist
+        {:error, _reason} ->
+          find_or_create(title, artist)
+      end
+    rescue
+      e in Ecto.InvalidChangesetError ->
+        find_or_create(title, artist)
     end
   end
 end

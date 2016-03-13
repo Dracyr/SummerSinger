@@ -61,11 +61,13 @@ defmodule SummerSinger.ArtistController do
   end
 
   defp limit_artists(offset, limit) when is_nil(offset) and is_nil(limit) do
-    Repo.all Artist
+    Repo.all from a in Artist,
+      order_by: a.name
   end
 
   defp limit_artists(offset, limit) do
     Repo.all from a in Artist,
+      order_by: a.name,
       offset: ^offset, limit: ^limit
   end
 end

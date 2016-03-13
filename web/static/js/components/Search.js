@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
 import TrackList from '../components/TrackList';
 import { requestQueueTrack } from '../actions/player';
 
@@ -27,8 +30,8 @@ function mapState(state) {
 
 function mapDispatch(dispatch) {
   return {
-    actions:  bindActionCreators(LibraryActions, dispatch)
+    actions:  bindActionCreators([requestQueueTrack], dispatch)
   };
 }
 
-export default connect(mapState, mapDispatch)(Library);
+export default connect(mapState, mapDispatch)(Search);

@@ -1,4 +1,4 @@
-defmodule SummerSinger.IndexMusicSupervisor do
+defmodule SummerSinger.IndexMusic.Supervisor do
   use Supervisor
 
   def start_link do
@@ -14,7 +14,7 @@ defmodule SummerSinger.IndexMusicSupervisor do
 
     pool_options = [
       name: {:local, pool_name()},
-      worker_module: SummerSinger.IndexMusicWorker,
+      worker_module: SummerSinger.IndexMusic.Worker,
       size: repo_pool_size,
       max_overflow: 0
     ]
@@ -39,7 +39,7 @@ defmodule SummerSinger.IndexMusicSupervisor do
 
   defp pool_track(track_path) do
     :poolboy.transaction(pool_name, fn(pid) ->
-      SummerSinger.IndexMusicWorker.add_track(pid, track_path)
+      SummerSinger.IndexMusic.Worker.add_track(pid, track_path)
     end, :infinity)
   end
 end

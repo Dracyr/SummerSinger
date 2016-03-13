@@ -1,7 +1,7 @@
 defmodule SummerSinger.Artist do
   use SummerSinger.Web, :model
   alias SummerSinger.Artist
-
+  require IEx
   schema "artists" do
     field :name, :string, unique: true
 
@@ -29,17 +29,26 @@ defmodule SummerSinger.Artist do
 
   def find_or_create(nil), do: nil
   def find_or_create(name) do
-    case Repo.get_by(Artist, name: name) do
-      nil ->
-        try do
-          %SummerSinger.Artist{}
-          |> Artist.changeset(%{name: name})
-          |> Repo.insert!
-        rescue
-          e in Ecto.InvalidChangesetError ->
-            raise "Artist already created!"
+    try do
+      transaction = Repo.transaction(fn ->
+        case Repo.get_by(Artist, name: name) do
+          nil ->
+            %Artist{}
+            |> Artist.changeset(%{name: name})
+            |> Repo.insert!
+          artist -> artist
         end
-      artist -> artist
+      end)
+
+      case transaction do
+        {:ok, artist} ->
+          artist
+        {:error, _reason} ->
+          find_or_create(name)
+      end
+    rescue
+      e in Ecto.InvalidChangesetError ->
+        find_or_create(name)
     end
   end
 end

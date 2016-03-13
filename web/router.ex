@@ -27,5 +27,7 @@ defmodule SummerSinger.Router do
     resources "/albums", AlbumController, except: [:new, :edit]
     resources "/artists", ArtistController, except: [:new, :edit]
     resources "/playlists", PlaylistController
+    resources "/libraries", LibraryController
+    resources "/folders", FolderController
   end
 end

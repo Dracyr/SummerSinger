@@ -5,8 +5,6 @@ import socketMiddleware from './lib/socketMiddleware';
 import thunk from 'redux-thunk';
 
 export default function configureStore(socket, initialState) {
-  console.log(initialState);
-  console.log(socket);
   const finalCreateStore = compose(
     applyMiddleware(thunk),
     applyMiddleware(socketMiddleware(socket)),

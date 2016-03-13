@@ -2,12 +2,14 @@ import React, { PropTypes } from 'react';
 import { requestPlayTrack } from '../actions/player';
 import { bindActionCreators } from 'redux';
 
-import Player     from '../components/Player';
-import Sidebar    from '../components/Sidebar';
-import Settings   from '../components/Settings';
-import Playlist   from '../components/Playlist';
-import Library    from '../components/Library';
-import TrackList  from '../components/TrackList';
+import Player        from '../components/Player';
+import Sidebar       from '../components/Sidebar';
+import Settings      from '../components/Settings';
+import Playlist      from '../components/Playlist';
+import Library       from '../components/Library';
+import TrackList     from '../components/TrackList';
+import Search        from '../components/Search';
+import FolderBrowser from '../components/FolderBrowser';
 
 class Summer extends React.Component {
 
@@ -47,11 +49,10 @@ class Summer extends React.Component {
       case 'LIBRARY':
         mainView = <Library currentKey={currentId} />;
         break;
+      case 'FOLDER_BROWSER':
+        mainView = <FolderBrowser currentKey={currentId} />;
+        break;
       case 'SEARCH':
-        // mainView = <TrackList tracks={library.search}
-        //             keyAttr={"id"}
-        //             currentKey={currentId}
-        //             onClickHandler={(track) => actions.player.requestQueueTrack(track.id)}/>;
         mainView = <Search currentKey={currentId} />;
         break;
       default:

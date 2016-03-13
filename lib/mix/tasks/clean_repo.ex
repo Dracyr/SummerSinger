@@ -1,6 +1,6 @@
 defmodule Mix.Tasks.SummerSinger.CleanRepo do
   use Mix.Task
-  alias SummerSinger.{Repo, Track, Artist, Album, Playlist, PlaylistItem}
+  alias SummerSinger.{Repo, Track, Artist, Album, Playlist, PlaylistItem, Folder}
 
   def run(_args) do
     Mix.Task.run "app.start", []
@@ -9,5 +9,6 @@ defmodule Mix.Tasks.SummerSinger.CleanRepo do
     Repo.delete_all(Track)
     Repo.delete_all(Album)
     Repo.delete_all(Artist)
+    Repo.delete_all(Folder)
   end
 end

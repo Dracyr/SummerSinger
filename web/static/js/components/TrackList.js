@@ -66,7 +66,7 @@ class TrackList extends Component {
       const track = tracks[index];
       return <Track
                 track={track}
-                key={track[keyAttr]}
+                key={key}
                 keyAttr={keyAttr}
                 currentKey={currentKey}
                 onClickHandler={onClickHandler} />;

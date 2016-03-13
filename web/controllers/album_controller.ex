@@ -58,11 +58,13 @@ defmodule SummerSinger.AlbumController do
 
   defp limit_albums(offset, limit) when is_nil(offset) and is_nil(limit) do
     Repo.all from a in Album,
+    order_by: a.title,
     preload: [:artist, tracks: [:album, :artist]]
   end
 
   defp limit_albums(offset, limit) do
     Repo.all from a in Album,
+    order_by: a.title,
     offset: ^offset, limit: ^limit,
     preload: [:artist, tracks: [:album, :artist]]
   end

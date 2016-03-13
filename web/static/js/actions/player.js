@@ -16,8 +16,8 @@ export function requestPlayback(playback) {
   return { type: REQUEST_PLAYBACK, playback };
 }
 
-export function requestQueueTrack(trackId) {
-  return { type: REQUEST_QUEUE_TRACK, trackId };
+export function requestQueueTrack(trackId, play = false) {
+  return { type: REQUEST_QUEUE_TRACK, trackId, play };
 }
 
 export function requestPlayTrack(queueId) {

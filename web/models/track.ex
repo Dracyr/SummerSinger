@@ -11,6 +11,7 @@ defmodule SummerSinger.Track do
 
     belongs_to :artist, SummerSinger.Artist
     belongs_to :album,  SummerSinger.Album
+    belongs_to :folder, SummerSinger.Folder
     has_many   :images, SummerSinger.Image
 
     has_many   :playlist_items, SummerSinger.PlaylistItem
@@ -19,7 +20,7 @@ defmodule SummerSinger.Track do
     timestamps
   end
 
-  @required_fields ~w(title filename duration)
+  @required_fields ~w(title filename duration folder)
   @optional_fields ~w(rating metadata)
 
   @doc """
@@ -31,6 +32,7 @@ defmodule SummerSinger.Track do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+    |> unique_constraint(:filename)
   end
 
   def to_map(track, index) do
