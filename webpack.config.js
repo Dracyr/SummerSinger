@@ -21,7 +21,7 @@ if (prod) {
 var entry = './web/static/js/index.js';
 
 module.exports = {
-  devtool: prod ? null : 'cheap-module-eval-source-map',
+  devtool: prod ? null : 'cheap-source-map',
   entry: prod ? entry : [
     'webpack-dev-server/client?' + publicPath,
     'webpack/hot/dev-server',
