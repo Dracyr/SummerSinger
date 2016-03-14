@@ -103,10 +103,6 @@ export default class Sidebar extends Component {
               className={isActive('LIBRARY', view)}>
                 Library
           </li>
-          <li onClick={() => switchView('FOLDER_BROWSER')}
-              className={isActive('FOLDER_BROWSER', view)}>
-                Folder Browser
-          </li>
           <li onClick={() => switchView('SETTINGS')}
               className={isActive('SETTINGS', view)}>
                 Settings

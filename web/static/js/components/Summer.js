@@ -9,7 +9,6 @@ import Playlist      from '../components/Playlist';
 import Library       from '../components/Library';
 import TrackList     from '../components/TrackList';
 import Search        from '../components/Search';
-import FolderBrowser from '../components/FolderBrowser';
 
 class Summer extends React.Component {
 
@@ -48,9 +47,6 @@ class Summer extends React.Component {
         break;
       case 'LIBRARY':
         mainView = <Library currentKey={currentId} />;
-        break;
-      case 'FOLDER_BROWSER':
-        mainView = <FolderBrowser currentKey={currentId} />;
         break;
       case 'SEARCH':
         mainView = <Search currentKey={currentId} />;

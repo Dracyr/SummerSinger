@@ -1,32 +1,85 @@
 import React, { Component } from 'react';
-import InfiniteReactList from '../lib/InfiniteReactList';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import ReactList from 'react-list';
+import { ActionCreators } from 'redux-undo';
 
-export default class FolderBrowser extends Component {
-  isRowLoaded(index) {
-  }
+import * as FolderActions from '../actions/folders';
+import * as PlayerActions from '../actions/player';
+import { Track } from './TrackList';
 
-  loadMoreRows(from, size) {
+class Folders extends Component {
+  componentDidMount() {
+    if (this.props.pathParts.length === 1) {
+      this.props.actions.fetchFolder('', true);
+    }
   }
 
   renderItem(index, key) {
+    if (index < this.props.folder.children.length) {
+      const child = this.props.folder.children[index];
+      return(
+        <div className="tr track" key={key} onClick={() => this.props.actions.fetchFolder(child.id)}>
+          <div className="td ">{child.title}</div>
+          <div className="td "></div>
+          <div className="td "></div>
+          <div className="td "></div>
+        </div>
+      );
+    } else {
+      const trackIndex = index - this.props.folder.children.length;
+      const track = this.props.folder.tracks[trackIndex];
+      return <Track
+                track={track}
+                key={key}
+                keyAttr={'id'}
+                currentKey={this.props.currentKey}
+                onClickHandler={(track) => this.props.playerActions.requestQueueTrack(track.id)} />;
 
+    }
   }
 
   render() {
+    const { pathParts, folder, actions} = this.props;
+    const folder_parent = pathParts.length > 1 ? (
+      <div className="tr track" key={0} onClick={() => this.props.actions.goToParent()}>
+        <div className="td ">..</div>
+        <div className="td "></div>
+        <div className="td "></div>
+        <div className="td "></div>
+      </div>
+    ) : '';
+
+    const totalLength = folder.children.length + folder.tracks.length;
+
     return (
       <div>
-        <h1>Folders / </h1>
+        <h3>{pathParts.join(' / ')}</h3>
         <div className="display-table track-list">
-          <div className="tbody">
-            <div className="tr track">
-              <div className="td td-title">asd</div>
-              <div className="td td-artist"></div>
-              <div className="td td-album"></div>
-              <div className="td td-rating"></div>
-            </div>
-          </div>
+          <ReactList
+            itemRenderer={(index, key) => this.renderItem(index, key)}
+            itemsRenderer={(items, ref) => <div className="tbody" ref={ref}>{folder_parent}{items}</div>}
+            length={totalLength}
+            type='uniform'
+          />
         </div>
       </div>
     );
   }
 }
+
+function mapState(state) {
+  return {
+    pathParts: state.folders.present.pathParts,
+    folder: state.folders.present.folder
+  };
+}
+
+function mapDispatch(dispatch) {
+  return {
+    actions: bindActionCreators(FolderActions, dispatch),
+    playerActions: bindActionCreators(PlayerActions, dispatch),
+  };
+}
+
+export default connect(mapState, mapDispatch)(Folders);

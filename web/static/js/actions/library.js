@@ -17,7 +17,8 @@ export const RECEIVE_SEARCH = 'RECEIVE_SEARCH';
 export const LibraryViews = {
   TRACKS: 'TRACKS',
   ARTISTS: 'ARTISTS',
-  ALBUMS: 'ALBUMS'
+  ALBUMS: 'ALBUMS',
+  FOLDERS: 'FOLDERS'
 };
 
 export function switchLibraryView(libraryView) {

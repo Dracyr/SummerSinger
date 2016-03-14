@@ -25,7 +25,7 @@ class StarRating extends Component {
   }
 }
 
-class Track extends Component {
+export class Track extends Component {
 
  render() {
     const {track, keyAttr, currentKey, onClickHandler} = this.props;
@@ -49,7 +49,7 @@ class Track extends Component {
   }
 }
 
-class TrackList extends Component {
+export default class TrackList extends Component {
 
   loadMoreRows(from, size) {
     const { loadMoreRows } = this.props;
@@ -117,5 +117,3 @@ class TrackList extends Component {
     }
   }
 }
-
-export default TrackList;

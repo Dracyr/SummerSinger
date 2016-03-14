@@ -8,19 +8,23 @@ import _ from 'lodash';
 import TrackList from './TrackList';
 import AlbumList from './AlbumList';
 import ArtistList from './ArtistList';
+import FolderBrowser from '../components/FolderBrowser';
 
 class Library extends Component {
   constructor() {
     super();
-    this.loadMoreTracks = _.throttle(this.loadMoreRows, 50);
+    this.loadMoreRows = _.throttle(this.loadMoreRows, 50);
   }
 
   componentDidMount() {
-    this.props.actions.fetchLibrary(this.props.libraryView.toLowerCase(), 0, 50);
+    if (this.props.libraryView !== 'FOLDERS') {
+      this.props.actions.fetchLibrary(this.props.libraryView.toLowerCase(), 0, 50);
+    }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.libraryView !== this.props.libraryView) {
+    if (this.props.libraryView !== 'FOLDERS' &&
+        prevProps.libraryView !== this.props.libraryView) {
       const view = this.props.libraryView.toLowerCase();
       const collection = this.props[view];
       if (collection.length < 50) {
@@ -43,6 +47,7 @@ class Library extends Component {
           <span onClick={() => actions.switchLibraryView('TRACKS')} className={libraryView == 'TRACKS' ? '' : 'inactive'}>Tracks </span>
           <span onClick={() => actions.switchLibraryView('ALBUMS')} className={libraryView == 'ALBUMS' ? '' : 'inactive'}>Albums </span>
           <span onClick={() => actions.switchLibraryView('ARTISTS')} className={libraryView == 'ARTISTS' ? '' : 'inactive'}>Artists </span>
+          <span onClick={() => actions.switchLibraryView('FOLDERS')} className={libraryView == 'FOLDERS' ? '' : 'inactive'}>Folders </span>
         </h1>
       </div>
     );
@@ -70,6 +75,9 @@ class Library extends Component {
                         currentKey={currentKey}
                         totalArtists={total.artists}
                         loadMoreRows={(offset, size) => this.loadMoreRows('artists', offset, size)} />;
+        break;
+      case 'FOLDERS':
+        currentView = <FolderBrowser currentKey={currentKey} />;
         break;
     }
 
