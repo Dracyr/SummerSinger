@@ -11,11 +11,17 @@ var plugins = [
   new CopyWebpackPlugin([{ from: './web/static/assets' }])
 ];
 
+var output = {
+  path: path.join(__dirname, './priv/static/js'),
+  filename: 'bundle.js'
+};
+
 if (prod) {
   plugins.push(new webpack.optimize.UglifyJsPlugin());
 } else {
   plugins.push(new webpack.HotModuleReplacementPlugin());
   plugins.push(new webpack.NoErrorsPlugin());
+  output = Object.assign(output, {publicPath: publicPath});
 }
 
 var entry = './web/static/js/index.js';
@@ -27,11 +33,7 @@ module.exports = {
     'webpack/hot/dev-server',
     entry
   ],
-  output: {
-    path: path.join(__dirname, './priv/static/js'),
-    filename: 'bundle.js',
-    publicPath: publicPath
-  },
+  output: output,
   plugins: plugins,
   module: {
     loaders: [{

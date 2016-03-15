@@ -21,7 +21,7 @@ export function fetchFolder(folderId = '', rootFolder = false) {
 
     dispatch(requestFolder(folderId, rootFolder));
 
-    return fetch('http://localhost:4000/api/folders/' + folderId)
+    return fetch('/api/folders/' + folderId)
       .then(response => response.json())
       .then(json => dispatch(rootFolder ? receiveRootFolder(json.data, rootFolder) : receiveFolder(json.data)));
   };

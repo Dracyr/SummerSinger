@@ -4,7 +4,7 @@ import {
 } from '../actions/folders';
 
 export const initialFolders = {
-  pathParts: ['/'],
+  pathParts: [''],
   folder: {
     title: '/',
     children: [],

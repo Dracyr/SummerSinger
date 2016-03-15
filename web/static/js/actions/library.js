@@ -44,7 +44,7 @@ export function fetchLibrary(libraryType, offset = 0, limit = 0) {
 
     const full = total === 0;
     const query = full ? '' : '?offset=' + offset + '&limit=' + limit;
-    return fetch('http://localhost:4000/api/' + libraryType + query)
+    return fetch('/api/' + libraryType + query)
       .then(response => response.json())
       .then(json => dispatch(receiveLibrary(libraryType, full, json.total, json.data)));
   };
@@ -66,7 +66,7 @@ export function fetchPlaylists() {
 
     dispatch(requestPlaylists());
 
-    return fetch('http://localhost:4000/api/playlists')
+    return fetch('/api/playlists')
       .then(response => response.json())
       .then(json => dispatch(receivePlaylists(json.data)));
   };
@@ -86,13 +86,13 @@ export function fetchPlaylist(playlist_id) {
       return playlist.id === playlist_id ? playlist : false;
     });
 
-    if (playlist.tracks && playlist.tracks.length > 0) {
+    if (playlist.tracks) {
       return;
     }
 
     dispatch(requestPlaylist(playlist_id));
 
-    return fetch('http://localhost:4000/api/playlists/' + playlist_id)
+    return fetch('/api/playlists/' + playlist_id)
       .then(response => response.json())
       .then(json => dispatch(receivePlaylist(json.data)));
   };
@@ -111,7 +111,7 @@ export function fetchSearch(search_term) {
 
     dispatch(requestSearch(search_term));
 
-    return fetch('http://localhost:4000/api/tracks?search=' + search_term)
+    return fetch('/api/tracks?search=' + search_term)
       .then(response => response.json())
       .then(json => dispatch(receiveSearch(json.data)));
   };

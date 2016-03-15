@@ -49,12 +49,10 @@ class Folders extends Component {
         <div className="td "></div>
       </div>
     ) : '';
-
     const totalLength = folder.children.length + folder.tracks.length;
-
     return (
       <div>
-        <h3>{pathParts.join(' / ')}</h3>
+        <h3>{pathParts.length > 1 ? pathParts.join(' / ') : '/'}</h3>
         <div className="display-table track-list">
           <ReactList
             itemRenderer={(index, key) => this.renderItem(index, key)}
