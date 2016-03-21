@@ -1,6 +1,6 @@
 import {
   RECEIVE_FOLDER,
-  RECEIVE_ROOT_FOLDER
+  RECEIVE_ROOT_FOLDER,
 } from '../actions/folders';
 
 export const initialFolders = {
@@ -8,8 +8,8 @@ export const initialFolders = {
   folder: {
     title: '/',
     children: [],
-    tracks: []
-  }
+    tracks: [],
+  },
 };
 
 export default function library(state = initialFolders, action) {
@@ -19,13 +19,13 @@ export default function library(state = initialFolders, action) {
         folder: {
           title: '/',
           children: action.folders,
-          tracks: []
-        }
+          tracks: [],
+        },
       };
     case RECEIVE_FOLDER:
       return { ...state,
         pathParts: [...state.pathParts, action.folder.title],
-        folder: action.folder
+        folder: action.folder,
       };
     default:
       return state;

@@ -17,13 +17,14 @@ function receiveFolder(folder) {
 }
 
 export function fetchFolder(folderId = '', rootFolder = false) {
-  return (dispatch, getState) => {
-
+  return dispatch => {
     dispatch(requestFolder(folderId, rootFolder));
 
-    return fetch('/api/folders/' + folderId)
+    return fetch(`/api/folders/${folderId}`)
       .then(response => response.json())
-      .then(json => dispatch(rootFolder ? receiveRootFolder(json.data, rootFolder) : receiveFolder(json.data)));
+      .then(json => {
+        dispatch(rootFolder ? receiveRootFolder(json.data, rootFolder) : receiveFolder(json.data));
+      });
   };
 }
 

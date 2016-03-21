@@ -1,24 +1,7 @@
 {
-    "rules": {
-        "quotes": [2, "single"],
-        "linebreak-style": [2, "unix"],
-        "semi": [2, "always"],
-        "strict": [2, "global"],
-        "no-multi-spaces": [0],
-        "no-console": [0],
-        "camelcase": [0]
-    },
-    "parser": "babel-eslint",
-    "env": {
-        "browser": true,
-        "node": true
-    },
-    "ecmaFeatures": {
-        "jsx": true,
-        "modules": true
-    },
-    "plugins": [
-        "babel",
-        "react"
-    ]
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "plugins": [
+    "babel"
+  ]
 }

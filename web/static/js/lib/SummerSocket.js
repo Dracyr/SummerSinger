@@ -1,11 +1,10 @@
 import { socketStatusUpdate, queueUpdate } from '../actions/player';
-import { fetchPlaylists } from '../actions/library';
 
 import { Socket } from 'phoenix';
 
 export default class SummerSocket {
   constructor() {
-    let socket = new Socket('/socket');
+    const socket = new Socket('/socket');
     this.socket = socket;
   }
 
@@ -14,7 +13,7 @@ export default class SummerSocket {
     const socket = this.socket;
 
     socket.connect();
-    let broadcastChannel = socket.channel('status:broadcast', {});
+    const broadcastChannel = socket.channel('status:broadcast', {});
     this.broadcastChannel = broadcastChannel;
 
     broadcastChannel.join().receive('ok', initInfo => {
@@ -42,15 +41,15 @@ export default class SummerSocket {
   }
 
   requestPlayback(playback) {
-    this.broadcastChannel.push('playback', {playback: playback});
+    this.broadcastChannel.push('playback', { playback });
   }
 
   requestQueueTrack(trackId) {
-    this.broadcastChannel.push('queue_track', {track_id: trackId});
+    this.broadcastChannel.push('queue_track', { track_id: trackId });
   }
 
   requestPlayTrack(queueId) {
-    this.broadcastChannel.push('play_queued_track', {queue_id: queueId});
+    this.broadcastChannel.push('play_queued_track', { queue_id: queueId });
   }
 
   requestPreviousTrack() {
@@ -62,15 +61,15 @@ export default class SummerSocket {
   }
 
   requestSeek(percent) {
-    this.broadcastChannel.push('seek', {percent: percent});
+    this.broadcastChannel.push('seek', { percent });
   }
 
   seek(seekPercent) {
-    let track = this.state().track;
+    const track = this.state().track;
     if (track) {
-      let seekDuration = seekPercent * track.duration;
-      let currentItemId = this.state().statusUpdate.currentItemId;
-      this.socket.emit('seek', {id: currentItemId, pos: seekDuration});
+      const seekDuration = seekPercent * track.duration;
+      const currentItemId = this.state().statusUpdate.currentItemId;
+      this.socket.emit('seek', { id: currentItemId, pos: seekDuration });
     }
   }
 }

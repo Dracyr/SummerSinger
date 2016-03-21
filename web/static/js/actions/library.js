@@ -3,7 +3,7 @@ import fetch from 'isomorphic-fetch';
 export const SWITCH_LIBRARY_VIEW = 'SWITCH_LIBRARY_VIEW';
 
 export const REQUEST_LIBRARY = 'REQUEST_LIBRARY';
-export const RECEIVE_LIBRARY  = 'RECEIVE_LIBRARY';
+export const RECEIVE_LIBRARY = 'RECEIVE_LIBRARY';
 
 export const REQUEST_PLAYLISTS = 'REQUEST_PLAYLISTS';
 export const RECEIVE_PLAYLISTS = 'RECEIVE_PLAYLISTS';
@@ -18,7 +18,7 @@ export const LibraryViews = {
   TRACKS: 'TRACKS',
   ARTISTS: 'ARTISTS',
   ALBUMS: 'ALBUMS',
-  FOLDERS: 'FOLDERS'
+  FOLDERS: 'FOLDERS',
 };
 
 export function switchLibraryView(libraryView) {
@@ -26,25 +26,25 @@ export function switchLibraryView(libraryView) {
 }
 
 function requestLibrary(libraryType, offset) {
-  return { type: REQUEST_LIBRARY, libraryType: libraryType, offset: offset };
+  return { type: REQUEST_LIBRARY, libraryType, offset };
 }
 
 function receiveLibrary(libraryType, full = true, total, library) {
-  return { type: RECEIVE_LIBRARY, libraryType: libraryType, full: full, total: total, library };
+  return { type: RECEIVE_LIBRARY, libraryType, full, total, library };
 }
 
 export function fetchLibrary(libraryType, offset = 0, limit = 0) {
   return (dispatch, getState) => {
     const total = offset + limit;
     if (getState().library[libraryType].length >= total) {
-      return;
+      return null;
     }
 
     dispatch(requestLibrary(libraryType, total));
 
     const full = total === 0;
-    const query = full ? '' : '?offset=' + offset + '&limit=' + limit;
-    return fetch('/api/' + libraryType + query)
+    const query = full ? '' : `?offset=${offset}&limit=${limit}`;
+    return fetch(`/api/${libraryType}${query}`)
       .then(response => response.json())
       .then(json => dispatch(receiveLibrary(libraryType, full, json.total, json.data)));
   };
@@ -61,7 +61,7 @@ function receivePlaylists(playlists) {
 export function fetchPlaylists() {
   return (dispatch, getState) => {
     if (getState().library.playlists.length > 0) {
-      return;
+      return null;
     }
 
     dispatch(requestPlaylists());

@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export class PlaceholderText extends Component {
-  render() {
-    const style = {
-      width: '50%',
-      height: '1em',
-      display: 'inline-block',
-      'backgroundColor': '#ddd'
-    };
-    return <div style={style}></div>;
-  }
-}
+export const PlaceholderText = () => {
+  const style = {
+    width: '50%',
+    height: '1em',
+    display: 'inline-block',
+    backgroundColor: '#ddd',
+  };
+  return <div style={style}></div>;
+};
