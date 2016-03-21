@@ -8,7 +8,7 @@ import _ from 'lodash';
 import TrackList from './TrackList';
 import AlbumList from './AlbumList';
 import ArtistList from './ArtistList';
-import FolderBrowser from '../components/FolderBrowser';
+import Folders from '../components/Folders';
 
 class Library extends Component {
   constructor() {
@@ -77,7 +77,7 @@ class Library extends Component {
                         loadMoreRows={(offset, size) => this.loadMoreRows('artists', offset, size)} />;
         break;
       case 'FOLDERS':
-        currentView = <FolderBrowser currentKey={currentKey} />;
+        currentView = <Folders currentKey={currentKey} />;
         break;
     }
 
