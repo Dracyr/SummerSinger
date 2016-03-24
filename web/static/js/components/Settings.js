@@ -3,13 +3,14 @@ import React, { Component } from 'react';
 export default class Settings extends Component {
 
   SetHwVolume(event) {
-    var hwVolume = event.target.value / 100;
+    // var hwVolume = event.target.value / 100;
     // Actions.setHwVolume(hwVolume);
   }
 
   render() {
-    var settings = this.props.settings;
-    var hwVolume   = settings.hwVolume * 100;
+    // var settings = this.props.settings;
+    // var hwVolume   = settings.hwVolume * 100;
+    const hwVolume = 100;
 
     return (
       <div>

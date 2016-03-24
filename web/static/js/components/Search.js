@@ -15,7 +15,7 @@ export default class Search extends Component {
           tracks={search}
           keyAttr={"id"}
           currentKey={currentId}
-          onClickHandler={(track) => requestQueueTrack(track.id)}/>;
+          onClickHandler={(track) => requestQueueTrack(track.id)} />;
       </div>
     );
   }
@@ -24,13 +24,14 @@ export default class Search extends Component {
 
 function mapState(state) {
   return {
+    currentId: state.player.currentTrack ? state.player.currentTrack.id : '',
     search: state.library.search,
   };
 }
 
 function mapDispatch(dispatch) {
   return {
-    actions:  bindActionCreators([requestQueueTrack], dispatch)
+    actions: bindActionCreators([requestQueueTrack], dispatch),
   };
 }
 

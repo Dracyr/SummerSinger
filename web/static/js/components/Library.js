@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
 import * as PlayerActions from '../actions/player';
 import * as LibraryActions from '../actions/library';
 import _ from 'lodash';
@@ -89,9 +90,9 @@ class Library extends Component {
     );
   }
 }
-
 function mapState(state) {
   return {
+    currentId: state.player.currentTrack ? state.player.currentTrack.id : '',
     libraryView: state.library.libraryView,
     tracks: state.library.tracks,
     albums: state.library.albums,
@@ -99,8 +100,8 @@ function mapState(state) {
     total: {
       tracks: state.library.totalTracks,
       albums: state.library.totalAlbums,
-      artists: state.library.totalArtists
-    }
+      artists: state.library.totalArtists,
+    },
   };
 }
 

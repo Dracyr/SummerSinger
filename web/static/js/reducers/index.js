@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import undoable, { includeAction } from 'redux-undo'
+import undoable, { includeAction } from 'redux-undo';
 
 import player from './player';
 import library from './library';
@@ -21,7 +21,7 @@ const rootReducer = combineReducers({
     debub: true,
     undoType: GO_TO_PARENT,
     jumpToPastType: GO_TO_PARENT_N,
-  })
+  }),
 });
 
 export default rootReducer;

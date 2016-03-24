@@ -1,4 +1,9 @@
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
+import * as LibraryActions from '../actions/library';
+import * as ViewsActions from '../actions/views';
 
 class SidebarPlaylist extends Component {
   render() {
@@ -6,14 +11,16 @@ class SidebarPlaylist extends Component {
       playlist,
       switchPlaylist,
       currentPlaylist,
-      playlistView
+      playlistView,
     } = this.props;
 
     const active = playlistView && currentPlaylist && currentPlaylist.id === playlist.id ? 'active' : '';
+
     return (
       <li onClick={() => switchPlaylist(playlist.id)}
-          className={active}>
-        {playlist.title}
+        className={active}
+      >
+          {playlist.title}
       </li>
     );
   }
@@ -22,15 +29,13 @@ class SidebarPlaylist extends Component {
 class SidebarSearch extends Component {
   constructor(props) {
     super(props);
-    this.state = {value: 'Search'};
+    this.state = { value: 'Search' };
   }
 
   handleChange(event) {
     const value = event.target.value;
-    this.setState({value: value});
-    if (value.length >= 3) {
-      this.search(value);
-    }
+    this.setState({ value: value });
+    this.search(value);
   }
 
   handleKeyPress(event) {
@@ -69,7 +74,7 @@ class SidebarSearch extends Component {
 export default class Sidebar extends Component {
 
   componentDidMount() {
-    this.props.fetchPlaylists();
+    this.props.actions.library.fetchPlaylists();
   }
 
   isActive(view, currentView) {
@@ -78,34 +83,42 @@ export default class Sidebar extends Component {
 
   render() {
     const {
-      switchView,
-      switchPlaylist,
       playlists,
       currentPlaylist,
       view,
-      search
+      search,
+      actions
     } = this.props;
     let isActive = this.isActive;
+    const switchView = actions.views.switchView;
+    const switchPlaylist = actions.views.switchPlaylist;
 
     return (
       <div className="sidebar">
         <ul className="sidebar-links list-unstyled">
-          <SidebarSearch switchView={switchView} active={view === 'SEARCH'} search={search} />
+          <SidebarSearch switchView={switchView}
+            active={view === 'SEARCH'}
+            search={actions.library.fetchSearch}
+          />
           <li onClick={() => switchView('NOW_PLAYING')}
-              className={isActive('NOW_PLAYING', view)}>
-                Now Playing
+            className={isActive('NOW_PLAYING', view)}
+          >
+              Now Playing
           </li>
           <li onClick={() => switchView('QUEUE')}
-              className={isActive('QUEUE', view)}>
-                Queue
+            className={isActive('QUEUE', view)}
+          >
+              Queue
           </li>
           <li onClick={() => switchView('LIBRARY')}
-              className={isActive('LIBRARY', view)}>
-                Library
+            className={isActive('LIBRARY', view)}
+          >
+              Library
           </li>
           <li onClick={() => switchView('SETTINGS')}
-              className={isActive('SETTINGS', view)}>
-                Settings
+            className={isActive('SETTINGS', view)}
+          >
+              Settings
           </li>
         </ul>
 
@@ -118,10 +131,11 @@ export default class Sidebar extends Component {
             {playlists.map(function(playlist, index) {
               return (
                 <SidebarPlaylist key={index}
-                                playlist={playlist}
-                                currentPlaylist={currentPlaylist}
-                                switchPlaylist={switchPlaylist}
-                                playlistView={isActive('PLAYLIST', view) === 'active'} />
+                  playlist={playlist}
+                  currentPlaylist={currentPlaylist}
+                  switchPlaylist={switchPlaylist}
+                  playlistView={isActive('PLAYLIST', view) === 'active'}
+                />
               );
             })}
           </ul>
@@ -134,3 +148,29 @@ export default class Sidebar extends Component {
     );
   }
 }
+
+function mapState(state) {
+  const currentPlaylist = state.library.playlists.find((playlist) => {
+    return playlist.id === state.views.playlist ? playlist : false;
+  });
+
+  return {
+    view: state.views.view,
+    playlists: state.library.playlists,
+    currentPlaylist,
+  };
+}
+
+function mapDispatch(dispatch) {
+  return {
+    actions: {
+      library: bindActionCreators(LibraryActions, dispatch),
+      views: bindActionCreators(ViewsActions, dispatch),
+    },
+  };
+}
+
+export default connect(mapState, mapDispatch)(Sidebar);
+
+
+

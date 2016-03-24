@@ -52,7 +52,8 @@ defmodule SummerSinger.Mixfile do
   defp aliases do
     ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
      "ecto.reset": ["ecto.drop", "ecto.setup"],
-     "phoenix.digest": "summer_singer.digest"
+     "phoenix.digest": "summer_singer.digest",
+     "summer_singer.release": ["summer_singer.digest", "compile", "release"]
     ]
   end
 end

@@ -1,28 +1,51 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as PlayerActions from '../actions/player';
-import * as LibraryActions from '../actions/library';
-import * as ViewsActions from '../actions/views';
 
-import Summer from '../components/Summer';
+import Player   from '../components/Player';
+import Sidebar  from '../components/Sidebar';
+import Settings from '../components/Settings';
+import Playlist from '../components/Playlist';
+import Library  from '../components/Library';
+import Search   from '../components/Search';
+import Queue    from '../components/Queue';
+
+const mainView = (view) => {
+  switch (view) {
+    case 'QUEUE':
+      return <Queue />;
+    case 'SETTINGS':
+      return <Settings />;
+    case 'PLAYLIST':
+      return <Playlist />;
+    case 'LIBRARY':
+      return <Library />;
+    case 'SEARCH':
+      return <Search />;
+    default:
+      return '';
+  }
+};
+
+const App = (props) => {
+  const view = mainView(props.view);
+
+  return (
+    <div>
+      <Player />
+      <div className="wrapper">
+        <Sidebar />
+        <div id="main-content">
+          {view}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 function mapState(state) {
   return {
-    views: state.views,
-    player: state.player,
-    library: state.library
+    view: state.views.view,
   };
 }
 
-function mapDispatch(dispatch) {
-  return {
-    actions:  {
-      player:   bindActionCreators(PlayerActions, dispatch),
-      library:  bindActionCreators(LibraryActions, dispatch),
-      views:    bindActionCreators(ViewsActions, dispatch)
-    }
-  };
-}
-
-export default connect(mapState, mapDispatch)(Summer);
+export default connect(mapState)(App);
