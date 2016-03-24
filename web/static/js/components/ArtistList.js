@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+
 import InfiniteReactList from '../lib/InfiniteReactList';
 import { PlaceholderText } from '../lib/Util';
-import { requestQueueTrack } from '../actions/player';
+import { requestQueueTrack } from '../app/Player/actions';
 
 class ArtistCard extends Component {
   render() {

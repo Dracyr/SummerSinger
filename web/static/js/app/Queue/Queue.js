@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as PlayerActions from '../actions/player';
-import TrackList from '../components/TrackList';
+import * as PlayerActions from '../Player/actions';
+import TrackList from '../../components/TrackList';
 
 class Queue extends Component {
   render() {

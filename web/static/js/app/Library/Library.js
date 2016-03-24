@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as PlayerActions from '../actions/player';
-import * as LibraryActions from '../actions/library';
+import * as PlayerActions from '../Player/actions';
+import * as LibraryActions from './actions';
 import _ from 'lodash';
 
-import TrackList from './TrackList';
-import AlbumList from './AlbumList';
-import ArtistList from './ArtistList';
-import Folders from '../components/Folders';
+import TrackList from '../../components/TrackList';
+import AlbumList from '../../components/AlbumList';
+import ArtistList from '../../components/ArtistList';
+import Folders from '../Folders/Folders';
 
 class Library extends Component {
   constructor() {

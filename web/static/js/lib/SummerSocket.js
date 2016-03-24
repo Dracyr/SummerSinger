@@ -1,4 +1,4 @@
-import { socketStatusUpdate, queueUpdate } from '../actions/player';
+import { socketStatusUpdate, queueUpdate } from '../app/Player/actions';
 
 import { Socket } from 'phoenix';
 

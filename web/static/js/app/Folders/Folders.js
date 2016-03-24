@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import ReactList from 'react-list';
-import { ActionCreators } from 'redux-undo';
 
-import * as FolderActions from '../actions/folders';
-import * as PlayerActions from '../actions/player';
-import { Track } from './TrackList';
+import * as FolderActions from './actions';
+import * as PlayerActions from '../Player/actions';
+import { Track } from '../../components/TrackList';
 
 class Folders extends Component {
   componentDidMount() {

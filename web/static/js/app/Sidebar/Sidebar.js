@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as LibraryActions from '../actions/library';
-import * as ViewsActions from '../actions/views';
+import * as LibraryActions from '../Library/actions';
+import * as PlaylistActions from '../Playlist/actions';
+import * as ViewsActions from '../../actions/views';
 
 class SidebarPlaylist extends Component {
   render() {
@@ -74,7 +75,7 @@ class SidebarSearch extends Component {
 export default class Sidebar extends Component {
 
   componentDidMount() {
-    this.props.actions.library.fetchPlaylists();
+    this.props.actions.playlist.fetchPlaylists();
   }
 
   isActive(view, currentView) {
@@ -150,13 +151,13 @@ export default class Sidebar extends Component {
 }
 
 function mapState(state) {
-  const currentPlaylist = state.library.playlists.find((playlist) => {
+  const currentPlaylist = state.playlist.playlists.find((playlist) => {
     return playlist.id === state.views.playlist ? playlist : false;
   });
 
   return {
     view: state.views.view,
-    playlists: state.library.playlists,
+    playlists: state.playlist.playlists,
     currentPlaylist,
   };
 }
@@ -166,6 +167,7 @@ function mapDispatch(dispatch) {
     actions: {
       library: bindActionCreators(LibraryActions, dispatch),
       views: bindActionCreators(ViewsActions, dispatch),
+      playlist: bindActionCreators(PlaylistActions, dispatch),
     },
   };
 }

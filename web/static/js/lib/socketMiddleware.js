@@ -5,7 +5,7 @@ import {
   REQUEST_PREVIOUS_TRACK,
   REQUEST_NEXT_TRACK,
   REQUEST_SEEK,
-} from '../actions/player';
+} from '../app/Player/actions';
 
 export default socket => store => next => action => {
   switch (action.type) {

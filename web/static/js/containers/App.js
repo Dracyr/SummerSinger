@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Player   from '../components/Player';
-import Sidebar  from '../components/Sidebar';
-import Settings from '../components/Settings';
-import Playlist from '../components/Playlist';
-import Library  from '../components/Library';
-import Search   from '../components/Search';
-import Queue    from '../components/Queue';
+import Player   from '../app/Player/Player';
+import Sidebar  from '../app/Sidebar/Sidebar';
+import Settings from '../app/Settings/Settings';
+import Playlist from '../app/Playlist/Playlist';
+import Library  from '../app/Library/Library';
+import Search   from '../app/Search/Search';
+import Queue    from '../app/Queue/Queue';
 
 const mainView = (view) => {
   switch (view) {

@@ -1,7 +1,7 @@
 import {
   RECEIVE_FOLDER,
   RECEIVE_ROOT_FOLDER,
-} from '../actions/folders';
+} from './actions';
 
 export const initialFolders = {
   pathParts: [''],

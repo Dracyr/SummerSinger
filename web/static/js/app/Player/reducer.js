@@ -1,4 +1,4 @@
-import { SOCKET_STATUS_UPDATE, QUEUE_UPDATE } from '../actions/player';
+import { SOCKET_STATUS_UPDATE, QUEUE_UPDATE } from './actions';
 
 const initialPlayer = {
   playing: false,
@@ -26,6 +26,7 @@ export default function player(state = initialPlayer, action) {
         serverTime: action.statusUpdate.current_time
       };
     case QUEUE_UPDATE:
+      console.log("queue_update");
       currentTrack = action.queue[state.queueIndex] || null;
       return { ...state, queue: action.queue, currentTrack: currentTrack };
     default:

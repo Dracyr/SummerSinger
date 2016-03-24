@@ -5,12 +5,6 @@ export const SWITCH_LIBRARY_VIEW = 'SWITCH_LIBRARY_VIEW';
 export const REQUEST_LIBRARY = 'REQUEST_LIBRARY';
 export const RECEIVE_LIBRARY = 'RECEIVE_LIBRARY';
 
-export const REQUEST_PLAYLISTS = 'REQUEST_PLAYLISTS';
-export const RECEIVE_PLAYLISTS = 'RECEIVE_PLAYLISTS';
-
-export const REQUEST_PLAYLIST = 'REQUEST_PLAYLIST';
-export const RECEIVE_PLAYLIST = 'RECEIVE_PLAYLIST';
-
 export const REQUEST_SEARCH = 'REQUEST_SEARCH';
 export const RECEIVE_SEARCH = 'RECEIVE_SEARCH';
 
@@ -47,54 +41,6 @@ export function fetchLibrary(libraryType, offset = 0, limit = 0) {
     return fetch(`/api/${libraryType}${query}`)
       .then(response => response.json())
       .then(json => dispatch(receiveLibrary(libraryType, full, json.total, json.data)));
-  };
-}
-
-function requestPlaylists() {
-  return { type: REQUEST_PLAYLISTS };
-}
-
-function receivePlaylists(playlists) {
-  return { type: RECEIVE_PLAYLISTS, playlists };
-}
-
-export function fetchPlaylists() {
-  return (dispatch, getState) => {
-    if (getState().library.playlists.length > 0) {
-      return null;
-    }
-
-    dispatch(requestPlaylists());
-
-    return fetch('/api/playlists')
-      .then(response => response.json())
-      .then(json => dispatch(receivePlaylists(json.data)));
-  };
-}
-
-function requestPlaylist(playlist_id) {
-  return { type: REQUEST_PLAYLIST, playlist_id };
-}
-
-function receivePlaylist(playlist) {
-  return { type: RECEIVE_PLAYLIST, playlist };
-}
-
-export function fetchPlaylist(playlist_id) {
-  return (dispatch, getState) => {
-    const playlist = getState().library.playlists.find((playlist) => {
-      return playlist.id === playlist_id ? playlist : false;
-    });
-
-    if (playlist.tracks) {
-      return;
-    }
-
-    dispatch(requestPlaylist(playlist_id));
-
-    return fetch('/api/playlists/' + playlist_id)
-      .then(response => response.json())
-      .then(json => dispatch(receivePlaylist(json.data)));
   };
 }
 
