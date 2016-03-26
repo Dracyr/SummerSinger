@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import Player   from '../app/Player/Player';
 import Sidebar  from '../app/Sidebar/Sidebar';
 import Settings from '../app/Settings/Settings';
-import Playlist from '../app/Playlist/Playlist';
 import Library  from '../app/Library/Library';
 import Search   from '../app/Search/Search';
 import Queue    from '../app/Queue/Queue';
+import PlaylistView from '../app/Playlist/PlaylistView';
 
 const mainView = (view) => {
   switch (view) {
@@ -16,7 +16,7 @@ const mainView = (view) => {
     case 'SETTINGS':
       return <Settings />;
     case 'PLAYLIST':
-      return <Playlist />;
+      return <PlaylistView />;
     case 'LIBRARY':
       return <Library />;
     case 'SEARCH':

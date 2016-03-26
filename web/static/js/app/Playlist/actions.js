@@ -14,8 +14,8 @@ export const PlaylistViews = {
   UPDATE: 'UPDATE',
 };
 
-export function switchPlaylistView(PlaylistView) {
-  return { type: SWITCH_PLAYLIST_VIEW, PlaylistView };
+export function switchPlaylistView(playlistView) {
+  return { type: SWITCH_PLAYLIST_VIEW, playlistView };
 }
 
 function requestPlaylists() {

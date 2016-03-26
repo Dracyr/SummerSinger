@@ -9,7 +9,7 @@ const initialPlaylists = {
   playlists: [],
 };
 
-export default function library(state = initialPlaylists, action) {
+export default function playlist(state = initialPlaylists, action) {
   switch (action.type) {
     case SWITCH_PLAYLIST_VIEW:
       return { ...state, playlistView: action.playlistView };

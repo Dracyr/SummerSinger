@@ -2,84 +2,32 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import SidebarSearch from './SidebarSearch';
+import SidebarPlaylist from './SidebarPlaylist';
+import SidebarItem from './SidebarItem';
+
 import * as LibraryActions from '../Library/actions';
 import * as PlaylistActions from '../Playlist/actions';
 import * as ViewsActions from '../../actions/views';
 
-class SidebarPlaylist extends Component {
-  render() {
-    const {
-      playlist,
-      switchPlaylist,
-      currentPlaylist,
-      playlistView,
-    } = this.props;
-
-    const active = playlistView && currentPlaylist && currentPlaylist.id === playlist.id ? 'active' : '';
-
-    return (
-      <li onClick={() => switchPlaylist(playlist.id)}
-        className={active}
-      >
-          {playlist.title}
-      </li>
-    );
-  }
-}
-
-class SidebarSearch extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { value: 'Search' };
-  }
-
-  handleChange(event) {
-    const value = event.target.value;
-    this.setState({ value: value });
-    this.search(value);
-  }
-
-  handleKeyPress(event) {
-    if (event.key === 'Enter') {
-      this.search(this.state.value);
-    }
-  }
-
-  search(search_term) {
-    this.props.search(search_term);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.active !== prevProps.active) {
-      const value = this.props.active ? '' : 'Search';
-      this.setState({value: value});
-    }
-  }
-
-  render() {
-    const handleKeyPress = this.handleKeyPress.bind(this);
-    const {switchView, active, searchTrack} = this.props;
-
-    return (
-      <li onClick={() => switchView('SEARCH')}
-          className={active ? 'search active' : 'search'}>
-        <input type="text"
-              value={this.state.value}
-              onChange={this.handleChange.bind(this)}
-              onKeyPress={this.handleKeyPress.bind(this)} />
-      </li>
-    );
-  }
-}
-
 export default class Sidebar extends Component {
+  constructor() {
+    super();
+    this.switchPlaylistViewCreate = this.switchPlaylistViewCreate.bind(this);
+  }
 
   componentDidMount() {
     this.props.actions.playlist.fetchPlaylists();
   }
 
-  isActive(view, currentView) {
-    return currentView === view ? 'active' : '';
+  isActive() {
+    const { currentView, itemView } = this.props;
+    return currentView === itemView ? 'active' : '';
+  }
+
+  switchPlaylistViewCreate() {
+    this.props.actions.views.switchView('PLAYLIST');
+    this.props.actions.playlist.switchPlaylistView('CREATE');
   }
 
   render() {
@@ -90,9 +38,9 @@ export default class Sidebar extends Component {
       search,
       actions
     } = this.props;
-    let isActive = this.isActive;
     const switchView = actions.views.switchView;
     const switchPlaylist = actions.views.switchPlaylist;
+    const playlistViewActive = view === 'PLAYLIST';
 
     return (
       <div className="sidebar">
@@ -101,30 +49,21 @@ export default class Sidebar extends Component {
             active={view === 'SEARCH'}
             search={actions.library.fetchSearch}
           />
-          <li onClick={() => switchView('NOW_PLAYING')}
-            className={isActive('NOW_PLAYING', view)}
-          >
-              Now Playing
-          </li>
-          <li onClick={() => switchView('QUEUE')}
-            className={isActive('QUEUE', view)}
-          >
-              Queue
-          </li>
-          <li onClick={() => switchView('LIBRARY')}
-            className={isActive('LIBRARY', view)}
-          >
-              Library
-          </li>
-          <li onClick={() => switchView('SETTINGS')}
-            className={isActive('SETTINGS', view)}
-          >
-              Settings
-          </li>
+          <SidebarItem title="Now Playing" itemView="NOW_PLAYING"
+            view={view} switchView={switchView} />
+          <SidebarItem title="Queue" itemView="QUEUE"
+            view={view} switchView={switchView} />
+          <SidebarItem title="Library" itemView="LIBRARY"
+            view={view} switchView={switchView} />
+          <SidebarItem title="Setting" itemView="SETTINGS"
+            view={view} switchView={switchView} />
         </ul>
 
         <div className="sidebar-playlist-header">
           Playlists
+          <span className="fa fa-plus"
+            onClick={this.switchPlaylistViewCreate}
+          ></span>
         </div>
 
         <div className="playlist-tab">
@@ -135,7 +74,7 @@ export default class Sidebar extends Component {
                   playlist={playlist}
                   currentPlaylist={currentPlaylist}
                   switchPlaylist={switchPlaylist}
-                  playlistView={isActive('PLAYLIST', view) === 'active'}
+                  playlistViewActive={playlistViewActive}
                 />
               );
             })}

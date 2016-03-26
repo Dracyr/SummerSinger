@@ -1,7 +1,8 @@
 export const Views = {
   QUEUE: 'QUEUE',
   SETTINGS: 'SETTINGS',
-  PLAYLIST: 'PLAYLIST'
+  LIBRARY: 'LIBRARY',
+  PLAYLIST: 'PLAYLIST',
 };
 
 export const SWITCH_VIEW = 'SWITCH_VIEW';

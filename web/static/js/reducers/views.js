@@ -1,7 +1,6 @@
 import {
   SWITCH_VIEW,
   SWITCH_PLAYLIST,
-  SWITCH_LIBRARY_VIEW
 } from '../actions/views';
 
 const initialState = {
