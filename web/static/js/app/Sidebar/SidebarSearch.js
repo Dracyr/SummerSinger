@@ -40,7 +40,7 @@ export default class SidebarSearch extends Component {
       <li onClick={this.switchViewToSearch}
         className={this.props.active ? 'search active' : 'search'}
       >
-        <input type="text"
+        <input type="text" className="unstyled-input"
           value={this.state.value}
           onChange={this.handleChange}
           onKeyPress={this.handleKeyPress}

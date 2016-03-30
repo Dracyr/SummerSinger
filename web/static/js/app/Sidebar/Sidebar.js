@@ -3,17 +3,19 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import SidebarSearch from './SidebarSearch';
+import CreatePlaylist from './CreatePlaylist';
 import SidebarPlaylist from './SidebarPlaylist';
 import SidebarItem from './SidebarItem';
 
 import * as LibraryActions from '../Library/actions';
 import * as PlaylistActions from '../Playlist/actions';
 import * as ViewsActions from '../../actions/views';
+import * as SidebarActions from './actions';
 
 export default class Sidebar extends Component {
   constructor() {
     super();
-    this.switchPlaylistViewCreate = this.switchPlaylistViewCreate.bind(this);
+    this.toggleCreatePlaylist = this.toggleCreatePlaylist.bind(this);
   }
 
   componentDidMount() {
@@ -25,9 +27,8 @@ export default class Sidebar extends Component {
     return currentView === itemView ? 'active' : '';
   }
 
-  switchPlaylistViewCreate() {
-    this.props.actions.views.switchView('PLAYLIST');
-    this.props.actions.playlist.switchPlaylistView('CREATE');
+  toggleCreatePlaylist() {
+    this.props.actions.sidebar.toggleCreatePlaylist();
   }
 
   render() {
@@ -61,13 +62,16 @@ export default class Sidebar extends Component {
 
         <div className="sidebar-playlist-header">
           Playlists
-          <span className="fa fa-plus"
-            onClick={this.switchPlaylistViewCreate}
+          <span className="fa fa-plus pull-right"
+            onClick={this.toggleCreatePlaylist}
           ></span>
         </div>
 
         <div className="playlist-tab">
           <ul className="playlist-list list-unstyled">
+            {this.props.showCreatePlaylist ?
+              <CreatePlaylist submit={actions.playlist.createPlaylist} /> : ''
+            }
             {playlists.map(function(playlist, index) {
               return (
                 <SidebarPlaylist key={index}
@@ -98,6 +102,7 @@ function mapState(state) {
     view: state.views.view,
     playlists: state.playlist.playlists,
     currentPlaylist,
+    showCreatePlaylist: state.sidebar.showCreatePlaylist,
   };
 }
 
@@ -107,6 +112,7 @@ function mapDispatch(dispatch) {
       library: bindActionCreators(LibraryActions, dispatch),
       views: bindActionCreators(ViewsActions, dispatch),
       playlist: bindActionCreators(PlaylistActions, dispatch),
+      sidebar: bindActionCreators(SidebarActions, dispatch),
     },
   };
 }

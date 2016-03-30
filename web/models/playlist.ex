@@ -13,8 +13,8 @@ defmodule SummerSinger.Playlist do
     timestamps
   end
 
-  @required_fields ~w(title path)
-  @optional_fields ~w()
+  @required_fields ~w(title)
+  @optional_fields ~w(path)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

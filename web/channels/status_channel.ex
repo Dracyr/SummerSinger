@@ -63,6 +63,11 @@ defmodule SummerSinger.RoomChannel do
     {:noreply, socket}
   end
 
+  def playlists_update do
+    data = SummerSinger.PlaylistView.render("index.json", playlists: SummerSinger.Repo.all(SummerSinger.Playlist))
+    SummerSinger.Endpoint.broadcast! "status:broadcast", "playlistsUpdate", data
+  end
+
   defp current_status do
     Player.status |> Map.merge(%{current_time: DateUtil.now})
   end

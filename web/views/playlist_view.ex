@@ -11,6 +11,12 @@ defmodule SummerSinger.PlaylistView do
     }
   end
 
+  def render("create.json", %{playlist: playlist}) do
+    %{
+      data: render_one(playlist, SummerSinger.PlaylistView, "playlist.json"),
+    }
+  end
+
   def render("playlist.json", %{playlist: playlist}) do
     %{
       id: playlist.id,

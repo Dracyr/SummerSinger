@@ -1,3 +1,5 @@
+$color-primary: #aa79ff;
+
 .sidebar {
   width: 300px;
   height: calc(100vh - 80px);
@@ -49,7 +51,7 @@
   }
 }
 
-.search input {
+.unstyled-input {
   margin: 0;
   padding: 0;
   border: 0;
@@ -61,6 +63,11 @@
   margin-top: 40px;
   margin-bottom: 5px;
   font-size: 22px;
+
+  .fa-plus {
+    margin-right: 1em;
+    line-height: inherit;
+  }
 }
 
 .playlist-tab {
@@ -82,4 +89,10 @@
   &.active {
     color: $color-primary;
   }
+}
+
+.create-playlist input {
+  color: $color-primary;
+  border-bottom: 1px $color-primary solid;
+  width: 90%;
 }

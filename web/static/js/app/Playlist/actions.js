@@ -1,5 +1,7 @@
 import fetch from 'isomorphic-fetch';
 
+import { toggleCreatePlaylist } from '../Sidebar/actions';
+
 export const SWITCH_PLAYLIST_VIEW = 'SWITCH_PLAYLIST_VIEW';
 
 export const REQUEST_PLAYLISTS = 'REQUEST_PLAYLISTS';
@@ -22,7 +24,7 @@ function requestPlaylists() {
   return { type: REQUEST_PLAYLISTS };
 }
 
-function receivePlaylists(playlists) {
+export function receivePlaylists(playlists) {
   return { type: RECEIVE_PLAYLISTS, playlists };
 }
 
@@ -63,5 +65,23 @@ export function fetchPlaylist(playlistId) {
     return fetch(`/api/playlists/${playlistId}`)
       .then(response => response.json())
       .then(json => dispatch(receivePlaylist(json.data)));
+  };
+}
+
+export function createPlaylist(title) {
+  return dispatch => {
+    fetch('/api/playlists', {
+      method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        playlist: {
+          title
+        },
+      }),
+    })
+    .then(() => dispatch(toggleCreatePlaylist()));
   };
 }

@@ -6,7 +6,6 @@ import { requestQueueTrack } from '../Player/actions';
 import * as PlaylistActions from './actions';
 
 import Playlist from './Playlist';
-import CreatePlaylist from './CreatePlaylist';
 
 class PlaylistView extends Component {
   componentDidMount() {
@@ -24,20 +23,13 @@ class PlaylistView extends Component {
   }
 
   render() {
-    const { currentPlaylist, requestQueueTrack, playlistView } = this.props;
+    const { currentPlaylist, requestQueueTrack } = this.props;
 
-    switch(playlistView) {
-      case 'SHOW':
-        return (
-          <Playlist playlist={currentPlaylist}
-            requestQueueTrack={requestQueueTrack}
-          />
-        );
-      case 'CREATE':
-        return <CreatePlaylist />;
-      default:
-        return '';
-    }
+    return (
+      <Playlist playlist={currentPlaylist}
+        requestQueueTrack={requestQueueTrack}
+      />
+    );
   }
 }
 

@@ -5,6 +5,7 @@ import player from '../app/Player/reducer';
 import library from '../app/Library/reducer';
 import folders from '../app/Folders/reducer';
 import playlist from '../app/Playlist/reducer';
+import sidebar from '../app/Sidebar/reducer';
 import views from './views';
 
 import {
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   library,
   views,
   playlist,
+  sidebar,
   folders: undoable(folders, {
     filter: includeAction([RECEIVE_FOLDER]),
     debub: true,

@@ -15,10 +15,12 @@ defmodule SummerSinger.PlaylistController do
 
     case Repo.insert(changeset) do
       {:ok, playlist} ->
+        SummerSinger.RoomChannel.playlists_update
+
         conn
         |> put_status(:created)
         |> put_resp_header("location", playlist_path(conn, :show, playlist))
-        |> render("show.json", playlist: playlist)
+        |> render("create.json", playlist: playlist)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
