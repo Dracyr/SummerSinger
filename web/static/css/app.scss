@@ -127,3 +127,64 @@ body {
 .header {
   border-bottom: 1px solid #DDD;
 }
+
+.list-unstyled {
+  margin-bottom: 0;
+}
+
+.context-menu {
+  min-width: 160px;
+  padding: 10px 0px!important;
+  margin: 2px 0 0;
+  font-size: 15px;
+  color: #666;
+  text-align: left;
+  background-color: #fff;
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.37)!important;
+  border-radius: 2px;
+  outline: none;
+}
+
+.context-menu-link {
+  display: inline-block;
+  width: 100%;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #666;
+  text-align: inherit;
+  white-space: nowrap;
+  background: 0 0;
+  border: 0;
+}
+
+.context-menu-link.active,
+.context-menu-link:hover {
+  color: #fff;
+  background-color: $color-primary;
+  border-color: $color-primary;
+  text-decoration: none;
+}
+
+.context-menu-item.submenu {
+  position: relative;
+}
+
+.context-menu-item.submenu > a {
+  padding-right: 27px;
+}
+
+.context-menu-item.submenu > a:after {
+  content: "▶";
+  display: inline-block;
+  position: absolute;
+  line-height: initial;
+  right: 7px;
+}
+
+.context-menu-item.submenu > .context-menu {
+  position: absolute;
+  top: -12px;
+  left: 100%;
+}

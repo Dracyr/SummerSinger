@@ -4,18 +4,18 @@ import { PlaceholderText } from '../lib/Util';
 
 class StarRating extends Component {
 
- render() {
+  render() {
     const { rating } = this.props;
     const stars = rating ? Math.floor((rating / 255) * 10) / 2 : 0;
-    const half_star = stars - Math.floor(stars) === 0.5;
+    const halfStar = stars - Math.floor(stars) === 0.5;
 
     return (
       <span>
-        {[...Array(Math.floor(stars) - (half_star ? 1 : 0))].map( (x,i) =>
+        {[...Array(Math.floor(stars) - (halfStar ? 1 : 0))].map((x, i) =>
           <i key={i} className="fa fa-star"></i>
         )}
 
-        {half_star ? <i className="fa fa-star-half-o"></i> : ''}
+        {halfStar ? <i className="fa fa-star-half-o"></i> : ''}
 
         {[...Array(5 - Math.floor(stars))].map( (x,i) =>
           <i key={Math.floor(stars) + i} className="fa fa-star-o"></i>
@@ -25,10 +25,69 @@ class StarRating extends Component {
   }
 }
 
-export class Track extends Component {
+class TrackContextMenu extends Component {
+  constructor() {
+    super();
+    this.onRandomClick = this.onRandomClick.bind(this);
+  }
 
- render() {
-    const {track, keyAttr, currentKey, onClickHandler} = this.props;
+  componentDidMount() {
+    document.addEventListener('click', this.onRandomClick);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.onRandomClick);
+  }
+
+  onRandomClick() {
+    this.props.hideContextMenu();
+  }
+
+  render() {
+    const style = {
+      position: 'fixed',
+      left: this.props.context.x,
+      top: this.props.context.y,
+    }
+    return (
+      <div style={style} className="context-menu">
+        <div className="context-menu-item">
+          <a href="#" className="context-menu-link">Play Track</a>
+        </div>
+        <div className="context-menu-item">
+          <a href="#" className="context-menu-link">Queue Track</a>
+        </div>
+        <div className="context-menu-item submenu">
+          <a href="#" className="context-menu-link">Add Track to playlist</a>
+          <div className="context-menu">
+            <div className="context-menu-item">
+              <a href="#" className="context-menu-link">First playlist</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export class Track extends Component {
+  constructor() {
+    super();
+    this.handleOnClick = this.handleOnClick.bind(this);
+    this.handleOnContextMenu = this.handleOnContextMenu.bind(this);
+  }
+
+  handleOnClick(e) {
+    this.props.onClickHandler(this.props.track);
+  }
+
+  handleOnContextMenu(e) {
+    e.preventDefault();
+    this.props.openContextMenu(this.props.track, e.pageX, e.pageY);
+  }
+
+  render() {
+    const { track, keyAttr, currentKey } = this.props;
 
     let currentTrack = '';
     if (track[keyAttr] === currentKey) {
@@ -36,7 +95,7 @@ export class Track extends Component {
     }
 
     return (
-      <div className="tr track" onClick={(event) => onClickHandler(track)}>
+      <div className="tr track" onClick={this.handleOnClick} onContextMenu={this.handleOnContextMenu}>
         <div className="td td-title" alt={track.title}><div>
           {track.title}
           {currentTrack}
@@ -50,6 +109,22 @@ export class Track extends Component {
 }
 
 export default class TrackList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      contextMenu: false,
+    }
+    this.openContextMenu = this.openContextMenu.bind(this);
+    this.hideContextMenu = this.hideContextMenu.bind(this);
+  }
+
+  openContextMenu(track, x, y) {
+    this.setState({ contextMenu: {x, y} });
+  }
+
+  hideContextMenu() {
+    this.setState({ contextMenu: null });
+  }
 
   loadMoreRows(from, size) {
     const { loadMoreRows } = this.props;
@@ -61,25 +136,29 @@ export default class TrackList extends Component {
   }
 
   renderItem(index, key) {
+    let trackComponent = '';
     if (this.isRowLoaded(index)) {
-      const {tracks, keyAttr, currentKey, onClickHandler } = this.props;
+      const { tracks, keyAttr, currentKey, onClickHandler } = this.props;
       const track = tracks[index];
-      return <Track
-                track={track}
-                key={key}
-                keyAttr={keyAttr}
-                currentKey={currentKey}
-                onClickHandler={onClickHandler} />;
+      trackComponent = (
+        <Track track={track}
+          key={key}
+          keyAttr={keyAttr}
+          currentKey={currentKey}
+          onClickHandler={onClickHandler}
+          openContextMenu={this.openContextMenu}
+        />);
     } else {
-      return (
+      trackComponent = (
         <div className="tr track" key={key}>
-          <div className="td td-title"><div><PlaceholderText/></div></div>
-          <div className="td td-artist"><div><PlaceholderText/></div></div>
+          <div className="td td-title"><div><PlaceholderText /></div></div>
+          <div className="td td-artist"><div><PlaceholderText /></div></div>
           <div className="td td-album"><div></div></div>
-          <div className="td td-rating"><StarRating rating={0}></StarRating></div>
+          <div className="td td-rating"><StarRating rating={0} /></div>
         </div>
       );
     }
+    return trackComponent;
   }
 
   render() {
@@ -106,6 +185,11 @@ export default class TrackList extends Component {
             isRowLoaded={(index) => this.isRowLoaded(index)}
             loadMoreRows={(from, size) => this.loadMoreRows(from, size)}
           />
+          {this.state.contextMenu ?
+            <TrackContextMenu
+              context={this.state.contextMenu}
+              hideContextMenu={this.hideContextMenu}
+            /> : ''}
         </div>
       );
     } else {

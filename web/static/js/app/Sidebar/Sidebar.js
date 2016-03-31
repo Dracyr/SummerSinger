@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import Dragula from 'react-dragula';
 
 import SidebarSearch from './SidebarSearch';
 import CreatePlaylist from './CreatePlaylist';
@@ -20,6 +21,13 @@ export default class Sidebar extends Component {
 
   componentDidMount() {
     this.props.actions.playlist.fetchPlaylists();
+  }
+
+  dragulaDecorator(componentBackingInstance) {
+    if (componentBackingInstance) {
+      const options = { };
+      Dragula([componentBackingInstance], options);
+    }
   }
 
   isActive() {
@@ -72,6 +80,7 @@ export default class Sidebar extends Component {
             {this.props.showCreatePlaylist ?
               <CreatePlaylist submit={actions.playlist.createPlaylist} /> : ''
             }
+            <div ref={this.dragulaDecorator}>
             {playlists.map(function(playlist, index) {
               return (
                 <SidebarPlaylist key={index}
@@ -82,6 +91,7 @@ export default class Sidebar extends Component {
                 />
               );
             })}
+            </div>
           </ul>
         </div>
 

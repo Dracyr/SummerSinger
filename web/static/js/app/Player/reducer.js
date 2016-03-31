@@ -26,7 +26,6 @@ export default function player(state = initialPlayer, action) {
         serverTime: action.statusUpdate.current_time
       };
     case QUEUE_UPDATE:
-      console.log("queue_update");
       currentTrack = action.queue[state.queueIndex] || null;
       return { ...state, queue: action.queue, currentTrack: currentTrack };
     default:
