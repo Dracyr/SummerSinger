@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import TrackList from '../../components/TrackList';
-import { requestQueueTrack } from '../Player/actions';
+import { requestQueueAndPlayTrack } from '../Player/actions';
 
 export default class Search extends Component {
   render() {
@@ -15,7 +15,7 @@ export default class Search extends Component {
           tracks={search}
           keyAttr={"id"}
           currentKey={currentId}
-          onClickHandler={(track) => requestQueueTrack(track.id)} />;
+          onClickHandler={(track) => requestQueueAndPlayTrack(track.id)} />;
       </div>
     );
   }
@@ -31,7 +31,7 @@ function mapState(state) {
 
 function mapDispatch(dispatch) {
   return {
-    actions: bindActionCreators([requestQueueTrack], dispatch),
+    actions: bindActionCreators([requestQueueAndPlayTrack], dispatch),
   };
 }
 

@@ -58,6 +58,10 @@ export default class SummerSocket {
     this.broadcastChannel.push('play_queued_track', { queue_id: queueId });
   }
 
+  requestQueueAndPlayTrack(trackId) {
+    this.broadcastChannel.push('queue_and_play_track', { track_id: trackId });
+  }
+
   requestPreviousTrack() {
     this.broadcastChannel.push('previous_track');
   }
@@ -68,6 +72,14 @@ export default class SummerSocket {
 
   requestSeek(percent) {
     this.broadcastChannel.push('seek', { percent });
+  }
+
+  addTrackToPlaylist(trackId, playlistId) {
+    console.log(trackId, playlistId);
+    this.broadcastChannel.push('add_track_to_playlist', {
+      track_id: trackId,
+      playlist_id: playlistId,
+    });
   }
 
   seek(seekPercent) {

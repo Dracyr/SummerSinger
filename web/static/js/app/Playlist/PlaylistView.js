@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { requestQueueTrack } from '../Player/actions';
+import { requestQueueAndPlayTrack } from '../Player/actions';
 import * as PlaylistActions from './actions';
 
 import Playlist from './Playlist';
@@ -23,11 +23,11 @@ class PlaylistView extends Component {
   }
 
   render() {
-    const { currentPlaylist, requestQueueTrack } = this.props;
+    const { currentPlaylist, requestQueueAndPlayTrack } = this.props;
 
     return (
       <Playlist playlist={currentPlaylist}
-        requestQueueTrack={requestQueueTrack}
+        requestQueueAndPlayTrack={requestQueueAndPlayTrack}
       />
     );
   }
@@ -47,7 +47,7 @@ function mapState(state) {
 function mapDispatch(dispatch) {
   return {
     actions: bindActionCreators(PlaylistActions, dispatch),
-    requestQueueTrack: (...args) => dispatch(requestQueueTrack(...args)),
+    requestQueueAndPlayTrack: (...args) => dispatch(requestQueueAndPlayTrack(...args)),
   };
 }
 

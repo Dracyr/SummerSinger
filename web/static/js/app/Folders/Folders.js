@@ -28,13 +28,11 @@ class Folders extends Component {
     } else {
       const trackIndex = index - this.props.folder.children.length;
       const track = this.props.folder.tracks[trackIndex];
-      return <Track
-                track={track}
-                key={key}
-                keyAttr={'id'}
-                currentKey={this.props.currentKey}
-                onClickHandler={(track) => this.props.playerActions.requestQueueTrack(track.id)} />;
-
+      return (<Track key={key}
+        track={track}
+        keyAttr={'id'}
+        currentKey={this.props.currentKey}
+        onClickHandler={(track) => this.props.playerActions.requestQueueAndPlayTrack(track.id)} />);
     }
   }
 

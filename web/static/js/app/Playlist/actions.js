@@ -10,6 +10,8 @@ export const RECEIVE_PLAYLISTS = 'RECEIVE_PLAYLISTS';
 export const REQUEST_PLAYLIST = 'REQUEST_PLAYLIST';
 export const RECEIVE_PLAYLIST = 'RECEIVE_PLAYLIST';
 
+export const ADD_TRACK_TO_PLAYLIST = 'ADD_TRACK_TO_PLAYLIST';
+
 export const PlaylistViews = {
   SHOW: 'SHOW',
   NEW: 'NEW',
@@ -84,4 +86,8 @@ export function createPlaylist(title) {
     })
     .then(() => dispatch(toggleCreatePlaylist()));
   };
+}
+
+export function addTrackToPlaylist(trackId, playlistId) {
+  return { type: ADD_TRACK_TO_PLAYLIST, trackId, playlistId };
 }

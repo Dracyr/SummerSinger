@@ -157,6 +157,15 @@ body {
   white-space: nowrap;
   background: 0 0;
   border: 0;
+
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+}
+
+.context-menu-link:focus {
+  outline: none;
+  color: #666;
+  text-decoration: none;
 }
 
 .context-menu-link.active,
@@ -186,5 +195,11 @@ body {
 .context-menu-item.submenu > .context-menu {
   position: absolute;
   top: -12px;
-  left: 100%;
+  // left: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  max-height: 50vh;
+  max-width: 350px;
 }

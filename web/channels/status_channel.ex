@@ -1,6 +1,6 @@
 defmodule SummerSinger.RoomChannel do
   use Phoenix.Channel
-  alias SummerSinger.{Player, Queue}
+  alias SummerSinger.{Player, Queue, Playlist}
 
   def join("status:broadcast", _auth_msg, socket) do
     {:ok, %{
@@ -34,6 +34,14 @@ defmodule SummerSinger.RoomChannel do
     {:noreply, socket}
   end
 
+  def handle_in("queue_and_play_track", %{"track_id" => track_id}, socket) do
+    Queue.queue_track(track_id) |> Player.play_queued_track
+
+    broadcast! socket, "statusUpdate", current_status
+    broadcast! socket, "queueUpdate", Queue.queue # TODO: Compound updates
+    {:noreply, socket}
+  end
+
   def handle_in("previous_track", %{}, socket) do
     case Player.previous_track() do
       :ok ->
@@ -60,6 +68,15 @@ defmodule SummerSinger.RoomChannel do
     Player.seek(percent)
 
     broadcast! socket, "statusUpdate", current_status
+    {:noreply, socket}
+  end
+
+  def handle_in("add_track_to_playlist", %{"track_id" => track_id, "playlist_id" => playlist_id}, socket) do
+    IO.inspect("add_track_to_playlist")
+
+    Playlist.add_track_to_playlist(track_id, playlist_id)
+
+    playlists_update # TODO: Only delta updates
     {:noreply, socket}
   end
 

@@ -54,6 +54,12 @@ defmodule SummerSinger.Playlist do
     playlist
   end
 
+  def add_track_to_playlist(track_id, playlist_id) do
+    playlist = Repo.get(Playlist, playlist_id)
+    Ecto.build_assoc(playlist, :playlist_items, track_id: track_id)
+    |> Repo.insert!
+  end
+
   defp to_utf8(file) do
     :unicode.characters_to_binary(file, elem(:unicode.bom_to_encoding(file), 0))
   end

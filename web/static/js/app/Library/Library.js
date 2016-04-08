@@ -62,7 +62,7 @@ class Library extends Component {
           keyAttr={"id"}
           currentKey={currentKey}
           loadMoreRows={(offset, size) => this.loadMoreRows('tracks', offset, size)}
-          onClickHandler={(track) => actions.requestQueueTrack(track.id)} />;
+          onClickHandler={(track) => actions.requestQueueAndPlayTrack(track.id)} />;
         break;
       case 'ALBUMS':
         currentView = <AlbumList

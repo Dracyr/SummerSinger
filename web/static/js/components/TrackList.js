@@ -2,73 +2,8 @@ import React, { Component } from 'react';
 import InfiniteReactList from '../lib/InfiniteReactList';
 import { PlaceholderText } from '../lib/Util';
 
-class StarRating extends Component {
-
-  render() {
-    const { rating } = this.props;
-    const stars = rating ? Math.floor((rating / 255) * 10) / 2 : 0;
-    const halfStar = stars - Math.floor(stars) === 0.5;
-
-    return (
-      <span>
-        {[...Array(Math.floor(stars) - (halfStar ? 1 : 0))].map((x, i) =>
-          <i key={i} className="fa fa-star"></i>
-        )}
-
-        {halfStar ? <i className="fa fa-star-half-o"></i> : ''}
-
-        {[...Array(5 - Math.floor(stars))].map( (x,i) =>
-          <i key={Math.floor(stars) + i} className="fa fa-star-o"></i>
-        )}
-      </span>
-    );
-  }
-}
-
-class TrackContextMenu extends Component {
-  constructor() {
-    super();
-    this.onRandomClick = this.onRandomClick.bind(this);
-  }
-
-  componentDidMount() {
-    document.addEventListener('click', this.onRandomClick);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('click', this.onRandomClick);
-  }
-
-  onRandomClick() {
-    this.props.hideContextMenu();
-  }
-
-  render() {
-    const style = {
-      position: 'fixed',
-      left: this.props.context.x,
-      top: this.props.context.y,
-    }
-    return (
-      <div style={style} className="context-menu">
-        <div className="context-menu-item">
-          <a href="#" className="context-menu-link">Play Track</a>
-        </div>
-        <div className="context-menu-item">
-          <a href="#" className="context-menu-link">Queue Track</a>
-        </div>
-        <div className="context-menu-item submenu">
-          <a href="#" className="context-menu-link">Add Track to playlist</a>
-          <div className="context-menu">
-            <div className="context-menu-item">
-              <a href="#" className="context-menu-link">First playlist</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
+import StarRating from './StarRating';
+import TrackContextMenu from './TrackContextMenu';
 
 export class Track extends Component {
   constructor() {
@@ -94,8 +29,15 @@ export class Track extends Component {
       currentTrack = <span className="playing-icon"><i className="fa fa-volume-up"></i></span>;
     }
 
+    const trackStyle = this.props.isSelected ? { background: '#dadada' } : {};
+
     return (
-      <div className="tr track" onClick={this.handleOnClick} onContextMenu={this.handleOnContextMenu}>
+      <div
+        className="tr track"
+        onClick={this.handleOnClick}
+        onContextMenu={this.handleOnContextMenu}
+        style={trackStyle}
+      >
         <div className="td td-title" alt={track.title}><div>
           {track.title}
           {currentTrack}
@@ -113,17 +55,24 @@ export default class TrackList extends Component {
     super(props);
     this.state = {
       contextMenu: false,
-    }
+      selectedTrack: null,
+    };
     this.openContextMenu = this.openContextMenu.bind(this);
     this.hideContextMenu = this.hideContextMenu.bind(this);
   }
 
   openContextMenu(track, x, y) {
-    this.setState({ contextMenu: {x, y} });
+    this.setState({
+      contextMenu: { x, y },
+      selectedTrack: track,
+    });
   }
 
   hideContextMenu() {
-    this.setState({ contextMenu: null });
+    this.setState({
+      contextMenu: false,
+      selectedTrack: null,
+    });
   }
 
   loadMoreRows(from, size) {
@@ -140,11 +89,13 @@ export default class TrackList extends Component {
     if (this.isRowLoaded(index)) {
       const { tracks, keyAttr, currentKey, onClickHandler } = this.props;
       const track = tracks[index];
+      const isSelected = this.state.selectedTrack && track.id === this.state.selectedTrack.id;
       trackComponent = (
         <Track track={track}
           key={key}
           keyAttr={keyAttr}
           currentKey={currentKey}
+          isSelected={isSelected}
           onClickHandler={onClickHandler}
           openContextMenu={this.openContextMenu}
         />);
@@ -189,6 +140,7 @@ export default class TrackList extends Component {
             <TrackContextMenu
               context={this.state.contextMenu}
               hideContextMenu={this.hideContextMenu}
+              track={this.state.selectedTrack}
             /> : ''}
         </div>
       );
