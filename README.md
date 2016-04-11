@@ -1,6 +1,7 @@
 # SummerSinger
 
-SummerSinger is a self-hosted music player, the plan is that you are going to put it on a raspberry-pi, and then control it from a web interface.
+SummerSinger is a self-hosted music player, the plan is that you are going to put it on a raspberry-pi, and then control it from a web interface. 
+It is however still a work in progress!
 
 ## Phoenix
 To start your Phoenix app:
