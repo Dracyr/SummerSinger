@@ -105,7 +105,8 @@ defmodule SummerSinger.Player do
     result = case Queue.next_track do
       {:ok, track_id} ->
         play_track(track_id)
-        if backend_next, do: SummerSinger.Endpoint.broadcast! "status:broadcast", "statusUpdate", status
+        broadcast_status = status |> Map.merge(%{current_time: DateUtil.now})
+        if backend_next, do: SummerSinger.Endpoint.broadcast! "status:broadcast", "statusUpdate", broadcast_status
         :ok
       :none ->
         :err

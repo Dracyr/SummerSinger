@@ -15,11 +15,11 @@ class Player extends React.Component {
     let playerCenter = '';
     if (currentTrack) {
       playerCenter = (
-        <div className='player-center'>
-          <div className='song'>
+        <div className="player-center">
+          <div className="song">
             {currentTrack.artist} - {currentTrack.title}
           </div>
-          <div className='album'>
+          <div className="album">
             {currentTrack.album}
           </div>
         </div>
@@ -28,29 +28,31 @@ class Player extends React.Component {
 
     return (
       <div>
-        <div className='now-playing'>
-          <div id='player-controls'>
-            <i className='fa fa-fast-backward'
+        <div className="now-playing">
+          <div id="player-controls">
+            <i className="fa fa-fast-backward"
                onClick={() => actions.requestPreviousTrack() }></i>
             <i className={playingClass}
                onClick={() => actions.requestPlayback(!playing) }></i>
-            <i className='fa fa-fast-forward'
+            <i className="fa fa-fast-forward"
                onClick={() => actions.requestNextTrack() }></i>
           </div>
-          <div className='player-info'>
-            <div className='player-left-wrapper'></div>
+          <div className="player-info">
+            <div className="player-left-wrapper"></div>
 
             {playerCenter}
 
-            <div className='player-right-wrapper'>
+            <div className="player-right-wrapper">
             </div>
           </div>
         </div>
-        <SeekSlider seek={this.props.actions.requestSeek}
-                    playing={playing}
-                    startTime={startTime}
-                    pausedDuration={pausedDuration}
-                    track={currentTrack} />
+        <SeekSlider
+          seek={this.props.actions.requestSeek}
+          playing={playing}
+          startTime={startTime}
+          pausedDuration={pausedDuration}
+          track={currentTrack}
+        />
       </div>
     );
   }
@@ -62,13 +64,13 @@ function mapState(state) {
     currentTrack: state.player.currentTrack,
     startTime: state.player.startTime,
     pausedDuration: state.player.pausedDuration,
-    queue: state.player.queue
+    queue: state.player.queue,
   };
 }
 
 function mapDispatch(dispatch) {
   return {
-    actions: bindActionCreators(PlayerActions, dispatch)
+    actions: bindActionCreators(PlayerActions, dispatch),
   };
 }
 

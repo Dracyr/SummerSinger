@@ -22,14 +22,11 @@ export class Track extends Component {
   }
 
   render() {
-    const { track, keyAttr, currentKey } = this.props;
+    const { track, isPlaying, isSelected } = this.props;
 
-    let currentTrack = '';
-    if (track[keyAttr] === currentKey) {
-      currentTrack = <span className="playing-icon"><i className="fa fa-volume-up"></i></span>;
-    }
-
-    const trackStyle = this.props.isSelected ? { background: '#dadada' } : {};
+    const currentTrack = isPlaying ?
+      (<span className="playing-icon"><i className="fa fa-volume-up"></i></span>) : '';
+    const trackStyle = isSelected ? { background: '#dadada' } : {};
 
     return (
       <div
@@ -57,8 +54,13 @@ export default class TrackList extends Component {
       contextMenu: false,
       selectedTrack: null,
     };
+
     this.openContextMenu = this.openContextMenu.bind(this);
     this.hideContextMenu = this.hideContextMenu.bind(this);
+    this.renderItem = this.renderItem.bind(this);
+    this.renderItems = this.renderItems.bind(this);
+    this.isRowLoaded = this.isRowLoaded.bind(this);
+    this.loadMoreRows = this.loadMoreRows.bind(this);
   }
 
   openContextMenu(track, x, y) {
@@ -76,8 +78,9 @@ export default class TrackList extends Component {
   }
 
   loadMoreRows(from, size) {
-    const { loadMoreRows } = this.props;
-    loadMoreRows && loadMoreRows(from, size);
+    if (this.props.loadMoreRows) {
+      this.props.loadMoreRows(from, size);
+    }
   }
 
   isRowLoaded(index) {
@@ -90,11 +93,14 @@ export default class TrackList extends Component {
       const { tracks, keyAttr, currentKey, onClickHandler } = this.props;
       const track = tracks[index];
       const isSelected = this.state.selectedTrack && track.id === this.state.selectedTrack.id;
+      const isPlaying = ((keyAttr === 'index' && index === currentKey) ||
+                        (keyAttr === 'id' && track.id === currentKey));
+      console.log(keyAttr, index, currentKey, isPlaying);
+
       trackComponent = (
         <Track track={track}
           key={key}
-          keyAttr={keyAttr}
-          currentKey={currentKey}
+          isPlaying={isPlaying}
           isSelected={isSelected}
           onClickHandler={onClickHandler}
           openContextMenu={this.openContextMenu}
@@ -112,9 +118,13 @@ export default class TrackList extends Component {
     return trackComponent;
   }
 
+  renderItems(items, ref) {
+    return <div className="tbody" ref={ref}>{items}</div>;
+  }
+
   render() {
-    const {tracks, keyAttr, currentKey, onClickHandler } = this.props;
-    const trackCount = this.props.totalTracks || tracks.length;
+    const { tracks, totalTracks } = this.props;
+    const trackCount = totalTracks || tracks.length;
 
     if (tracks.length > 0) {
       return (
@@ -128,20 +138,21 @@ export default class TrackList extends Component {
             </div>
           </div>
           <InfiniteReactList
-            itemRenderer={(index, key) => this.renderItem(index, key)}
-            itemsRenderer={(items, ref) => <div className="tbody" ref={ref}>{items}</div>}
+            itemRenderer={this.renderItem}
+            itemsRenderer={this.renderItems}
             length={trackCount}
             localLength={tracks.length}
-            type='uniform'
-            isRowLoaded={(index) => this.isRowLoaded(index)}
-            loadMoreRows={(from, size) => this.loadMoreRows(from, size)}
+            type="uniform"
+            isRowLoaded={this.isRowLoaded}
+            loadMoreRows={this.loadMoreRows}
           />
           {this.state.contextMenu ?
             <TrackContextMenu
               context={this.state.contextMenu}
               hideContextMenu={this.hideContextMenu}
               track={this.state.selectedTrack}
-            /> : ''}
+            /> : ''
+          }
         </div>
       );
     } else {
@@ -153,3 +164,12 @@ export default class TrackList extends Component {
     }
   }
 }
+
+TrackList.propTypes = {
+  tracks: React.PropTypes.array,
+  keyAttr: React.PropTypes.string,
+  currentKey: React.PropTypes.string,
+  onClickHandler: React.PropTypes.func,
+  totalTracks: React.PropTypes.number,
+  loadMoreRows: React.PropTypes.func,
+};

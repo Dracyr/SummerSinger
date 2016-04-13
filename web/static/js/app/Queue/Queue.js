@@ -6,17 +6,29 @@ import * as PlayerActions from '../Player/actions';
 import TrackList from '../../components/TrackList';
 
 class Queue extends Component {
+  handleClick(track) {
+    this.props.actions.player.requestPlayTrack(track.index);
+  }
+
   render() {
-    const { currentIndex, queue, actions } = this.props;
+    const { currentIndex, queue } = this.props;
+    const handleClick = this.handleClick.bind(this);
 
     return (
       <TrackList tracks={queue}
         keyAttr={"index"}
         currentKey={currentIndex}
-        onClickHandler={(track) => actions.player.requestPlayTrack(track.index)}/>
+        onClickHandler={handleClick}
+      />
     );
   }
 }
+
+Queue.propTypes = {
+  actions: React.PropTypes.object,
+  queue: React.PropTypes.array,
+  currentIndex: React.PropTypes.number,
+};
 
 function mapState(state) {
   return {

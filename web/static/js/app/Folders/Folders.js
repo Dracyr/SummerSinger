@@ -28,10 +28,10 @@ class Folders extends Component {
     } else {
       const trackIndex = index - this.props.folder.children.length;
       const track = this.props.folder.tracks[trackIndex];
+      const isPlaying = this.props.currentId === track.id;
       return (<Track key={key}
         track={track}
-        keyAttr={'id'}
-        currentKey={this.props.currentKey}
+        isPlaying={isPlaying}
         onClickHandler={(track) => this.props.playerActions.requestQueueAndPlayTrack(track.id)} />);
     }
   }
@@ -66,7 +66,8 @@ class Folders extends Component {
 function mapState(state) {
   return {
     pathParts: state.folders.present.pathParts,
-    folder: state.folders.present.folder
+    folder: state.folders.present.folder,
+    currentId: state.player.currentTrack.id,
   };
 }
 

@@ -36,13 +36,14 @@ body {
 }
 
 .playing-icon {
-  position: relative;
+  position: absolute;
   height: 0px;
-  left: -40px;
+  left: -25px;
   margin-right: -40px;
   margin-top: -6px;
   float: left;
   font-size: 23px;
+  line-height: 1.4;
 }
 
 .no_tracks_banner {

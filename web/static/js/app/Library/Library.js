@@ -40,7 +40,7 @@ class Library extends Component {
   }
 
   render() {
-    const { tracks, albums, artists, libraryView, actions, total, currentKey } = this.props;
+    const { tracks, albums, artists, libraryView, actions, total, currentId } = this.props;
 
     const libraryHeader = (
       <div>
@@ -56,29 +56,35 @@ class Library extends Component {
     let currentView = '';
     switch(libraryView) {
       case 'TRACKS':
-        currentView = <TrackList
-          tracks={tracks}
-          totalTracks={total.tracks}
-          keyAttr={"id"}
-          currentKey={currentKey}
-          loadMoreRows={(offset, size) => this.loadMoreRows('tracks', offset, size)}
-          onClickHandler={(track) => actions.requestQueueAndPlayTrack(track.id)} />;
+        currentView = (
+          <TrackList
+            tracks={tracks}
+            totalTracks={total.tracks}
+            keyAttr={"id"}
+            currentKey={currentId}
+            loadMoreRows={(offset, size) => this.loadMoreRows('tracks', offset, size)}
+            onClickHandler={(track) => actions.requestQueueAndPlayTrack(track.id)}
+          />);
         break;
       case 'ALBUMS':
-        currentView = <AlbumList
-                        albums={albums}
-                        totalAlbums={total.albums}
-                        loadMoreRows={(offset, size) => this.loadMoreRows('albums', offset, size)} />;
+        currentView = (
+          <AlbumList
+            albums={albums}
+            totalAlbums={total.albums}
+            loadMoreRows={(offset, size) => this.loadMoreRows('albums', offset, size)}
+          />);
         break;
       case 'ARTISTS':
-        currentView = <ArtistList
-                        artists={artists}
-                        currentKey={currentKey}
-                        totalArtists={total.artists}
-                        loadMoreRows={(offset, size) => this.loadMoreRows('artists', offset, size)} />;
+        currentView = (
+          <ArtistList
+            artists={artists}
+            currentKey={currentId}
+            totalArtists={total.artists}
+            loadMoreRows={(offset, size) => this.loadMoreRows('artists', offset, size)}
+          />);
         break;
       case 'FOLDERS':
-        currentView = <Folders currentKey={currentKey} />;
+        currentView = <Folders />;
         break;
     }
 
@@ -107,7 +113,7 @@ function mapState(state) {
 
 function mapDispatch(dispatch) {
   return {
-    actions:  bindActionCreators(Object.assign({}, LibraryActions, PlayerActions), dispatch)
+    actions: bindActionCreators(Object.assign({}, LibraryActions, PlayerActions), dispatch),
   };
 }
 
