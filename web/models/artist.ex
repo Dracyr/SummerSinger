@@ -1,7 +1,7 @@
 defmodule SummerSinger.Artist do
   use SummerSinger.Web, :model
   alias SummerSinger.Artist
-  require IEx
+
   schema "artists" do
     field :name, :string, unique: true
 

@@ -1,6 +1,5 @@
 defmodule SummerSinger.Playlist do
   use SummerSinger.Web, :model
-  require IEx
   alias SummerSinger.{Playlist, PlaylistItem, Repo, Track}
 
   schema "playlists" do
