@@ -98,7 +98,7 @@ class Library extends Component {
 }
 function mapState(state) {
   return {
-    currentId: state.player.currentTrack ? state.player.currentTrack.id : '',
+    currentId: state.player.currentTrack ? state.player.currentTrack.id : null,
     libraryView: state.library.libraryView,
     tracks: state.library.tracks,
     albums: state.library.albums,

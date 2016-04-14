@@ -32,7 +32,7 @@ Queue.propTypes = {
 
 function mapState(state) {
   return {
-    currentIndex: state.player.currentTrack ? state.player.currentTrack.index : '',
+    currentIndex: state.player.currentTrack ? state.player.currentTrack.index : null,
     queue: state.player.queue,
   };
 }

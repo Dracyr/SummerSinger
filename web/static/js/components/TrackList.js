@@ -5,47 +5,7 @@ import { PlaceholderText } from '../lib/Util';
 import StarRating from './StarRating';
 import TrackContextMenu from './TrackContextMenu';
 
-export class Track extends Component {
-  constructor() {
-    super();
-    this.handleOnClick = this.handleOnClick.bind(this);
-    this.handleOnContextMenu = this.handleOnContextMenu.bind(this);
-  }
-
-  handleOnClick(e) {
-    this.props.onClickHandler(this.props.track);
-  }
-
-  handleOnContextMenu(e) {
-    e.preventDefault();
-    this.props.openContextMenu(this.props.track, e.pageX, e.pageY);
-  }
-
-  render() {
-    const { track, isPlaying, isSelected } = this.props;
-
-    const currentTrack = isPlaying ?
-      (<span className="playing-icon"><i className="fa fa-volume-up"></i></span>) : '';
-    const trackStyle = isSelected ? { background: '#dadada' } : {};
-
-    return (
-      <div
-        className="tr track"
-        onClick={this.handleOnClick}
-        onContextMenu={this.handleOnContextMenu}
-        style={trackStyle}
-      >
-        <div className="td td-title" alt={track.title}><div>
-          {track.title}
-          {currentTrack}
-        </div></div>
-        <div className="td td-artist" alt={track.artist}><div>{track.artist}</div></div>
-        <div className="td td-album" alt={track.album}><div>{track.album}</div></div>
-        <div className="td td-rating"><StarRating rating={track.rating}></StarRating></div>
-      </div>
-    );
-  }
-}
+import Track from './Track';
 
 export default class TrackList extends Component {
   constructor(props) {
@@ -61,6 +21,7 @@ export default class TrackList extends Component {
     this.renderItems = this.renderItems.bind(this);
     this.isRowLoaded = this.isRowLoaded.bind(this);
     this.loadMoreRows = this.loadMoreRows.bind(this);
+    this.selectTrack = this.selectTrack.bind(this);
   }
 
   openContextMenu(track, x, y) {
@@ -84,10 +45,18 @@ export default class TrackList extends Component {
   }
 
   isRowLoaded(index) {
-    return !!this.props.tracks[index];
+    return this.props.tracks ? !!this.props.tracks[index] : true;
+  }
+
+  selectTrack(track) {
+    this.setState({ selectedTrack: track });
   }
 
   renderItem(index, key) {
+    if (this.props.renderItem) {
+      return this.props.renderItem(index, key);
+    }
+
     let trackComponent = '';
     if (this.isRowLoaded(index)) {
       const { tracks, keyAttr, currentKey, onClickHandler } = this.props;
@@ -95,7 +64,6 @@ export default class TrackList extends Component {
       const isSelected = this.state.selectedTrack && track.id === this.state.selectedTrack.id;
       const isPlaying = ((keyAttr === 'index' && index === currentKey) ||
                         (keyAttr === 'id' && track.id === currentKey));
-      console.log(keyAttr, index, currentKey, isPlaying);
 
       trackComponent = (
         <Track track={track}
@@ -104,6 +72,7 @@ export default class TrackList extends Component {
           isSelected={isSelected}
           onClickHandler={onClickHandler}
           openContextMenu={this.openContextMenu}
+          selectTrack={this.selectTrack}
         />);
     } else {
       trackComponent = (
@@ -119,32 +88,47 @@ export default class TrackList extends Component {
   }
 
   renderItems(items, ref) {
+    if (this.props.renderItems) {
+      return this.props.renderItems(items, ref);
+    }
     return <div className="tbody" ref={ref}>{items}</div>;
   }
 
-  render() {
-    const { tracks, totalTracks } = this.props;
-    const trackCount = totalTracks || tracks.length;
+  renderHeader(hideHeader) {
+    return hideHeader ? '' : (
+      <div className="thead">
+        <div className="tr">
+          <div className="td td-title">Title</div>
+          <div className="td td-artist">Artist</div>
+          <div className="td td-album">Album</div>
+          <div className="td td-rating">Rating</div>
+        </div>
+      </div>
+    );
+  }
 
-    if (tracks.length > 0) {
+  render() {
+    const { tracks, totalTracks, hideHeader } = this.props;
+    const localLength = (tracks && tracks.length) || 0;
+    const trackCount = totalTracks || localLength;
+
+    // Without arrow functions, will not rerender even if props changed
+    const itemRenderer = (index, key) => this.renderItem(index, key);
+
+    const header = this.renderHeader(hideHeader);
+    if (trackCount > 0) {
       return (
         <div className="display-table track-list">
-          <div className="thead">
-            <div className="tr">
-              <div className="td td-title">Title</div>
-              <div className="td td-artist">Artist</div>
-              <div className="td td-album">Album</div>
-              <div className="td td-rating">Rating</div>
-            </div>
-          </div>
+          {header}
           <InfiniteReactList
-            itemRenderer={this.renderItem}
+            itemRenderer={itemRenderer}
             itemsRenderer={this.renderItems}
             length={trackCount}
-            localLength={tracks.length}
+            localLength={localLength || trackCount}
             type="uniform"
             isRowLoaded={this.isRowLoaded}
             loadMoreRows={this.loadMoreRows}
+            useTranslate3d
           />
           {this.state.contextMenu ?
             <TrackContextMenu
@@ -168,8 +152,11 @@ export default class TrackList extends Component {
 TrackList.propTypes = {
   tracks: React.PropTypes.array,
   keyAttr: React.PropTypes.string,
-  currentKey: React.PropTypes.string,
+  currentKey: React.PropTypes.number,
   onClickHandler: React.PropTypes.func,
   totalTracks: React.PropTypes.number,
   loadMoreRows: React.PropTypes.func,
+  renderItem: React.PropTypes.func,
+  renderItems: React.PropTypes.func,
+  hideHeader: React.PropTypes.bool,
 };
