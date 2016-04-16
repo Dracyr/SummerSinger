@@ -24,9 +24,9 @@ export default class TrackList extends Component {
     this.selectTrack = this.selectTrack.bind(this);
   }
 
-  openContextMenu(track, x, y) {
+  openContextMenu(track, x, y, type = 'track') {
     this.setState({
-      contextMenu: { x, y },
+      contextMenu: { x, y, type },
       selectedTrack: track,
     });
   }
@@ -48,8 +48,8 @@ export default class TrackList extends Component {
     return this.props.tracks ? !!this.props.tracks[index] : true;
   }
 
-  selectTrack(track) {
-    this.setState({ selectedTrack: track });
+  selectTrack(track, index) {
+    this.setState({ selectedTrack: track, selectedIndex: index });
   }
 
   renderItem(index, key) {
@@ -61,9 +61,12 @@ export default class TrackList extends Component {
     if (this.isRowLoaded(index)) {
       const { tracks, keyAttr, currentKey, onClickHandler } = this.props;
       const track = tracks[index];
-      const isSelected = this.state.selectedTrack && track.id === this.state.selectedTrack.id;
       const isPlaying = ((keyAttr === 'index' && index === currentKey) ||
-                        (keyAttr === 'id' && track.id === currentKey));
+                          (keyAttr === 'id' && track.id === currentKey));
+
+      const isSelected = this.state.selectedTrack && (
+        (keyAttr === 'id' && track.id === this.state.selectedTrack.id) ||
+        (keyAttr === 'index' && index === this.state.selectedIndex));
 
       trackComponent = (
         <Track track={track}
@@ -73,6 +76,7 @@ export default class TrackList extends Component {
           onClickHandler={onClickHandler}
           openContextMenu={this.openContextMenu}
           selectTrack={this.selectTrack}
+          index={index}
         />);
     } else {
       trackComponent = (
@@ -116,8 +120,10 @@ export default class TrackList extends Component {
     const itemRenderer = (index, key) => this.renderItem(index, key);
 
     const header = this.renderHeader(hideHeader);
-    if (trackCount > 0) {
-      return (
+
+    let trackList;
+    if (trackCount > 0 || this.props.hideHeader) {
+      trackList = (
         <div className="display-table track-list">
           {header}
           <InfiniteReactList
@@ -140,12 +146,14 @@ export default class TrackList extends Component {
         </div>
       );
     } else {
-      return (
+      trackList = (
         <div className="no_tracks_banner">
           No tracks.
         </div>
       );
     }
+
+    return trackList;
   }
 }
 

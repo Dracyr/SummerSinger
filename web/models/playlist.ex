@@ -6,7 +6,7 @@ defmodule SummerSinger.Playlist do
     field :title, :string
     field :path, :string
 
-    has_many :playlist_items, SummerSinger.PlaylistItem
+    has_many :playlist_items, SummerSinger.PlaylistItem, on_delete: :delete_all
     has_many :tracks, through: [:playlist_items, :track]
 
     timestamps

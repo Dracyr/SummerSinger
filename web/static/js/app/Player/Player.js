@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as PlayerActions from './actions';
 
 import SeekSlider from './SeekSlider';
 
-class Player extends React.Component {
+class Player extends Component {
+  constructor() {
+    super();
+    this.requestPlayback = this.requestPlayback.bind(this);
+  }
+
+  requestPlayback() {
+    this.props.actions.requestPlayback(!this.props.playing);
+  }
 
   render() {
     const { actions, playing, currentTrack, startTime, pausedDuration } = this.props;
@@ -30,12 +38,9 @@ class Player extends React.Component {
       <div>
         <div className="now-playing">
           <div id="player-controls">
-            <i className="fa fa-fast-backward"
-               onClick={() => actions.requestPreviousTrack() }></i>
-            <i className={playingClass}
-               onClick={() => actions.requestPlayback(!playing) }></i>
-            <i className="fa fa-fast-forward"
-               onClick={() => actions.requestNextTrack() }></i>
+            <i className="fa fa-fast-backward"onClick={actions.requestPreviousTrack}></i>
+            <i className={playingClass} onClick={this.requestPlayback}></i>
+            <i className="fa fa-fast-forward"onClick={actions.requestNextTrack}></i>
           </div>
           <div className="player-info">
             <div className="player-left-wrapper"></div>
@@ -57,6 +62,14 @@ class Player extends React.Component {
     );
   }
 }
+
+Player.propTypes = {
+  actions: PropTypes.object,
+  playing: PropTypes.bool.isRequired,
+  currentTrack: PropTypes.object,
+  startTime: PropTypes.number,
+  pausedDuration: PropTypes.number,
+};
 
 function mapState(state) {
   return {

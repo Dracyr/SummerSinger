@@ -4,24 +4,29 @@ import { connect } from 'react-redux';
 
 import * as FolderActions from './actions';
 import * as PlayerActions from '../Player/actions';
+import Folder from './Folder';
 import Track from '../../components/Track';
 import TrackList from '../../components/TrackList';
+import FolderContextMenu from './FolderContextMenu';
 import TrackContextMenu from '../../components/TrackContextMenu';
+
 
 class Folders extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      contextMenu: false,
-      selectedTrack: null,
+      contextMenu: null,
+      selectedTarget: null,
     };
 
     this.openContextMenu = this.openContextMenu.bind(this);
     this.hideContextMenu = this.hideContextMenu.bind(this);
     this.renderItem = this.renderItem.bind(this);
     this.renderItems = this.renderItems.bind(this);
-    this.selectTrack = this.selectTrack.bind(this);
+    this.selectTarget = this.selectTarget.bind(this);
     this.goToParent = this.goToParent.bind(this);
+    this.playFolder = this.playFolder.bind(this);
+    this.queueFolder = this.queueFolder.bind(this);
   }
 
   componentDidMount() {
@@ -30,62 +35,90 @@ class Folders extends Component {
     }
   }
 
-  openContextMenu(track, x, y) {
+  openContextMenu(target, x, y, type = 'track') {
     this.setState({
-      contextMenu: { x, y },
-      selectedTrack: track,
+      contextMenu: { x, y, type },
+      selectedTarget: target,
     });
   }
 
   hideContextMenu() {
     this.setState({
-      contextMenu: false,
-      selectedTrack: null,
+      contextMenu: null,
+      selectedTarget: null,
     });
   }
 
-  selectTrack(track) {
-    this.setState({ selectedTrack: track });
+  selectTarget(target) {
+    this.setState({ selectedTarget: target });
   }
 
   goToParent() {
     this.props.actions.goToParent();
   }
 
+  playFolder(folder) {
+    this.props.actions.playFolder(folder.id);
+  }
+  queueFolder(folder) {
+    this.props.actions.queueFolder(folder.id);
+  }
+
+  renderContextMenu() {
+    let contextMenu = '';
+    if (this.state.contextMenu) {
+      if (this.state.contextMenu.type === 'folder') {
+        contextMenu = (
+          <FolderContextMenu
+            context={this.state.contextMenu}
+            hideContextMenu={this.hideContextMenu}
+            playFolder={this.playFolder}
+            queueFolder={this.queueFolder}
+            folder={this.state.selectedTarget}
+          />);
+      } else {
+        contextMenu = (
+          <TrackContextMenu
+            context={this.state.contextMenu}
+            hideContextMenu={this.hideContextMenu}
+            track={this.state.selectedTarget}
+          />);
+      }
+    }
+    return contextMenu;
+  }
+
   renderItem(index, key) {
     if (index < this.props.folder.children.length) {
-      const child = this.props.folder.children[index];
       return (
-        <div key={key}
-          className="tr track"
-          onClick={() => this.props.actions.fetchFolder(child.id)}
-        >
-          <div className="td ">{child.title}</div>
-          <div className="td "></div>
-          <div className="td "></div>
-          <div className="td "></div>
-        </div>
-      );
+        <Folder key={key}
+          folder={this.props.folder.children[index]}
+          fetchFolder={this.props.actions.fetchFolder}
+          openContextMenu={this.openContextMenu}
+        />);
     } else {
       const { folder, currentId } = this.props;
-      const { selectedTrack } = this.state;
+      const { selectedTarget } = this.state;
 
       const trackIndex = index - folder.children.length;
       const track = folder.tracks[trackIndex];
+      const playTrack = () => this.props.playerActions.requestQueueAndPlayTrack(track.id);
 
-      return (<Track key={key}
-        track={track}
-        isPlaying={currentId === track.id}
-        isSelected={selectedTrack && selectedTrack.id === track.id}
-        selectTrack={this.selectTrack}
-        openContextMenu={this.openContextMenu}
-        onClickHandler={(track) => this.props.playerActions.requestQueueAndPlayTrack(track.id)} />);
+      return (
+        <Track key={key}
+          track={track}
+          isPlaying={currentId === track.id}
+          isSelected={selectedTarget && selectedTarget.id === track.id}
+          selectTrack={this.selectTarget}
+          openContextMenu={this.openContextMenu}
+          onClickHandler={playTrack}
+          index={index}
+        />);
     }
   }
 
   renderItems(items, ref) {
-    const { pathParts, folder, actions } = this.props;
-    const folderParent = pathParts.length > 1 ? (
+    const folderParent = this.props.pathParts.length > 1 ? (
       <div key={0}
         className="tr track"
         onClick={this.goToParent}
@@ -104,6 +137,7 @@ class Folders extends Component {
     const { pathParts, folder } = this.props;
 
     const totalLength = folder.children.length + folder.tracks.length;
+    const contextMenu = this.renderContextMenu();
     return (
       <div>
         <h3>{pathParts.length > 1 ? pathParts.join(' / ') : '/'}</h3>
@@ -114,13 +148,7 @@ class Folders extends Component {
             totalTracks={totalLength}
             hideHeader
           />
-          {this.state.contextMenu ?
-            <TrackContextMenu
-              context={this.state.contextMenu}
-              hideContextMenu={this.hideContextMenu}
-              track={this.state.selectedTrack}
-            /> : ''
-          }
+          {contextMenu}
         </div>
       </div>
     );
@@ -131,6 +159,8 @@ Folders.propTypes = {
   pathParts: PropTypes.array,
   folder: PropTypes.object,
   actions: PropTypes.object,
+  currentId: PropTypes.number,
+  playerActions: PropTypes.object,
 };
 
 function mapState(state) {

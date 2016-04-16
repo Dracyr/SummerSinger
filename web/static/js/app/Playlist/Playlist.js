@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PropTypes } from 'react';
 import TrackList from '../../components/TrackList';
 
 const Playlist = (props) => {
@@ -13,6 +13,11 @@ const Playlist = (props) => {
       />
     </div>
   );
+};
+
+Playlist.propTypes = {
+  playlist: PropTypes.array,
+  requestQueueAndPlayTrack: PropTypes.func,
 };
 
 export default Playlist;

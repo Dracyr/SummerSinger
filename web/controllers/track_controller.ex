@@ -65,6 +65,7 @@ defmodule SummerSinger.TrackController do
 
   defp limit_tracks(offset, limit) when is_nil(offset) and is_nil(limit) do
     Repo.all from t in Track,
+    order_by: t.title,
     preload: [:artist, :album]
   end
 

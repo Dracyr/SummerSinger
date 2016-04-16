@@ -7,6 +7,7 @@ import SidebarSearch from './SidebarSearch';
 import CreatePlaylist from './CreatePlaylist';
 import SidebarPlaylist from './SidebarPlaylist';
 import SidebarItem from './SidebarItem';
+import SidebarContextMenu from './SidebarContextMenu';
 
 import * as LibraryActions from '../Library/actions';
 import * as PlaylistActions from '../Playlist/actions';
@@ -16,7 +17,16 @@ import * as SidebarActions from './actions';
 export default class Sidebar extends Component {
   constructor() {
     super();
+    this.state = {
+      contextMenu: null,
+      selectedPlaylist: null,
+    };
     this.toggleCreatePlaylist = this.toggleCreatePlaylist.bind(this);
+    this.openContextMenu = this.openContextMenu.bind(this);
+    this.hideContextMenu = this.hideContextMenu.bind(this);
+    this.selectPlaylist = this.selectPlaylist.bind(this);
+    this.playPlaylist = this.playPlaylist.bind(this);
+    this.queuePlaylist = this.queuePlaylist.bind(this);
   }
 
   componentDidMount() {
@@ -28,6 +38,31 @@ export default class Sidebar extends Component {
       const options = { };
       Dragula([componentBackingInstance], options);
     }
+  }
+
+  openContextMenu(playlist, x, y) {
+    this.setState({
+      contextMenu: { x, y },
+      selectedPlaylist: playlist,
+    });
+  }
+
+  hideContextMenu() {
+    this.setState({
+      contextMenu: null,
+      selectedPlaylist: null,
+    });
+  }
+
+  selectPlaylist(playlist) {
+    this.setState({ selectedPlaylist: playlist });
+  }
+
+  playPlaylist(playlist) {
+    this.props.actions.playlist.playPlaylist(playlist.id);
+  }
+  queuePlaylist(playlist) {
+    this.props.actions.playlist.queuePlaylist(playlist.id);
   }
 
   isActive() {
@@ -50,6 +85,7 @@ export default class Sidebar extends Component {
     const switchView = actions.views.switchView;
     const switchPlaylist = actions.views.switchPlaylist;
     const playlistViewActive = view === 'PLAYLIST';
+    const openContextMenu = this.openContextMenu;
 
     return (
       <div className="sidebar">
@@ -88,16 +124,22 @@ export default class Sidebar extends Component {
                   currentPlaylist={currentPlaylist}
                   switchPlaylist={switchPlaylist}
                   playlistViewActive={playlistViewActive}
+                  openContextMenu={openContextMenu}
                 />
               );
             })}
             </div>
           </ul>
         </div>
-
-        <div className="chat-tab hidden">
-
-        </div>
+        {this.state.contextMenu ?
+          <SidebarContextMenu
+            context={this.state.contextMenu}
+            hideContextMenu={this.hideContextMenu}
+            playPlaylist={this.playPlaylist}
+            queuePlaylist={this.queuePlaylist}
+            playlist={this.state.selectedPlaylist}
+          /> : ''
+        }
       </div>
     );
   }

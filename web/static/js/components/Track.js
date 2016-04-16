@@ -13,7 +13,7 @@ export default class Track extends Component {
     if (this.props.isSelected) {
       this.props.onClickHandler(this.props.track);
     } else {
-      this.props.selectTrack(this.props.track);
+      this.props.selectTrack(this.props.track, this.props.index);
     }
   }
 
@@ -55,4 +55,5 @@ Track.propTypes = {
   track: PropTypes.object,
   isPlaying: PropTypes.bool,
   isSelected: PropTypes.bool,
+  index: PropTypes.number,
 };

@@ -4,6 +4,9 @@ export const RECEIVE_ROOT_FOLDER = 'RECEIVE_ROOT_FOLDER';
 export const GO_TO_PARENT = 'GO_TO_PARENT';
 export const GO_TO_PARENT_N = 'GO_TO_PARENT_N';
 
+export const PLAY_FOLDER = 'PLAY_FOLDER';
+export const QUEUE_FOLDER = 'QUEUE_FOLDER';
+
 function requestFolder(folderId, rootFolder) {
   return { type: REQUEST_FOLDER, folderId, rootFolder };
 }
@@ -34,4 +37,12 @@ export function goToParent() {
 
 export function goToParentN(n) {
   return { type: GO_TO_PARENT, n };
+}
+
+export function playFolder(folderId) {
+  return { type: PLAY_FOLDER, folderId };
+}
+
+export function queueFolder(folderId) {
+  return { type: QUEUE_FOLDER, folderId };
 }

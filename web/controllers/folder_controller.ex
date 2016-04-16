@@ -1,12 +1,16 @@
 defmodule SummerSinger.FolderController do
   use SummerSinger.Web, :controller
+  import Ecto.Query
 
   alias SummerSinger.Folder
 
   plug :scrub_params, "folder" when action in [:create, :update]
 
   def index(conn, _params) do
-    folders = Folder.orphans |> Repo.all |> Repo.preload([:tracks, :children])
+    folders = Repo.all from f in Folder.orphans,
+      order_by: :title,
+      preload: [:tracks, :children]
+
     render(conn, "index.json", folders: folders)
   end
 

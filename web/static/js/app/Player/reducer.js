@@ -12,8 +12,10 @@ const initialPlayer = {
 
 export default function player(state = initialPlayer, action) {
   switch (action.type) {
-    case SOCKET_STATUS_UPDATE:
-      const normalizedStartTime = (Date.now() - action.statusUpdate.current_time) + action.statusUpdate.start_time;
+    case SOCKET_STATUS_UPDATE: {
+      const normalizedStartTime = action.statusUpdate.start_time +
+        (Date.now() - action.statusUpdate.current_time);
+
       return {
         ...state,
         playing: action.statusUpdate.playback,
@@ -23,6 +25,7 @@ export default function player(state = initialPlayer, action) {
         serverTime: action.statusUpdate.current_time,
         currentTrack: state.queue[action.statusUpdate.queue_index] || null,
       };
+    }
     case QUEUE_UPDATE:
       return { ...state,
         currentTrack: action.queue[state.queueIndex] || null,

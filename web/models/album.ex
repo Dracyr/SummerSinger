@@ -1,5 +1,6 @@
 defmodule SummerSinger.Album do
   use SummerSinger.Web, :model
+  require IEx
   alias SummerSinger.Album
 
   schema "albums" do
@@ -32,6 +33,9 @@ defmodule SummerSinger.Album do
   def find_or_create(title, artist) do
     try do
       transaction = Repo.transaction(fn ->
+        if is_nil(artist) do
+          IEx.pry
+        end
         album = Repo.one from a in Album,
           where: a.title == ^title and a.artist_id == ^artist.id
 

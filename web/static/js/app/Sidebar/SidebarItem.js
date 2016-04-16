@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 export default class SidebarItem extends Component {
   constructor() {
     super();
-    this.isActive = this.isActive.bind(this);
     this.onClick = this.onClick.bind(this);
   }
 
@@ -11,14 +10,12 @@ export default class SidebarItem extends Component {
     this.props.switchView(this.props.itemView);
   }
 
-  isActive() {
-    const { currentView, itemView } = this.props;
-    return currentView === itemView ? 'active' : '';
-  }
-
   render() {
+    const { view, itemView } = this.props;
+    const isActive = view === itemView ? 'active' : '';
+
     return (
-      <li onClick={this.onClick} className={this.isActive}>
+      <li onClick={this.onClick} className={isActive}>
         {this.props.title}
       </li>
     );
@@ -28,7 +25,7 @@ export default class SidebarItem extends Component {
 SidebarItem.propTypes = {
   switchView: React.PropTypes.func,
   title: React.PropTypes.string,
-  currentView: React.PropTypes.string,
+  view: React.PropTypes.string,
   itemView: React.PropTypes.string,
 };
 
