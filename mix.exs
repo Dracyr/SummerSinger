@@ -53,7 +53,7 @@ defmodule SummerSinger.Mixfile do
     ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
      "ecto.reset": ["ecto.drop", "ecto.setup"],
      "phoenix.digest": "summer_singer.digest",
-     "summer_singer.release": ["summer_singer.digest", "compile", "release"]
+     "summer_singer.release": ["compile", "summer_singer.digest", "release"]
     ]
   end
 end

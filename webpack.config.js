@@ -8,12 +8,12 @@ var publicPath = 'http://localhost:4001/';
 
 var plugins = [
   new webpack.optimize.OccurenceOrderPlugin(),
-  new CopyWebpackPlugin([{ from: './web/static/assets' }])
+  new CopyWebpackPlugin([{ from: './web/static/assets', to: '../' }]),
 ];
 
 var output = {
   path: path.join(__dirname, './priv/static/js'),
-  filename: 'bundle.js'
+  filename: 'bundle.js',
 };
 
 if (prod) {
@@ -21,7 +21,7 @@ if (prod) {
 } else {
   plugins.push(new webpack.HotModuleReplacementPlugin());
   plugins.push(new webpack.NoErrorsPlugin());
-  output = Object.assign(output, {publicPath: publicPath});
+  output = Object.assign(output, { publicPath: publicPath });
 }
 
 var entry = './web/static/js/index.js';
@@ -31,7 +31,7 @@ module.exports = {
   entry: prod ? entry : [
     'webpack-dev-server/client?' + publicPath,
     'webpack/hot/dev-server',
-    entry
+    entry,
   ],
   output: output,
   plugins: plugins,
@@ -42,8 +42,8 @@ module.exports = {
       exclude: /node_modules/,
       query: {
         presets: ['react', 'es2015'],
-        plugins: ['transform-object-rest-spread']
-      }
-    }]
-  }
+        plugins: ['transform-object-rest-spread'],
+      },
+    }],
+  },
 };
