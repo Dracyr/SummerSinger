@@ -20,6 +20,10 @@ config :summer_singer, SummerSinger.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
+
+config :summer_singer,
+  mpg123_command: "mpg123 -o alsa -a sysdefault:CARD=IQaudIODAC -R"
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

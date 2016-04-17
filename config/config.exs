@@ -26,7 +26,9 @@ config :phoenix, :generators,
 
 config :codepagex, :encodings, [:iso_8859_1, :ascii]
 
-config :summer_singer, env: Mix.env
+config :summer_singer,
+  env: Mix.env,
+  mpg123_command: "mpg123 -R"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

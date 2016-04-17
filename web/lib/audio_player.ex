@@ -1,5 +1,4 @@
 defmodule SummerSinger.AudioPlayer do
-
   def start_link do
     {:ok, sup_pid} = Task.Supervisor.start_link(name: SummerSinger.AudioBackendSupervisor)
 
@@ -17,7 +16,9 @@ defmodule SummerSinger.AudioPlayer do
       start_time: nil, # Epoch in milliseconds
       duration: nil # In Milliseconds
     }
-    port = Port.open({:spawn, "mpg123 -R"}, [:use_stdio])
+    port = Port.open(
+      {:spawn, Application.get_env(:summer_singer, :mpg123_command)},
+      [:use_stdio])
 
     loop(default_state, port)
   end

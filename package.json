@@ -39,6 +39,6 @@
   "scripts": {
     "watch:css": "node_modules/node-sass/bin/node-sass --watch --source-map-contents true web/static/css/app.scss priv/static/css/app.css",
     "compile:css": "node_modules/node-sass/bin/node-sass web/static/css/app.scss priv/static/css/app.css",
-    "compile": "npm run compile:css; webpack -p"
+    "compile": "npm run compile:css; webpack -p --define process.env.NODE_ENV='\"production\"' --progress --colors"
   }
 }
