@@ -8,7 +8,16 @@ import {
   REQUEST_SEEK,
 } from '../app/Player/actions';
 
-import { ADD_TRACK_TO_PLAYLIST } from '../app/Playlist/actions';
+import {
+  PLAY_FOLDER,
+  QUEUE_FOLDER,
+} from '../app/Folders/actions';
+
+import {
+  ADD_TRACK_TO_PLAYLIST,
+  PLAY_PLAYLIST,
+  QUEUE_PLAYLIST,
+} from '../app/Playlist/actions';
 
 export default socket => store => next => action => {
   switch (action.type) {
@@ -35,6 +44,14 @@ export default socket => store => next => action => {
       break;
     case ADD_TRACK_TO_PLAYLIST:
       socket.addTrackToPlaylist(action.trackId, action.playlistId);
+      break;
+    case PLAY_FOLDER:
+    case QUEUE_FOLDER:
+      socket.queueFolder(action.folderId);
+      break;
+    case PLAY_PLAYLIST:
+    case QUEUE_PLAYLIST:
+      socket.queuePlaylist(action.playlistId);
       break;
     default:
       break;

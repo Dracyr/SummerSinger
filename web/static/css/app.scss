@@ -135,7 +135,7 @@ body {
 
 .context-menu {
   min-width: 160px;
-  padding: 10px 0px!important;
+  padding: 3px 0px!important;
   margin: 2px 0 0;
   font-size: 15px;
   color: #666;
@@ -160,7 +160,7 @@ body {
   border: 0;
 
   text-overflow: ellipsis;
-  overflow-x: hidden;
+  // overflow-x: hidden;
 }
 
 .context-menu-link:focus {
@@ -195,9 +195,8 @@ body {
 
 .context-menu-item.submenu > .context-menu {
   position: absolute;
-  top: -12px;
-  // left: 100%;
-  overflow-y: scroll;
+  top: -4px;
+  overflow-y: auto;
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: normal;

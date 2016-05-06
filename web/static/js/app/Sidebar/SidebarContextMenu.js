@@ -11,22 +11,23 @@ export default class SidebarContextMenu extends Component {
 
   playPlaylist() {
     const playlist = this.props.playlist;
-    this.props.playPlaylist(playlist.id);
+    this.props.playPlaylist(playlist);
   }
 
   queuePlaylist() {
     const playlist = this.props.playlist;
-    this.props.queuePlaylist(playlist.id);
+    this.props.queuePlaylist(playlist);
   }
 
   render() {
+    /* <MenuItem onClick={this.deletePlaylist}>Delete Playlist</MenuItem> */
     return (
       <ContextMenu
         hideContextMenu={this.props.hideContextMenu}
         context={this.props.context}
       >
-        <MenuItem onClick={this.playPlaylist}>Play playlist</MenuItem>
-        <MenuItem onClick={this.queuePlaylist}>Queue playlist</MenuItem>
+        <MenuItem onClick={this.playPlaylist}>Play Playlist Now</MenuItem>
+        <MenuItem onClick={this.queuePlaylist}>Add Playlist to Queue</MenuItem>
       </ContextMenu>
     );
   }

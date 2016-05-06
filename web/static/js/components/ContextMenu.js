@@ -52,8 +52,10 @@ ContextMenu.propTypes = {
 };
 
 export const MenuItem = (props) => {
+  const className = props.disabled ? 'context-menu-item disabled' : 'context-menu-item';
+
   return (
-    <div className="context-menu-item">
+    <div className={className}>
       <a
         href="#"
         className="context-menu-link"
@@ -68,6 +70,7 @@ export const MenuItem = (props) => {
 MenuItem.propTypes = {
   onClick: React.PropTypes.func,
   children: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
 };
 
 export class Submenu extends Component {

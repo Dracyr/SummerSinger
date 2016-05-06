@@ -37,6 +37,14 @@ defmodule SummerSinger.Queue do
     end)
   end
 
+  def queue_tracks(track_list) when is_list(track_list) and length(track_list) > 0 do
+    Agent.get_and_update(__MODULE__, fn state ->
+      new_state = %{state | queue: (state[:queue] ++ track_list)}
+      queue_index = Enum.count(state[:queue])
+      {queue_index, new_state}
+    end)
+  end
+
   def track(index) do
     Agent.get_and_update(__MODULE__, fn state ->
       track_id = Enum.fetch!(state[:queue], index)

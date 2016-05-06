@@ -1,6 +1,6 @@
 defmodule SummerSinger.RoomChannel do
   use Phoenix.Channel
-  alias SummerSinger.{Player, Queue, Playlist}
+  alias SummerSinger.{Player, Queue, Playlist, Folder}
 
   def join("status:broadcast", _auth_msg, socket) do
     {:ok, %{
@@ -20,7 +20,15 @@ defmodule SummerSinger.RoomChannel do
     {:noreply, socket}
   end
 
-  def handle_in("queue_track", %{"track_id" => track_id}, socket) do
+  def handle_in("queue_track", %{"track_id" => track_id, "play" => true}, socket) do
+    Queue.queue_track(track_id) |> Player.play_queued_track
+    broadcast! socket, "statusUpdate", current_status
+
+    broadcast! socket, "queueUpdate", Queue.queue
+    {:noreply, socket}
+  end
+
+  def handle_in("queue_track", %{"track_id" => track_id, "play" => false}, socket) do
     Queue.queue_track(track_id)
 
     broadcast! socket, "queueUpdate", Queue.queue
@@ -31,14 +39,6 @@ defmodule SummerSinger.RoomChannel do
     Player.play_queued_track(queue_id)
 
     broadcast! socket, "statusUpdate", current_status
-    {:noreply, socket}
-  end
-
-  def handle_in("queue_and_play_track", %{"track_id" => track_id}, socket) do
-    Queue.queue_track(track_id) |> Player.play_queued_track
-
-    broadcast! socket, "statusUpdate", current_status
-    broadcast! socket, "queueUpdate", Queue.queue # TODO: Compound updates
     {:noreply, socket}
   end
 
@@ -72,11 +72,25 @@ defmodule SummerSinger.RoomChannel do
   end
 
   def handle_in("add_track_to_playlist", %{"track_id" => track_id, "playlist_id" => playlist_id}, socket) do
-    IO.inspect("add_track_to_playlist")
-
     Playlist.add_track_to_playlist(track_id, playlist_id)
 
     playlists_update # TODO: Only delta updates
+    {:noreply, socket}
+  end
+
+  def handle_in("queue_playlist", %{"playlist_id" => playlist_id}, socket) do
+    Playlist.collect_tracks(playlist_id)
+    |> Queue.queue_tracks
+
+    broadcast! socket, "queueUpdate", Queue.queue
+    {:noreply, socket}
+  end
+
+  def handle_in("queue_folder", %{"folder_id" => folder_id}, socket) do
+    Folder.collect_tracks(folder_id)
+    |> Queue.queue_tracks
+
+    broadcast! socket, "queueUpdate", Queue.queue
     {:noreply, socket}
   end
 

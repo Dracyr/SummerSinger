@@ -1,6 +1,6 @@
 defmodule SummerSinger.Folder do
   use SummerSinger.Web, :model
-  alias SummerSinger.Folder
+  alias SummerSinger.{Folder, Track}
 
   schema "folders" do
     field :path,  :string
@@ -58,5 +58,23 @@ defmodule SummerSinger.Folder do
   def orphans do
     from f in Folder,
     where: is_nil(f.parent_id)
+  end
+
+  def collect_tracks(folder_id) do
+    q = from t in Track,
+    where: t.folder_id == ^folder_id,
+    select: t.id
+    tracks = Repo.all(q)
+
+    qf = from f in Folder,
+    where: f.parent_id == ^folder_id,
+    select: f.id
+    children = Repo.all(qf)
+
+    childrens_tracks = Enum.flat_map(children, fn id ->
+      collect_tracks(id)
+    end)
+
+    tracks ++ childrens_tracks
   end
 end

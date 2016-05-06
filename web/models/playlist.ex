@@ -62,4 +62,15 @@ defmodule SummerSinger.Playlist do
   defp to_utf8(file) do
     :unicode.characters_to_binary(file, elem(:unicode.bom_to_encoding(file), 0))
   end
+
+  def collect_tracks(playlist_id) do
+    query = from p in SummerSinger.Playlist,
+      where: p.id == ^playlist_id,
+      preload: [:tracks]
+
+    Repo.all(query)
+    |> Enum.at(0)
+    |> Map.fetch!(:tracks)
+    |> Enum.map(&(Map.fetch!(&1, :id)))
+  end
 end

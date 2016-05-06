@@ -34,6 +34,7 @@ export default class CreatePlaylist extends Component {
           value={this.state.value}
           onChange={this.handleChange}
           onKeyPress={this.handleKeyPress}
+          placeholder="Playlist name"
         />
       </li>
     );

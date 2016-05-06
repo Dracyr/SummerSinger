@@ -11,12 +11,12 @@ export default class FolderContextMenu extends Component {
 
   playFolder() {
     const folder = this.props.folder;
-    this.props.playFolder(folder.id);
+    this.props.playFolder(folder);
   }
 
   queueFolder() {
     const folder = this.props.folder;
-    this.props.queueFolder(folder.id);
+    this.props.queueFolder(folder);
   }
 
   render() {
@@ -25,8 +25,8 @@ export default class FolderContextMenu extends Component {
         hideContextMenu={this.props.hideContextMenu}
         context={this.props.context}
       >
-        <MenuItem onClick={this.playFolder}>Play Folder</MenuItem>
-        <MenuItem onClick={this.queueFolder}>Queue Folder</MenuItem>
+        <MenuItem onClick={this.playFolder} disabled>Play Folder</MenuItem>
+        <MenuItem onClick={this.queueFolder}>Add Folder to Queue</MenuItem>
       </ContextMenu>
     );
   }
