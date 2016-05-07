@@ -41,7 +41,8 @@ export function fetchLibrary(libraryType, offset = 0, limit = 0, librarySort = n
 
     const full = total === 0; //  || !librarySort;
     let query = full ? '?' : `?offset=${offset}&limit=${limit}&`;
-    query = sort ? `${query}sort_by=${sort.sortBy}&sort_dir=${sort.dir}` : query;
+    query = sort && libraryType === 'tracks' ?
+      `${query}sort_by=${sort.sortBy}&sort_dir=${sort.dir}` : query;
     return fetch(`/api/${libraryType}${query}`)
       .then(response => response.json())
       .then(json => dispatch(receiveLibrary(libraryType, full, json.total, json.data)));
