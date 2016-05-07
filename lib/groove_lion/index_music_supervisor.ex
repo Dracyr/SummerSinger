@@ -34,12 +34,14 @@ defmodule SummerSinger.IndexMusic.Supervisor do
     tracks |> Enum.map(fn track ->
       Task.async(fn -> pool_track(track) end)
     end)
-    |> Enum.map(&Task.await/1)
+    |> Enum.map(&(Task.await(&1, :infinity)))
   end
 
   defp pool_track(track_path) do
-    :poolboy.transaction(pool_name, fn(pid) ->
-      SummerSinger.IndexMusic.Worker.add_track(pid, track_path)
-    end, :infinity)
+    :poolboy.transaction(
+      pool_name,
+      fn(pid) -> SummerSinger.IndexMusic.Worker.add_track(pid, track_path) end,
+      :infinity
+    )
   end
 end

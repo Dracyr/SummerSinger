@@ -1,6 +1,6 @@
 defmodule SummerSinger.Track do
   use SummerSinger.Web, :model
-  alias SummerSinger.Track
+  alias SummerSinger.{Track, Album, Artist}
 
   schema "tracks" do
     field :title,    :string
@@ -65,5 +65,45 @@ defmodule SummerSinger.Track do
     from track in query,
     where: fragment("similarity(?,?) > ?", track.title, ^search_term, ^limit),
     order_by: fragment("similarity(?,?) DESC", track.title, ^search_term)
+  end
+
+  def order_by(query, "title", dir) when dir == "asc" do
+    from t in query,
+    order_by: [asc: t.title]
+  end
+  def order_by(query, "title", dir) when dir == "desc" or is_nil(dir) do
+    from t in query,
+    order_by: [desc: t.title]
+  end
+
+  def order_by(query, "artist", dir) when dir == "asc" do
+    from t in query,
+    join: a in Artist, on: t.artist_id == a.id,
+    order_by: [asc: a.name, asc: t.title]
+  end
+  def order_by(query, "artist", dir) when dir == "desc" or is_nil(dir) do
+    from t in query,
+    join: a in Artist, on: t.artist_id == a.id,
+    order_by: [desc: a.name, desc: t.title]
+  end
+
+  def order_by(query, "album", dir) when dir == "asc" do
+    from t in query,
+    join: a in Album, on: t.album_id == a.id,
+    order_by: [asc: a.title, asc: t.title]
+  end
+  def order_by(query, "album", dir) when dir == "desc" or is_nil(dir) do
+    from t in query,
+    join: a in Album, on: t.album_id == a.id,
+    order_by: [desc: a.title, desc: t.title]
+  end
+
+  def order_by(query, "rating", dir) when dir == "asc" do
+    from t in query,
+    order_by: fragment("rating ASC NULLS LAST")
+  end
+  def order_by(query, "rating", dir) when dir == "desc" or is_nil(dir) do
+    from t in query,
+    order_by: fragment("rating DESC NULLS LAST")
   end
 end

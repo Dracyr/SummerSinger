@@ -18,7 +18,7 @@ defmodule SummerSinger.IndexMusic.Worker do
   end
 
   def add_track(pid, track_path) do
-    :gen_server.call(pid, track_path)
+    :gen_server.call(pid, track_path, :infinity)
   end
 
   defp add_track(track_path) do
@@ -49,7 +49,7 @@ defmodule SummerSinger.IndexMusic.Worker do
       album_id: album && album.id,
       filename: track_path,
       duration: audio_data.duration,
-      rating: metadata[:rating],
+      rating: metadata[:rating] || 0,
       folder_id: folder.id
     }
 

@@ -2,10 +2,12 @@ import {
   SWITCH_LIBRARY_VIEW,
   RECEIVE_LIBRARY,
   RECEIVE_SEARCH,
+  SORT_LIBRARY,
 } from './actions';
 
 const initialLibrary = {
   libraryView: 'TRACKS',
+  librarySort: { sortBy: 'title', dir: 'asc' },
   totalTracks: 0,
   tracks: [],
   totalAlbums: 0,
@@ -37,9 +39,11 @@ export default function library(state = initialLibrary, action) {
     case SWITCH_LIBRARY_VIEW:
       return { ...state, libraryView: action.libraryView };
     case RECEIVE_LIBRARY:
-      return recieveLibrary(state, action.libraryType, action.library, action.offset, action.total);
+      return recieveLibrary(state, action.libraryType, action.library, action.full, action.total);
     case RECEIVE_SEARCH:
       return { ...state, search: action.search };
+    case SORT_LIBRARY:
+      return { ...state, librarySort: action.sort, tracks: [] };
     default:
       return state;
   }

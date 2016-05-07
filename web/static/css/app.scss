@@ -105,6 +105,14 @@ body {
     max-width: 25%;
     min-width: 81px;
   }
+
+  &.td-title > span,
+  &.td-artist > span,
+  &.td-album > span,
+  &.td-rating > span {
+    cursor: pointer;
+    @include no-select();
+  }
 }
 
 .thead {

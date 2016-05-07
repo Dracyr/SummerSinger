@@ -16,7 +16,7 @@ const Playlist = (props) => {
 };
 
 Playlist.propTypes = {
-  playlist: PropTypes.array,
+  playlist: PropTypes.object,
   requestQueueAndPlayTrack: PropTypes.func,
 };
 

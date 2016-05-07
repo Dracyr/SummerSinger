@@ -1,19 +1,21 @@
 defmodule SummerSinger.TrackController do
   use SummerSinger.Web, :controller
-  import Ecto.Query
-
   alias SummerSinger.Track
+  import Ecto.Query
 
   plug :scrub_params, "track" when action in [:create, :update]
 
   def index(conn, params) do
-    IO.inspect(params)
-    tracks = case params["search"] do
+    tracks = case params do
+      %{"search" => search_term} ->
+        Track.search(search_term)
+      %{"sort_by" => sort_by, "sort_dir" => sort_dir} ->
+        from(t in Track)
+        |> Track.order_by(sort_by, sort_dir)
+        |> limit_tracks(params["offset"], params["limit"])
       nil ->
-        tracks = limit_tracks(params["offset"], params["limit"])
-      search_term ->
-        tracks = Track.search(search_term)
-    end |> Repo.preload(:artist)
+        from(t in Track) |> limit_tracks(params["offset"], params["limit"])
+    end |> Repo.all |> Repo.preload([:artist, :album])
     track_count = Repo.all(from t in Track, select: count(t.id)) |> Enum.at(0)
     render(conn, "index.json", tracks: tracks, track_count: track_count)
   end
@@ -63,16 +65,12 @@ defmodule SummerSinger.TrackController do
     send_resp(conn, :no_content, "")
   end
 
-  defp limit_tracks(offset, limit) when is_nil(offset) and is_nil(limit) do
-    Repo.all from t in Track,
-    order_by: t.title,
-    preload: [:artist, :album]
+  defp limit_tracks(query, offset, limit) when is_nil(offset) and is_nil(limit) do
+    from t in query
   end
 
-  defp limit_tracks(offset, limit) do
-    Repo.all from t in Track,
-    order_by: t.title,
-    offset: ^offset, limit: ^limit,
-    preload: [:artist, :album]
+  defp limit_tracks(query, offset, limit) do
+    from t in query,
+    offset: ^offset, limit: ^limit
   end
 end

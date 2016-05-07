@@ -15,6 +15,7 @@ class Library extends Component {
   constructor() {
     super();
     this.loadMoreRows = _.throttle(this.loadMoreRows, 50);
+    this.sortTracks = this.sortTracks.bind(this);
   }
 
   componentDidMount() {
@@ -39,8 +40,21 @@ class Library extends Component {
     this.props.actions.fetchLibrary(type, count, size);
   }
 
+  sortTracks(sort) {
+    this.props.actions.sortLibrary(sort);
+  }
+
   render() {
-    const { tracks, albums, artists, libraryView, actions, total, currentId } = this.props;
+    const {
+      tracks,
+      albums,
+      artists,
+      currentId,
+      total,
+      libraryView,
+      librarySort,
+      actions,
+    } = this.props;
 
     const libraryHeader = (
       <div>
@@ -62,6 +76,8 @@ class Library extends Component {
             totalTracks={total.tracks}
             keyAttr={"id"}
             currentKey={currentId}
+            sortTracks={this.sortTracks}
+            sort={librarySort}
             loadMoreRows={(offset, size) => this.loadMoreRows('tracks', offset, size)}
             onClickHandler={(track) => actions.requestQueueAndPlayTrack(track.id)}
           />);
@@ -100,6 +116,7 @@ function mapState(state) {
   return {
     currentId: state.player.currentTrack ? state.player.currentTrack.id : null,
     libraryView: state.library.libraryView,
+    librarySort: state.library.librarySort,
     tracks: state.library.tracks,
     albums: state.library.albums,
     artists: state.library.artists,

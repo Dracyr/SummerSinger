@@ -13,6 +13,7 @@ export default class TrackList extends Component {
     this.state = {
       contextMenu: false,
       selectedTrack: null,
+      sort: { sortBy: 'title', dir: 'asc' },
     };
 
     this.openContextMenu = this.openContextMenu.bind(this);
@@ -22,6 +23,12 @@ export default class TrackList extends Component {
     this.isRowLoaded = this.isRowLoaded.bind(this);
     this.loadMoreRows = this.loadMoreRows.bind(this);
     this.selectTrack = this.selectTrack.bind(this);
+
+    this.sortTracks = this.sortTracks.bind(this);
+    this.sortTitle = this.sortTitle.bind(this);
+    this.sortArtist = this.sortArtist.bind(this);
+    this.sortAlbum = this.sortAlbum.bind(this);
+    this.sortRating = this.sortRating.bind(this);
   }
 
   openContextMenu(track, x, y, type = 'track') {
@@ -50,6 +57,35 @@ export default class TrackList extends Component {
 
   selectTrack(track, index) {
     this.setState({ selectedTrack: track, selectedIndex: index });
+  }
+
+
+  sortTitle() {
+    this.sortTracks('title');
+  }
+
+  sortArtist() {
+    this.sortTracks('artist');
+  }
+
+  sortAlbum() {
+    this.sortTracks('album');
+  }
+
+  sortRating() {
+    this.sortTracks('rating');
+  }
+
+  sortTracks(sortBy) {
+    if (!this.props.sortTracks) {
+      return;
+    }
+    if (sortBy === this.props.sort.sortBy) {
+      const dir = this.props.sort.dir === 'asc' ? 'desc' : 'asc';
+      this.props.sortTracks({ sortBy, dir });
+    } else {
+      this.props.sortTracks({ sortBy, dir: 'desc' });
+    }
   }
 
   renderItem(index, key) {
@@ -98,14 +134,37 @@ export default class TrackList extends Component {
     return <div className="tbody" ref={ref}>{items}</div>;
   }
 
+  renderSortCol(column) {
+    if (this.props.sort && this.props.sort.sortBy === column) {
+      return `fa fa-sort-${this.props.sort.dir}`;
+    }
+    return '';
+  }
+
   renderHeader(hideHeader) {
-    return hideHeader ? '' : (
+    if (hideHeader) {
+      return '';
+    }
+
+    return (
       <div className="thead">
         <div className="tr">
-          <div className="td td-title">Title</div>
-          <div className="td td-artist">Artist</div>
-          <div className="td td-album">Album</div>
-          <div className="td td-rating">Rating</div>
+          <div className="td td-title">
+            <span onClick={this.sortTitle}>Title </span>
+            <i className={this.renderSortCol('title')} />
+          </div>
+          <div className="td td-artist">
+            <span onClick={this.sortArtist}>Artist </span>
+            <i className={this.renderSortCol('artist')} />
+          </div>
+          <div className="td td-album">
+            <span onClick={this.sortAlbum}>Album </span>
+            <i className={this.renderSortCol('album')} />
+          </div>
+          <div className="td td-rating">
+            <span onClick={this.sortRating}>Rating </span>
+            <i className={this.renderSortCol('rating')} />
+          </div>
         </div>
       </div>
     );
@@ -167,4 +226,6 @@ TrackList.propTypes = {
   renderItem: React.PropTypes.func,
   renderItems: React.PropTypes.func,
   hideHeader: React.PropTypes.bool,
+  sortTracks: React.PropTypes.func,
+  sort: React.PropTypes.object,
 };
