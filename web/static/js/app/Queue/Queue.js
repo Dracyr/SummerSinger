@@ -1,24 +1,35 @@
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as PlayerActions from '../Player/actions';
+import { requestPlayTrack } from '../Player/actions';
+import { removeQueueTrack } from './actions';
 import TrackList from '../../components/TrackList';
 
 class Queue extends Component {
+  constructor() {
+    super();
+
+    this.handleClick = this.handleClick.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
   handleClick(track) {
-    this.props.actions.player.requestPlayTrack(track.index);
+    this.props.actions.requestPlayTrack(track.index);
+  }
+
+  handleDelete(track) {
+    this.props.actions.removeQueueTrack(track.index);
   }
 
   render() {
     const { currentIndex, queue } = this.props;
-    const handleClick = this.handleClick.bind(this);
 
     return (
       <TrackList tracks={queue}
         keyAttr={"index"}
         currentKey={currentIndex}
-        onClickHandler={handleClick}
+        onClickHandler={this.handleClick}
+        onDeleteHandler={this.handleDelete}
       />
     );
   }
@@ -40,7 +51,8 @@ function mapState(state) {
 function mapDispatch(dispatch) {
   return {
     actions: {
-      player: bindActionCreators(PlayerActions, dispatch),
+      requestPlayTrack: (...args) => { dispatch(requestPlayTrack(...args)); },
+      removeQueueTrack: (...args) => { dispatch(removeQueueTrack(...args)); },
     },
   };
 }

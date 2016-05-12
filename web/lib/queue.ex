@@ -44,6 +44,7 @@ defmodule SummerSinger.Queue do
       {queue_index, new_state}
     end)
   end
+  def queue_tracks(_), do: nil
 
   def track(index) do
     Agent.get_and_update(__MODULE__, fn state ->
@@ -59,7 +60,6 @@ defmodule SummerSinger.Queue do
 
     case state[:queue_history] do
       [{index, _track_id} | history] ->
-        # TODO: Check if expected track still exists
         Agent.update(__MODULE__, fn state ->
           %{state | queue_history: history, queue_index: index }
         end)
@@ -82,6 +82,44 @@ defmodule SummerSinger.Queue do
         {:ok, track(index)}
       :none -> :none
     end
+  end
+
+  def remove_track(queue_index) do
+    Agent.update(__MODULE__, fn state ->
+      history = decrement_history_index(state[:queue_history], queue_index)
+      queue = List.delete_at(state[:queue], queue_index)
+      current_index = cond do
+        queue_index < state[:queue_index] ->
+          state[:queue_index] - 1
+        queue_index == state[:queue_index] ->
+          nil
+        true ->
+          state[:queue_index]
+      end
+
+
+      %{state |
+        queue: queue,
+        queue_history: history,
+        queue_index: current_index
+      }
+    end)
+  end
+
+  defp decrement_history_index(history, queue_index) do
+    Enum.reject(history, fn {index, track_id} -> index == queue_index end)
+    |> decrement_queue(queue_index)
+  end
+
+  defp decrement_queue(queue, queue_index) do
+    Enum.map(queue, fn {index, track_id} ->
+      cond do
+        queue_index < index ->
+          {index - 1, track_id}
+        true ->
+          {index, track_id}
+      end
+    end)
   end
 
   defp repeat_filter_tracks(queue, history, repeat \\ false) do

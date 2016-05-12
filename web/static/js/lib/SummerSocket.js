@@ -89,6 +89,10 @@ export default class SummerSocket {
     this.broadcastChannel.push('queue_playlist', { playlist_id: playlistId });
   }
 
+  removeQueueTrack(trackIndex) {
+    this.broadcastChannel.push('remove_queue_track', { track_index: trackIndex });
+  }
+
   seek(seekPercent) {
     const track = this.state().track;
     if (track) {

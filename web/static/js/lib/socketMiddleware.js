@@ -19,6 +19,10 @@ import {
   QUEUE_PLAYLIST,
 } from '../app/Playlist/actions';
 
+import {
+  REMOVE_QUEUE_TRACK,
+} from '../app/Queue/actions';
+
 export default socket => store => next => action => {
   switch (action.type) {
     case REQUEST_PLAYBACK:
@@ -41,6 +45,9 @@ export default socket => store => next => action => {
       break;
     case REQUEST_SEEK:
       socket.requestSeek(action.percent);
+      break;
+    case REMOVE_QUEUE_TRACK:
+      socket.removeQueueTrack(action.trackIndex);
       break;
     case ADD_TRACK_TO_PLAYLIST:
       socket.addTrackToPlaylist(action.trackId, action.playlistId);

@@ -9,3 +9,36 @@ export const PlaceholderText = () => {
   };
   return <div style={style}></div>;
 };
+
+
+export const closest = (el, selector) => {
+  let matchesFn;
+
+  // find vendor prefix
+  [
+    'matches',
+    'webkitMatchesSelector',
+    'mozMatchesSelector',
+    'msMatchesSelector',
+    'oMatchesSelector',
+  ].some((fn) => {
+    if (typeof document.body[fn] === 'function') {
+      matchesFn = fn;
+      return true;
+    }
+    return false;
+  });
+
+  // traverse parents
+  let parent = null;
+  let searchElement = el;
+  while (searchElement !== null) {
+    parent = searchElement.parentElement;
+    if (parent !== null && parent[matchesFn](selector)) {
+      return parent;
+    }
+    searchElement = parent;
+  }
+
+  return null;
+};

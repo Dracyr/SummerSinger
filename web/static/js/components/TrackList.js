@@ -7,17 +7,22 @@ import TrackContextMenu from './TrackContextMenu';
 
 import Track from './Track';
 
+import { closest } from '../lib/Util';
+
 export default class TrackList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       contextMenu: false,
       selectedTrack: null,
+      selectedIndex: null,
       sort: { sortBy: 'title', dir: 'asc' },
     };
 
     this.openContextMenu = this.openContextMenu.bind(this);
     this.hideContextMenu = this.hideContextMenu.bind(this);
+    this.onDeleteHandler = this.onDeleteHandler.bind(this);
+    this.onClickHandler = this.onClickHandler.bind(this);
     this.renderItem = this.renderItem.bind(this);
     this.renderItems = this.renderItems.bind(this);
     this.isRowLoaded = this.isRowLoaded.bind(this);
@@ -29,6 +34,28 @@ export default class TrackList extends Component {
     this.sortArtist = this.sortArtist.bind(this);
     this.sortAlbum = this.sortAlbum.bind(this);
     this.sortRating = this.sortRating.bind(this);
+  }
+
+  componentWillMount() {
+    document.addEventListener('keyup', this.onDeleteHandler, false);
+    document.addEventListener('click', this.onClickHandler, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keyup', this.onDeleteHandler);
+    document.removeEventListener('click', this.onClickHandler);
+  }
+
+  onDeleteHandler(event) {
+    const { selectedTrack } = this.state;
+    if (!this.onDeleteHandler || !selectedTrack || event.code !== 'Delete') return;
+    this.props.onDeleteHandler(selectedTrack);
+  }
+
+  onClickHandler(event) {
+    if (this.state.selectedTrack && !closest(event.target, '.track')) {
+      this.setState({ selectedTrack: null, selectedIndex: null });
+    }
   }
 
   openContextMenu(track, x, y, type = 'track') {
@@ -58,7 +85,6 @@ export default class TrackList extends Component {
   selectTrack(track, index) {
     this.setState({ selectedTrack: track, selectedIndex: index });
   }
-
 
   sortTitle() {
     this.sortTracks('title');
@@ -221,6 +247,7 @@ TrackList.propTypes = {
   keyAttr: React.PropTypes.string,
   currentKey: React.PropTypes.number,
   onClickHandler: React.PropTypes.func,
+  onDeleteHandler: React.PropTypes.func,
   totalTracks: React.PropTypes.number,
   loadMoreRows: React.PropTypes.func,
   renderItem: React.PropTypes.func,

@@ -71,6 +71,14 @@ defmodule SummerSinger.RoomChannel do
     {:noreply, socket}
   end
 
+  def handle_in("remove_queue_track", %{"track_index" => track_index }, socket) do
+    Queue.remove_track(track_index)
+
+    broadcast! socket, "queueUpdate", Queue.queue
+    broadcast! socket, "statusUpdate", current_status
+    {:noreply, socket}
+  end
+
   def handle_in("add_track_to_playlist", %{"track_id" => track_id, "playlist_id" => playlist_id}, socket) do
     Playlist.add_track_to_playlist(track_id, playlist_id)
 
