@@ -6,8 +6,7 @@ defmodule SummerSinger.PlaylistController do
   plug :scrub_params, "playlist" when action in [:create, :update]
 
   def index(conn, _params) do
-    playlists = Repo.all(Playlist)
-    render(conn, "index.json", playlists: playlists)
+    render(conn, "index.json", playlists: Repo.all(Playlist))
   end
 
   def create(conn, %{"playlist" => playlist_params}) do

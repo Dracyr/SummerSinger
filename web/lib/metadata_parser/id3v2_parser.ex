@@ -64,12 +64,19 @@ defmodule ID3v2Parser do
       frame  :: binary-size(length),
       binary :: binary >>, metadata) when id != << 0,0,0,0 >> and byte_size(id) == 4 do
 
-    metadata = Map.merge(metadata, TagFrame.tag_frame(id, frame), fn _k, v1, v2 ->
-      List.wrap(v1) ++ List.wrap(v2)
+    tag_frame = TagFrame.tag_frame(id, frame)
+    IO.inspect(id)
+    IO.inspect(tag_frame)
+    metadata = Map.merge(metadata, tag_frame, fn _k, v1, v2 ->
+      if is_map(v1) && is_map(v2) do
+        Map.merge(v1, v2)
+      else
+        List.wrap(v1) ++ List.wrap(v2)
+      end
     end)
     metadata_frames(binary, metadata)
   end
-  defp metadata_frames(_, metadata), do: metadata
+  defp metadata_frames(_binary, metadata), do: metadata
 
   defp unsync_int(<<
       0 :: size(1), byte_1 :: size(7),

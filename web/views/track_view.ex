@@ -13,7 +13,6 @@ defmodule SummerSinger.TrackView do
   end
 
   def render("track.json", %{track: track}) do
-    track = SummerSinger.Repo.preload(track, [:album, :artist])
     %{
       id: track.id,
       title: track.title,

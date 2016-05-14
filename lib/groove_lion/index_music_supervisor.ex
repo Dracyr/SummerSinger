@@ -15,7 +15,7 @@ defmodule SummerSinger.IndexMusic.Supervisor do
     pool_options = [
       name: {:local, pool_name()},
       worker_module: SummerSinger.IndexMusic.Worker,
-      size: repo_pool_size,
+      size: 20,
       max_overflow: 0
     ]
 

@@ -12,8 +12,8 @@ defmodule ID3v2Parser.TagFrame do
       encoding :: integer-size(8),
       data      :: binary >>) when valid_encoding(encoding) do
 
-    {desc, content} = split_at_null(data)
-    Map.put(%{}, desc, to_utf8(content, encoding))
+    {desc, content} = to_utf8(data, encoding) |> split_at_null
+    %{"TXXX" =>Map.put(%{}, desc, content)}
   end
   def tag_frame("TXXX", _data), do: %{}
 
@@ -21,10 +21,14 @@ defmodule ID3v2Parser.TagFrame do
       encoding :: integer-size(8),
       data      :: binary >>) when valid_encoding(encoding) do
 
-    {desc, content} = split_at_null(data)
-    Map.put(%{}, desc, content)
+    {desc, content} = to_utf8(data, encoding) |> split_at_null
+    %{"WXXX" => Map.put(%{}, desc, content)}
   end
   def tag_frame("WXXX", _data), do: %{}
+
+  def tag_frame("UFID", data)do
+    %{"UFID" => split_at_null(data)}
+  end
 
   def tag_frame("TCON", <<
       encoding :: integer-size(8),
@@ -86,8 +90,14 @@ defmodule ID3v2Parser.TagFrame do
     { mime_type, << picture_type :: integer-size(8), desc_data :: binary >> } = split_at_null(data)
     { description, picture_data } = split_at_null(desc_data)
 
-    apic = %{type: @picture_type[picture_type], mime: mime_type, desc: description, file: picture_data}
-    Map.put(%{}, "APIC", [apic])
+    %{"APIC" =>
+      [%{
+        type: @picture_type[picture_type],
+        mime: mime_type,
+        desc: description,
+        file: picture_data
+      }]
+    }
   end
   def tag_frame("APIC", _data), do: %{}
 
@@ -97,8 +107,10 @@ defmodule ID3v2Parser.TagFrame do
         # Some tracks try to encode multiples of data in a null-separated list
         text = to_utf8(data) |> split_at_null |> elem(0)
         Map.put(%{}, id, text)
-      true ->
+      String.valid?(data) ->
         Map.put(%{}, id, data)
+      true ->
+        %{}
     end
   end
 

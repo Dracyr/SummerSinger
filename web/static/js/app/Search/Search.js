@@ -15,7 +15,8 @@ export default class Search extends Component {
           tracks={search}
           keyAttr={"id"}
           currentKey={currentId}
-          onClickHandler={(track) => requestQueueAndPlayTrack(track.id)} />;
+          onClickHandler={(track) => requestQueueAndPlayTrack(track.id)}
+        />
       </div>
     );
   }

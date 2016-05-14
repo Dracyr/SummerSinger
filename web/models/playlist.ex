@@ -28,27 +28,13 @@ defmodule SummerSinger.Playlist do
   end
 
   def create(playlist_path, root_path \\ "/") do
-    IO.inspect("Adding" <> playlist_path)
-    changeset = Playlist.changeset(%Playlist{}, %{
+    playlist = Playlist.changeset(%Playlist{}, %{
       path: Path.absname(playlist_path, root_path),
       title: Path.basename(playlist_path, Path.extname(playlist_path))
-    })
-    playlist = Repo.insert!(changeset, log: false)
-    tracks = File.read!(playlist_path)
-    |> to_utf8
-    |> String.split(<< "\n" >>)
-    |> Enum.reject(&(String.at(&1, 0) == "#" || String.length(&1) == 0))
-    |> Enum.filter(&(String.contains?(&1, ".mp3")))
-    |> Enum.map(&String.strip/1)
-    |> Enum.each(fn track_path ->
-      abs_path = Path.expand track_path, Path.dirname(playlist_path) # This line is magic, don't touch it
+    }) |> Repo.insert!
 
-      track = Repo.get_by(Track, filename: abs_path)
-      if !is_nil(track) do
-        Ecto.build_assoc(playlist, :playlist_items, track_id: track.id)
-        |> Repo.insert!(log: false)
-      end
-    end)
+    read_playlist(playlist_path)
+    |> Enum.each(&add_track(&1, playlist))
 
     playlist
   end
@@ -59,18 +45,37 @@ defmodule SummerSinger.Playlist do
     |> Repo.insert!
   end
 
-  defp to_utf8(file) do
-    :unicode.characters_to_binary(file, elem(:unicode.bom_to_encoding(file), 0))
-  end
-
   def collect_tracks(playlist_id) do
     query = from p in SummerSinger.Playlist,
       where: p.id == ^playlist_id,
       preload: [:tracks]
 
     Repo.all(query)
-    |> Enum.at(0)
+    |> List.first
     |> Map.fetch!(:tracks)
-    |> Enum.map(&(Map.fetch!(&1, :id)))
+    |> Enum.map(&Map.fetch!(&1, :id))
+  end
+
+  defp to_utf8(file) do
+    :unicode.characters_to_binary(file, elem(:unicode.bom_to_encoding(file), 0))
+  end
+
+  defp read_playlist(playlist_path) do
+    File.read!(playlist_path)
+    |> to_utf8
+    |> String.split(<< "\n" >>)
+    |> Enum.reject(&(String.at(&1, 0) == "#" || String.length(&1) == 0))
+    |> Enum.filter(&(String.contains?(&1, ".mp3")))
+    |> Enum.map(&String.strip/1)
+  end
+
+  defp add_track(track_path, playlist) do
+    abs_path = Path.expand track_path, Path.dirname(playlist.path) # This line is magic, don't touch it
+
+    track = Repo.get_by(Track, filename: abs_path)
+    if !is_nil(track) do
+      Ecto.build_assoc(playlist, :playlist_items, track_id: track.id)
+      |> Repo.insert!
+    end
   end
 end

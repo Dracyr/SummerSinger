@@ -1,5 +1,5 @@
 $now_playing_height: 70px;
-$player_center_width: 600px;
+$player_center_width: 800px;
 $color-primary: #aa79ff;
 
 .now-playing {
@@ -48,6 +48,7 @@ $color-primary: #aa79ff;
   position: relative;
   float: left;
   width: $player_center_width;
+  height: $now_playing_height;
   height: 100%;
 
   text-align: center;

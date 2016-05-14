@@ -7,7 +7,7 @@ defmodule SummerSinger.AlbumController do
 
   def index(conn, params) do
     albums = limit_albums(params["offset"], params["limit"])
-    album_count = Repo.all(from t in Album, select: count(t.id)) |> Enum.at(0)
+    album_count = Repo.all(from t in Album, select: count(t.id)) |> List.first
     render(conn, "index.json", albums: albums, album_count: album_count)
   end
 

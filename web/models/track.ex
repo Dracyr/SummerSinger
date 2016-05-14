@@ -52,10 +52,7 @@ defmodule SummerSinger.Track do
   end
 
   def filename_exists?(filename) do
-    case Repo.get_by(__MODULE__, filename: filename) do
-      nil -> false
-      _   -> true
-    end
+    !!Repo.get_by(__MODULE__, filename: filename)
   end
 
   def search(search_term) do
@@ -68,35 +65,23 @@ defmodule SummerSinger.Track do
     order_by: fragment("similarity(?,?) DESC", track.title, ^search_term)
   end
 
-  def order_by(query, "title", dir) when dir == "asc" do
+  def order_by(query, "title", dir) when dir in ["asc", "desc", nil] do
     from t in query,
-    order_by: [asc: t.title]
-  end
-  def order_by(query, "title", dir) when dir == "desc" or is_nil(dir) do
-    from t in query,
-    order_by: [desc: t.title]
+    order_by: [{^String.to_atom(dir || "desc"), t.title}]
   end
 
-  def order_by(query, "artist", dir) when dir == "asc" do
+  def order_by(query, "artist", dir) when dir in ["asc", "desc", nil] do
+    dir = String.to_atom(dir || "desc")
     from t in query,
     join: a in Artist, on: t.artist_id == a.id,
-    order_by: [asc: a.name, asc: t.title]
-  end
-  def order_by(query, "artist", dir) when dir == "desc" or is_nil(dir) do
-    from t in query,
-    join: a in Artist, on: t.artist_id == a.id,
-    order_by: [desc: a.name, desc: t.title]
+    order_by: [{^dir, a.name}, {^dir, t.title}]
   end
 
-  def order_by(query, "album", dir) when dir == "asc" do
+  def order_by(query, "album", dir) when dir in ["asc", "desc", nil] do
+    dir = String.to_atom(dir || "desc")
     from t in query,
     join: a in Album, on: t.album_id == a.id,
-    order_by: [asc: a.title, asc: t.title]
-  end
-  def order_by(query, "album", dir) when dir == "desc" or is_nil(dir) do
-    from t in query,
-    join: a in Album, on: t.album_id == a.id,
-    order_by: [desc: a.title, desc: t.title]
+    order_by: [{^dir, a.title}, {^dir, t.title}]
   end
 
   def order_by(query, "rating", dir) when dir == "asc" do

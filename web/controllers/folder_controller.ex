@@ -7,9 +7,12 @@ defmodule SummerSinger.FolderController do
   plug :scrub_params, "folder" when action in [:create, :update]
 
   def index(conn, _params) do
+    children_query = from f in Folder,
+      order_by: f.title
+
     folders = Repo.all from f in Folder.orphans,
-      order_by: :title,
-      preload: [:tracks, :children]
+      order_by: f.title,
+      preload: [:tracks, children: ^children_query]
 
     render(conn, "index.json", folders: folders)
   end

@@ -17,6 +17,7 @@ defmodule SummerSinger.AlbumView do
       id: album.id,
       title: album.title,
       year: album.year,
+      artist: album.artist.name,
       tracks: render_many(album.tracks, SummerSinger.TrackView, "track.json")
     }
   end

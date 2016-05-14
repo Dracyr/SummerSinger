@@ -8,7 +8,8 @@ defmodule SummerSinger.TrackController do
   def index(conn, params) do
     tracks = case params do
       %{"search" => search_term} ->
-        Track.search(search_term)
+        from(t in Track)
+        |> Track.search(search_term)
       %{"sort_by" => sort_by, "sort_dir" => sort_dir} ->
         from(t in Track)
         |> Track.order_by(sort_by, sort_dir)
@@ -16,6 +17,7 @@ defmodule SummerSinger.TrackController do
       nil ->
         from(t in Track) |> limit_tracks(params["offset"], params["limit"])
     end |> Repo.all |> Repo.preload([:artist, :album])
+
     track_count = Repo.all(from t in Track, select: count(t.id)) |> Enum.at(0)
     render(conn, "index.json", tracks: tracks, track_count: track_count)
   end

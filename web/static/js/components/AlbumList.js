@@ -3,7 +3,7 @@ import InfiniteReactList from '../lib/InfiniteReactList';
 
 class AlbumCard extends Component {
 
- render() {
+  render() {
     const { album } = this.props;
 
     return (
@@ -11,7 +11,11 @@ class AlbumCard extends Component {
         <div className="card-image">
           <img src="/images/album_placeholder.png" width="150" height="150"></img>
         </div>
-        <div className="card-content">{album.title}</div>
+        <div className="card-content">
+          {album.title}
+          <br />
+          <small>{album.artist}</small>
+        </div>
       </div>
     );
   }

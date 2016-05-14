@@ -19,7 +19,7 @@ defmodule MetadataParser do
           end
 
           if is_nil(audio_data) || is_nil(metadata) do
-            {:err, "Error in reading metadata"}
+            {:error, "Error in reading metadata"}
           else
             {:ok, audio_data, metadata}
           end

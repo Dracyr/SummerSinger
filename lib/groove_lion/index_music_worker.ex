@@ -36,7 +36,7 @@ defmodule SummerSinger.IndexMusic.Worker do
             IO.inspect("WE FUCKED UP " <> reason)
             raise "WE FUCKED UP"
         end
-      {:err, _reason} ->
+      {:error, _reason} ->
         IO.inspect("Error, could not add track: " <> track_path)
     end
   end
