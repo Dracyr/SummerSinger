@@ -91,7 +91,6 @@ export class Submenu extends Component {
 
   handleMouseEnter() {
     if (this.closetimer) clearTimeout(this.closetimer);
-
     if (this.state.visible) return;
 
     this.opentimer = setTimeout(() => this.setState({ visible: true }), 10);
@@ -99,7 +98,6 @@ export class Submenu extends Component {
 
   handleMouseLeave() {
     if (this.opentimer) clearTimeout(this.opentimer);
-
     if (!this.state.visible) return;
 
     this.closetimer = setTimeout(() => this.setState({ visible: false }), 500);
