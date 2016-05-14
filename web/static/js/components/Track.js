@@ -29,6 +29,8 @@ export default class Track extends Component {
       (<span className="playing-icon"><i className="fa fa-volume-up"></i></span>) : '';
     const trackStyle = isSelected ? { background: '#dadada' } : {};
 
+    const title = track.title ? track.title : track.filename;
+
     return (
       <div
         className="tr track"
@@ -36,8 +38,8 @@ export default class Track extends Component {
         onContextMenu={this.handleOnContextMenu}
         style={trackStyle}
       >
-        <div className="td td-title" alt={track.title}><div>
-          {track.title}
+        <div className="td td-title" alt={title}><div>
+          {title}
           {currentTrack}
         </div></div>
         <div className="td td-artist" alt={track.artist}><div>{track.artist}</div></div>

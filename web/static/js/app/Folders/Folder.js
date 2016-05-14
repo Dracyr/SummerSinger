@@ -24,7 +24,7 @@ export default class Folder extends Component {
         onClick={this.fetchFolder}
         onContextMenu={this.onContextMenu}
       >
-        <div className="td ">{this.props.folder.title}</div>
+        <div className="td "><b>{this.props.folder.title}</b></div>
         <div className="td "></div>
         <div className="td "></div>
         <div className="td "></div>

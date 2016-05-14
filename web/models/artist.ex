@@ -27,10 +27,11 @@ defmodule SummerSinger.Artist do
     |> unique_constraint(:name)
   end
 
-  def find_or_create(nil), do: nil
+  def find_or_create(name)
+    when is_nil(name), do: nil
   def find_or_create(name) do
     try do
-      transaction = Repo.transaction(fn ->
+      Repo.transaction(fn ->
         case Repo.get_by(Artist, name: name) do
           nil ->
             %Artist{}
@@ -39,8 +40,7 @@ defmodule SummerSinger.Artist do
           artist -> artist
         end
       end)
-
-      case transaction do
+      |> case do
         {:ok, artist} ->
           artist
         {:error, _reason} ->

@@ -45,6 +45,7 @@ defmodule SummerSinger.Track do
       title: track.title,
       artist: track.artist && track.artist.name,
       album: track.album && track.album.title,
+      filename: Path.basename(track.filename),
       duration: track.duration,
       rating: track.rating
     }

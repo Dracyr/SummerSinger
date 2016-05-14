@@ -3,6 +3,8 @@ $player_center_width: 600px;
 $color-primary: #aa79ff;
 
 .now-playing {
+  font-family: 'Raleway', sans-serif;
+
   display: flex;
 
   height: $now_playing_height;

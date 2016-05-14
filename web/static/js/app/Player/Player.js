@@ -22,10 +22,12 @@ class Player extends Component {
 
     let playerCenter = '';
     if (currentTrack) {
+      const artist = currentTrack.artist ? `${currentTrack.artist} - ` : '';
+      const title = currentTrack.title ? currentTrack.title : currentTrack.filename;
       playerCenter = (
         <div className="player-center">
           <div className="song">
-            {currentTrack.artist} - {currentTrack.title}
+            {artist} {title}
           </div>
           <div className="album">
             {currentTrack.album}

@@ -28,14 +28,11 @@ defmodule SummerSinger.Album do
     |> unique_constraint(:title, name: :albums_title_artist_id_index)
   end
 
-  def find_or_create(nil, _), do: nil
-  def find_or_create(nil, nil), do: nil
+  def find_or_create(title, artist)
+    when is_nil(title) or is_nil(artist), do: nil
   def find_or_create(title, artist) do
     try do
-      transaction = Repo.transaction(fn ->
-        if is_nil(artist) do
-          IEx.pry
-        end
+      Repo.transaction(fn ->
         album = Repo.one from a in Album,
           where: a.title == ^title and a.artist_id == ^artist.id
 
@@ -47,8 +44,7 @@ defmodule SummerSinger.Album do
           album
         end
       end)
-
-      case transaction do
+      |> case do
         {:ok, artist} ->
           artist
         {:error, _reason} ->

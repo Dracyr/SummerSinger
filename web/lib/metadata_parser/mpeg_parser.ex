@@ -141,7 +141,7 @@ defmodule MPEGParser do
         file_size / (bitrate * 1000 / 8)
     end
   end
-  defp get_duration(bitrate, samplerate, file_size, audio_data, mpeg_version), do: 0.0
+  defp get_duration(_, _, _, _, _), do: 0.0
 
   def parse_frame_header(<<
     _frame_sync :: bits-size(11),

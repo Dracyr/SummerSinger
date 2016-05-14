@@ -20,7 +20,8 @@ defmodule SummerSinger.TrackView do
       artist: track.artist && track.artist.name,
       duration: track.duration,
       rating: track.rating,
-      album: track.album && track.album.title
+      album: track.album && track.album.title,
+      filename: Path.basename(track.filename),
     }
   end
 end

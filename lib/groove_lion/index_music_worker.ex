@@ -26,9 +26,12 @@ defmodule SummerSinger.IndexMusic.Worker do
       {:ok, audio_data, metadata} ->
         case create_track(track_path, metadata, audio_data) do
           {:ok, track} ->
-            Repo.insert! track
-
-            IO.inspect("** ADDED: " <> track_path)
+            case Repo.insert(track) do
+              {:ok, track} ->
+                IO.inspect("** ADDED: " <> track_path)
+              {:error, reason} ->
+                IO.inspect("[ERROR] " <> track_path <> " " <> reason)
+            end
           {:error, reason} ->
             IO.inspect("WE FUCKED UP " <> reason)
             raise "WE FUCKED UP"

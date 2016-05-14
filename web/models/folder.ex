@@ -31,22 +31,21 @@ defmodule SummerSinger.Folder do
 
   def create!(path, root \\ false) do
     {:ok, folder} = Repo.transaction(fn ->
-      changeset = case root do
-        true ->
-          %{
-            path: path,
-            title: Path.basename(path),
-            root: root
-          }
-        false ->
-          parent_path = Path.expand("..", path)
-          parent = Repo.get_by(Folder, path: parent_path)
-          %{
-            path: path,
-            title: Path.basename(path),
-            parent_id: parent.id,
-            root: root
-          }
+      changeset = if root do
+        %{
+          path: path,
+          title: Path.basename(path),
+          root: root
+        }
+      else
+        parent_path = Path.expand("..", path)
+        parent = Repo.get_by(Folder, path: parent_path)
+        %{
+          path: path,
+          title: Path.basename(path),
+          parent_id: parent.id,
+          root: root
+        }
       end
 
       Folder.changeset(%Folder{}, changeset) |> Repo.insert!
@@ -61,20 +60,14 @@ defmodule SummerSinger.Folder do
   end
 
   def collect_tracks(folder_id) do
-    q = from t in Track,
-    where: t.folder_id == ^folder_id,
-    select: t.id
-    tracks = Repo.all(q)
+    tracks = Repo.all from t in Track,
+      where: t.folder_id == ^folder_id,
+      select: t.id
 
-    qf = from f in Folder,
-    where: f.parent_id == ^folder_id,
-    select: f.id
-    children = Repo.all(qf)
+    children = Repo.all from f in Folder,
+      where: f.parent_id == ^folder_id,
+      select: f.id
 
-    childrens_tracks = Enum.flat_map(children, fn id ->
-      collect_tracks(id)
-    end)
-
-    tracks ++ childrens_tracks
+    tracks ++ Enum.flat_map(children, &collect_tracks/1)
   end
 end
