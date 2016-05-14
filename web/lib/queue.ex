@@ -1,6 +1,5 @@
 defmodule SummerSinger.Queue do
   alias SummerSinger.{Track, Repo}
-  require Logger
 
   def start_link(initial_queue) do
     Agent.start_link(fn ->
@@ -8,7 +7,7 @@ defmodule SummerSinger.Queue do
         queue: initial_queue,
         queue_history: [],
         queue_index: nil,
-        repeat: true,
+        p_total: 0,
         shuffle: true
       } end, name: __MODULE__)
   end
@@ -16,7 +15,7 @@ defmodule SummerSinger.Queue do
   def queue do
     queue = Agent.get(__MODULE__, &(Map.get(&1, :queue)))
 
-    tracks = queue |> Enum.with_index |> Enum.map(fn {track_id, index} ->
+    tracks = queue |> Enum.with_index |> Enum.map(fn {{track_id, prop}, index} ->
       Repo.get(Track, track_id) |> Repo.preload([:artist, :album]) |> Track.to_map(index)
     end)
 
@@ -30,27 +29,41 @@ defmodule SummerSinger.Queue do
   end
 
   def queue_track(track_id) do
-    Agent.get_and_update(__MODULE__, fn state ->
-      new_state = %{state | queue: (state[:queue] ++ [track_id])}
-      queue_index = Enum.count(state[:queue])
-      {queue_index, new_state}
-    end)
+    queue_tracks([track_id])
   end
 
   def queue_tracks(track_list) when is_list(track_list) and length(track_list) > 0 do
     Agent.get_and_update(__MODULE__, fn state ->
-      new_state = %{state | queue: (state[:queue] ++ track_list)}
-      queue_index = Enum.count(state[:queue])
-      {queue_index, new_state}
+      track_count = Enum.count(state[:queue]) + Enum.count(track_list)
+      track_list = Enum.map(track_list, fn t -> {t, track_count} end)
+      new_queue = Enum.map(state[:queue], fn {t, prop} ->
+        {t, prop + Enum.count(track_list)}
+      end) ++ track_list
+      p_total = Enum.reduce(new_queue, 0, fn ({t, prop}, acc) -> prop + acc end)
+
+      new_state = %{state |
+        queue: new_queue,
+        p_total: p_total
+      }
+      {Enum.count(state[:queue]), new_state}
     end)
   end
   def queue_tracks(_), do: nil
 
   def track(index) do
     Agent.get_and_update(__MODULE__, fn state ->
-      track_id = Enum.fetch!(state[:queue], index)
-      history = [{index, track_id}] ++ state[:queue_history]
-      new_state = %{state | queue_index: index, queue_history: history}
+      {track_id, _prop} = Enum.fetch!(state[:queue], index)
+
+      new_queue = Enum.map(state[:queue], fn {t, prop} -> {t, prop + 1} end)
+      |> List.replace_at(index, {track_id, 0})
+
+      p_total = Enum.reduce(new_queue, 0, fn ({t, prop}, acc) -> prop + acc end)
+      new_state = %{state |
+        queue: new_queue,
+        p_total: p_total,
+        queue_index: index,
+        queue_history: [{index, track_id}] ++ state[:queue_history]
+      }
       {track_id, new_state}
     end)
   end
@@ -63,7 +76,7 @@ defmodule SummerSinger.Queue do
         Agent.update(__MODULE__, fn state ->
           %{state | queue_history: history, queue_index: index }
         end)
-        {:ok, Enum.at(state[:queue], index)}
+        {:ok, Enum.at(state[:queue], index) |> elem(0)}
       [] ->
         :none
     end
@@ -71,16 +84,26 @@ defmodule SummerSinger.Queue do
 
   def next_track do
     state = Agent.get(__MODULE__, &(&1))
-    queue_index = state[:queue_index] || 0
+    if state[:shuffle] do
+      p_target = state[:p_total] * :random.uniform
+      next_index = Enum.reduce_while(state[:queue], {0, 0}, fn {track_id, prop}, {i, prop_acc} ->
+        if prop + prop_acc >= p_target do
+          {:halt, {i, prop + prop_acc}}
+        else
+          {:cont, {i + 1, prop + prop_acc}}
+        end
+      end) |> elem(0)
 
-    next_index = state[:queue]
-      |> repeat_filter_tracks(state[:queue_history], state[:repeat])
-      |> select_next_track(queue_index, length(state[:queue]), state[:repeat], state[:shuffle])
-
-    case next_index do
-      {:ok, index} ->
-        {:ok, track(index)}
-      :none -> :none
+      {:ok, track(next_index)}
+    else
+      queue_index = state[:queue_index] || 0
+      queue_length = Enum.count(state[:queue])
+      cond do
+        queue_index + 1 < queue_length  ->
+          {:ok, queue_index + 1}
+        true ->
+          :none
+      end
     end
   end
 
@@ -97,7 +120,6 @@ defmodule SummerSinger.Queue do
           state[:queue_index]
       end
 
-
       %{state |
         queue: queue,
         queue_history: history,
@@ -108,11 +130,7 @@ defmodule SummerSinger.Queue do
 
   defp decrement_history_index(history, queue_index) do
     Enum.reject(history, fn {index, track_id} -> index == queue_index end)
-    |> decrement_queue(queue_index)
-  end
-
-  defp decrement_queue(queue, queue_index) do
-    Enum.map(queue, fn {index, track_id} ->
+    |> Enum.map(fn {index, track_id} ->
       cond do
         queue_index < index ->
           {index - 1, track_id}
@@ -120,26 +138,5 @@ defmodule SummerSinger.Queue do
           {index, track_id}
       end
     end)
-  end
-
-  defp repeat_filter_tracks(queue, history, repeat \\ false) do
-    if repeat do
-      queue
-    else
-      queue -- Enum.map(history, &(elem(&1, 0)) )
-    end
-  end
-
-  defp select_next_track(queue, queue_index, queue_length, repeat \\ false, shuffle \\ false) do
-    cond do
-      shuffle ->
-        {:ok, Enum.random(1..queue_length) - 1}
-      queue_index + 1 < queue_length  ->
-        {:ok, queue_index + 1}
-      repeat ->
-        {:ok, 0}
-      true ->
-        :none
-    end
   end
 end
