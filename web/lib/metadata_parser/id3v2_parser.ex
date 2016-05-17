@@ -1,6 +1,5 @@
 defmodule ID3v2Parser do
   alias ID3v2Parser.TagFrame
-  alias ID3v2Parser.TagFrameError
 
   def parse_binary(binary) do
     case parse_header(binary) do

@@ -10,8 +10,6 @@ defmodule SummerSinger.IndexMusic.Supervisor do
   end
 
   def init([]) do
-    repo_pool_size = Application.get_env(:summer_singer, SummerSinger.Repo)[:pool_size]
-
     pool_options = [
       name: {:local, pool_name()},
       worker_module: SummerSinger.IndexMusic.Worker,

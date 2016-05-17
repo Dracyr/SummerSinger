@@ -47,7 +47,7 @@ defmodule SummerSinger.Artist do
           find_or_create(name)
       end
     rescue
-      e in Ecto.InvalidChangesetError ->
+      _e in Ecto.InvalidChangesetError ->
         find_or_create(name)
     end
   end

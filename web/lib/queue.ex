@@ -15,7 +15,7 @@ defmodule SummerSinger.Queue do
   def queue do
     queue = Agent.get(__MODULE__, &(Map.get(&1, :queue)))
 
-    tracks = queue |> Enum.with_index |> Enum.map(fn {{track_id, prop}, index} ->
+    tracks = queue |> Enum.with_index |> Enum.map(fn {{track_id, _prop}, index} ->
       Repo.get(Track, track_id) |> Repo.preload([:artist, :album]) |> Track.to_map(index)
     end)
 
@@ -39,7 +39,7 @@ defmodule SummerSinger.Queue do
       new_queue = Enum.map(state[:queue], fn {t, prop} ->
         {t, prop + Enum.count(track_list)}
       end) ++ track_list
-      p_total = Enum.reduce(new_queue, 0, fn ({t, prop}, acc) -> prop + acc end)
+      p_total = Enum.reduce(new_queue, 0, fn ({_t, prop}, acc) -> prop + acc end)
 
       new_state = %{state |
         queue: new_queue,
@@ -57,7 +57,7 @@ defmodule SummerSinger.Queue do
       new_queue = Enum.map(state[:queue], fn {t, prop} -> {t, prop + 1} end)
       |> List.replace_at(index, {track_id, 0})
 
-      p_total = Enum.reduce(new_queue, 0, fn ({t, prop}, acc) -> prop + acc end)
+      p_total = Enum.reduce(new_queue, 0, fn ({_t, prop}, acc) -> prop + acc end)
       new_state = %{state |
         queue: new_queue,
         p_total: p_total,
@@ -86,7 +86,7 @@ defmodule SummerSinger.Queue do
     state = Agent.get(__MODULE__, &(&1))
     if state[:shuffle] do
       p_target = state[:p_total] * :random.uniform
-      next_index = Enum.reduce_while(state[:queue], {0, 0}, fn {track_id, prop}, {i, prop_acc} ->
+      next_index = Enum.reduce_while(state[:queue], {0, 0}, fn {_t, prop}, {i, prop_acc} ->
         if prop + prop_acc >= p_target do
           {:halt, {i, prop + prop_acc}}
         else
@@ -129,7 +129,7 @@ defmodule SummerSinger.Queue do
   end
 
   defp decrement_history_index(history, queue_index) do
-    Enum.reject(history, fn {index, track_id} -> index == queue_index end)
+    Enum.reject(history, fn {index, _track_id} -> index == queue_index end)
     |> Enum.map(fn {index, track_id} ->
       cond do
         queue_index < index ->

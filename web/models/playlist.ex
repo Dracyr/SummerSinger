@@ -1,6 +1,6 @@
 defmodule SummerSinger.Playlist do
   use SummerSinger.Web, :model
-  alias SummerSinger.{Playlist, PlaylistItem, Repo, Track}
+  alias SummerSinger.{Playlist, Repo, Track}
 
   schema "playlists" do
     field :title, :string

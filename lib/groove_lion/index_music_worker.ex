@@ -1,6 +1,6 @@
 defmodule SummerSinger.IndexMusic.Worker do
   use GenServer
-  alias SummerSinger.{Repo, Track, Artist, Album, Playlist, Folder}
+  alias SummerSinger.{Repo, Track, Artist, Album, Folder}
 
   def start_link(state) do
     :gen_server.start_link(__MODULE__, state, [])
@@ -10,7 +10,7 @@ defmodule SummerSinger.IndexMusic.Worker do
     {:ok, state}
   end
 
-  def handle_call(track_path, from, state) do
+  def handle_call(track_path, _from, state) do
     if is_nil(Repo.get_by(Track, filename: track_path)) do
       add_track(track_path)
     end
@@ -22,12 +22,13 @@ defmodule SummerSinger.IndexMusic.Worker do
   end
 
   defp add_track(track_path) do
+    # TODO: Elixir 1.3, 'with'
     case MetadataParser.parse(track_path) do
       {:ok, audio_data, metadata} ->
         case create_track(track_path, metadata, audio_data) do
           {:ok, track} ->
             case Repo.insert(track) do
-              {:ok, track} ->
+              {:ok, _track} ->
                 IO.inspect("** ADDED: " <> track_path)
               {:error, reason} ->
                 IO.inspect("[ERROR] " <> track_path <> " " <> reason)

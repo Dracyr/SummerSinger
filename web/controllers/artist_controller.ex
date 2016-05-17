@@ -1,7 +1,6 @@
 defmodule SummerSinger.ArtistController do
   use SummerSinger.Web, :controller
-
-  alias SummerSinger.{Artist, Album, Track}
+  alias SummerSinger.{Artist}
 
   plug :scrub_params, "artist" when action in [:create, :update]
 

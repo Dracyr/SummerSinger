@@ -87,18 +87,16 @@ defmodule MPEGParser do
     rescue
       e in MPEGParserError ->
         {:error, e.message}
-      e in _ ->
+      _e in _ ->
         {:error, "Error reading mpeg data"}
     end
   end
 
-  @doc """
-    http://www.codeproject.com/Articles/8295/MPEG-Audio-Frame-Header#XINGHeader
-  """
   defp get_duration(bitrate, samplerate, file_size, audio_data, mpeg_version) when
       is_number(bitrate) and
       is_number(samplerate) do
     cond do
+      # http://www.codeproject.com/Articles/8295/MPEG-Audio-Frame-Header#XINGHeader
       # Should be on byte 36 in first audio frame
       :nomatch != :binary.match(audio_data, [<< "Xing" >>]) ->
         # FIXME: Don't do the check twice

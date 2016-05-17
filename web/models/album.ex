@@ -1,6 +1,5 @@
 defmodule SummerSinger.Album do
   use SummerSinger.Web, :model
-  require IEx
   alias SummerSinger.Album
 
   schema "albums" do
@@ -51,7 +50,7 @@ defmodule SummerSinger.Album do
           find_or_create(title, artist)
       end
     rescue
-      e in Ecto.InvalidChangesetError ->
+      _e in Ecto.InvalidChangesetError ->
         find_or_create(title, artist)
     end
   end
