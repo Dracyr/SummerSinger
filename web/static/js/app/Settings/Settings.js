@@ -1,23 +1,54 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
-export default class Settings extends Component {
+import { requestVolume } from '../Player/actions';
 
-  SetHwVolume(event) {
-    // var hwVolume = event.target.value / 100;
-    // Actions.setHwVolume(hwVolume);
+class Settings extends Component {
+  constructor() {
+    super();
+    this.setVolume = this.setVolume.bind(this);
+  }
+
+  setVolume(event) {
+    const volume = event.target.value; // / 100;
+    this.props.actions.requestVolume(volume);
   }
 
   render() {
-    // var settings = this.props.settings;
-    // var hwVolume   = settings.hwVolume * 100;
-    const hwVolume = 100;
-
     return (
       <div>
         <h1>Settings</h1>
         <h4>Volume</h4>
-        <input type="range" min="0" max="100" value={hwVolume} onChange={this.SetHwVolume}/>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={this.props.volume}
+          onChange={this.setVolume}
+        />
       </div>
     );
   }
 }
+
+Settings.propTypes = {
+  actions: PropTypes.object,
+  volume: PropTypes.number,
+};
+
+function mapState(state) {
+  return {
+    volume: state.player.volume,
+  };
+}
+
+function mapDispatch(dispatch) {
+  return {
+    actions: {
+      requestVolume: (...args) => { dispatch(requestVolume(...args)); },
+    },
+  };
+}
+
+export default connect(mapState, mapDispatch)(Settings);
+

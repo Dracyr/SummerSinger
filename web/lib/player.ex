@@ -32,6 +32,7 @@ defmodule SummerSinger.Player do
         playback: false,
         start_time: nil,
         paused_duration: 0,
+        volume: 100,
       } end, name: __MODULE__)
   end
 
@@ -41,6 +42,7 @@ defmodule SummerSinger.Player do
         playback: state[:playback],
         start_time: state[:start_time],
         paused_duration: state[:paused_duration],
+        volume: state[:volume],
       }
     end) |> Map.merge(Queue.status)
   end
@@ -127,6 +129,14 @@ defmodule SummerSinger.Player do
         start_time: DateUtil.now - target_duration,
         paused_duration: target_duration
       }
+    end)
+  end
+
+  def volume(percent) do
+    send :audio_player, {:volume, percent}
+
+    Agent.update(__MODULE__, fn state ->
+      %{state | volume: percent }
     end)
   end
 end

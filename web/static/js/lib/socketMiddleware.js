@@ -6,6 +6,7 @@ import {
   REQUEST_PREVIOUS_TRACK,
   REQUEST_NEXT_TRACK,
   REQUEST_SEEK,
+  REQUEST_VOLUME,
 } from '../app/Player/actions';
 
 import {
@@ -45,6 +46,9 @@ export default socket => store => next => action => {
       break;
     case REQUEST_SEEK:
       socket.requestSeek(action.percent);
+      break;
+    case REQUEST_VOLUME:
+      socket.requestVolume(action.percent);
       break;
     case REMOVE_QUEUE_TRACK:
       socket.removeQueueTrack(action.trackIndex);

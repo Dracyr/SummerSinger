@@ -20,6 +20,8 @@ defmodule SummerSinger.AudioPlayer do
       {:spawn, Application.get_env(:summer_singer, :mpg123_command)},
       [:use_stdio])
 
+    Port.command(port, "RVA album")
+
     loop(default_state, port)
   end
 
@@ -33,6 +35,9 @@ defmodule SummerSinger.AudioPlayer do
         |> loop(port)
       {:load, path} ->
         Port.command(port, "LOAD #{path}\n")
+        loop(state, port)
+      {:volume, percent} ->
+        Port.command(port, "VOLUME #{percent}\n")
         loop(state, port)
       {:seek, percent} ->
         seek(state, port, percent)

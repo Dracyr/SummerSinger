@@ -8,6 +8,7 @@ const initialPlayer = {
   startTime: null,
   pausedDuration: null,
   queue: [],
+  volume: 100,
 };
 
 export default function player(state = initialPlayer, action) {
@@ -16,14 +17,14 @@ export default function player(state = initialPlayer, action) {
       const normalizedStartTime = action.statusUpdate.start_time +
         (Date.now() - action.statusUpdate.current_time);
 
-      return {
-        ...state,
+      return { ...state,
         playing: action.statusUpdate.playback,
         queueIndex: action.statusUpdate.queue_index,
         startTime: normalizedStartTime,
         pausedDuration: action.statusUpdate.paused_duration,
         serverTime: action.statusUpdate.current_time,
         currentTrack: state.queue[action.statusUpdate.queue_index] || null,
+        volume: action.volume,
       };
     }
     case QUEUE_UPDATE:

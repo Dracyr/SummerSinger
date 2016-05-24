@@ -5,6 +5,7 @@ export const REQUEST_QUEUE_AND_PLAY_TRACK = 'REQUEST_QUEUE_AND_PLAY_TRACK';
 export const REQUEST_PREVIOUS_TRACK = 'REQUEST_PREVIOUS_TRACK';
 export const REQUEST_NEXT_TRACK = 'REQUEST_NEXT_TRACK';
 export const REQUEST_SEEK = 'REQUEST_SEEK';
+export const REQUEST_VOLUME = 'REQUEST_VOLUME';
 
 export const SOCKET_STATUS_UPDATE = 'SOCKET_STATUS_UPDATE';
 export const QUEUE_UPDATE = 'QUEUE_UPDATE';
@@ -39,6 +40,10 @@ export function requestNextTrack() {
 
 export function requestSeek(percent) {
   return { type: REQUEST_SEEK, percent };
+}
+
+export function requestVolume(percent) {
+  return { type: REQUEST_VOLUME, percent };
 }
 
 export function queueUpdate(queue) {

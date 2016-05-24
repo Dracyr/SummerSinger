@@ -74,6 +74,10 @@ export default class SummerSocket {
     this.broadcastChannel.push('seek', { percent });
   }
 
+  requestVolume(percent) {
+    this.broadcastChannel.push('volume', { percent });
+  }
+
   addTrackToPlaylist(trackId, playlistId) {
     this.broadcastChannel.push('add_track_to_playlist', {
       track_id: trackId,
