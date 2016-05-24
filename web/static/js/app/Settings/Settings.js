@@ -10,7 +10,7 @@ class Settings extends Component {
   }
 
   setVolume(event) {
-    const volume = event.target.value; // / 100;
+    const volume = event.target.value;
     this.props.actions.requestVolume(volume);
   }
 

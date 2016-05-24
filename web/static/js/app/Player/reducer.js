@@ -24,7 +24,7 @@ export default function player(state = initialPlayer, action) {
         pausedDuration: action.statusUpdate.paused_duration,
         serverTime: action.statusUpdate.current_time,
         currentTrack: state.queue[action.statusUpdate.queue_index] || null,
-        volume: action.volume,
+        volume: action.statusUpdate.volume,
       };
     }
     case QUEUE_UPDATE:
