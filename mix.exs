@@ -18,8 +18,20 @@ defmodule SummerSinger.Mixfile do
   # Type `mix help compile.app` for more information
   def application do
     [mod: {SummerSinger, []},
-     applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :poolboy, :codepagex, :connection]]
+      applications: [
+        :phoenix,
+        :phoenix_html,
+        :cowboy,
+        :logger,
+        :gettext,
+        :phoenix_ecto,
+        :postgrex,
+        :poolboy,
+        :codepagex,
+        :connection,
+        :runtime_tools,
+      ]
+    ]
   end
 
   # Specifies which paths to compile per environment
