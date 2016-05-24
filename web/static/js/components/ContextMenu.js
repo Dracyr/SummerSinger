@@ -1,22 +1,32 @@
 import React, { Component } from 'react';
+import { isParent } from '../lib/Util';
 
 export default class ContextMenu extends Component {
   constructor() {
     super();
-    this.onRandomClick = this.onRandomClick.bind(this);
     this.getLeftOffset = this.getLeftOffset.bind(this);
+    this.onRandomClick = this.onRandomClick.bind(this);
+    this.onDefaultContextMenu = this.onDefaultContextMenu.bind(this);
   }
 
   componentDidMount() {
     document.addEventListener('click', this.onRandomClick);
+    document.addEventListener('contextmenu', this.onDefaultContextMenu);
   }
 
   componentWillUnmount() {
     document.removeEventListener('click', this.onRandomClick);
+    document.removeEventListener('contextmenu', this.onDefaultContextMenu);
   }
 
   onRandomClick(event) {
     if (!event.defaultPrevented) {
+      this.props.hideContextMenu();
+    }
+  }
+
+  onDefaultContextMenu(event) {
+    if (!isParent(event.target, this.refs.rootMenu)) {
       this.props.hideContextMenu();
     }
   }

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import InfiniteReactList from '../lib/InfiniteReactList';
-import { PlaceholderText } from '../lib/Util';
+import { PlaceholderText, closestSelector } from '../lib/Util';
 
 import StarRating from './StarRating';
 import TrackContextMenu from './TrackContextMenu';
 
 import Track from './Track';
-
-import { closest } from '../lib/Util';
 
 export default class TrackList extends Component {
   constructor(props) {
@@ -53,7 +51,7 @@ export default class TrackList extends Component {
   }
 
   onClickHandler(event) {
-    if (this.state.selectedTrack && !closest(event.target, '.track')) {
+    if (this.state.selectedTrack && !closestSelector(event.target, '.track')) {
       this.setState({ selectedTrack: null, selectedIndex: null });
     }
   }

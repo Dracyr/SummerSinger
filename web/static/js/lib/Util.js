@@ -10,8 +10,21 @@ export const PlaceholderText = () => {
   return <div style={style}></div>;
 };
 
+export const isParent = (source, target) => {
+  let parent = null;
+  let searchElement = source;
+  while (searchElement !== null) {
+    parent = searchElement.parentElement;
+    if (parent !== null && parent === target) {
+      return true;
+    }
+    searchElement = parent;
+  }
 
-export const closest = (el, selector) => {
+  return false;
+};
+
+export const closestSelector = (el, selector) => {
   let matchesFn;
 
   // find vendor prefix
