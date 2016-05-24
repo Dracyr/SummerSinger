@@ -9,6 +9,7 @@
   box-shadow: 0 1px 4px 0 rgba(0,0,0,0.37)!important;
   border-radius: 2px;
   outline: none;
+  z-index: 10000;
 }
 
 .context-menu-link {
@@ -16,7 +17,6 @@
   width: 100%;
   padding: 3px 15px;
   clear: both;
-  // font-weight: 700;
   line-height: 1.5;
   color: #666;
   text-align: inherit;
