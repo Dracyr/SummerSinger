@@ -130,7 +130,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-.library-header {
+.header {
   border-bottom: 1px solid #DDD;
 
   span {
@@ -144,6 +144,13 @@ h1, h2, h3, h4, h5, h6 {
   border-bottom: 1px solid #DDD;
 }
 
+.header-controls {
+  text-align: right;
+  display: inline-block;
+  width: 100vh;
+}
+
 .list-unstyled {
   margin-bottom: 0;
 }
+

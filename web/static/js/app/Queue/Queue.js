@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { requestPlayTrack } from '../Player/actions';
-import { removeQueueTrack } from './actions';
+import { removeQueueTrack, clearQueue } from './actions';
 import TrackList from '../../components/TrackList';
 
 class Queue extends Component {
@@ -11,6 +11,7 @@ class Queue extends Component {
 
     this.handleClick = this.handleClick.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.clearQueue = this.clearQueue.bind(this);
   }
 
   handleClick(track) {
@@ -21,16 +22,28 @@ class Queue extends Component {
     this.props.actions.removeQueueTrack(track.index);
   }
 
+  clearQueue() {
+    this.props.actions.clearQueue();
+  }
+
   render() {
     const { currentIndex, queue } = this.props;
 
     return (
-      <TrackList tracks={queue}
-        keyAttr={"index"}
-        currentKey={currentIndex}
-        onClickHandler={this.handleClick}
-        onDeleteHandler={this.handleDelete}
-      />
+      <div>
+        <h1 className="header">
+          Queue
+          <small className="header-controls">
+            <span onClick={this.clearQueue}>clear</span>
+          </small>
+        </h1>
+        <TrackList tracks={queue}
+          keyAttr={"index"}
+          currentKey={currentIndex}
+          onClickHandler={this.handleClick}
+          onDeleteHandler={this.handleDelete}
+        />
+      </div>
     );
   }
 }
@@ -53,6 +66,7 @@ function mapDispatch(dispatch) {
     actions: {
       requestPlayTrack: (...args) => { dispatch(requestPlayTrack(...args)); },
       removeQueueTrack: (...args) => { dispatch(removeQueueTrack(...args)); },
+      clearQueue: (...args) => { dispatch(clearQueue(...args)); },
     },
   };
 }

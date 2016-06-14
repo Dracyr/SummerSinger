@@ -57,14 +57,12 @@ class Library extends Component {
     } = this.props;
 
     const libraryHeader = (
-      <div>
-        <h1 className="library-header">
-          <span onClick={() => actions.switchLibraryView('TRACKS')} className={libraryView == 'TRACKS' ? '' : 'inactive'}>Tracks </span>
-          <span onClick={() => actions.switchLibraryView('ALBUMS')} className={libraryView == 'ALBUMS' ? '' : 'inactive'}>Albums </span>
-          <span onClick={() => actions.switchLibraryView('ARTISTS')} className={libraryView == 'ARTISTS' ? '' : 'inactive'}>Artists </span>
-          <span onClick={() => actions.switchLibraryView('FOLDERS')} className={libraryView == 'FOLDERS' ? '' : 'inactive'}>Folders </span>
-        </h1>
-      </div>
+      <h1 className="header">
+        <span onClick={() => actions.switchLibraryView('TRACKS')} className={libraryView == 'TRACKS' ? '' : 'inactive'}>Tracks </span>
+        <span onClick={() => actions.switchLibraryView('ALBUMS')} className={libraryView == 'ALBUMS' ? '' : 'inactive'}>Albums </span>
+        <span onClick={() => actions.switchLibraryView('ARTISTS')} className={libraryView == 'ARTISTS' ? '' : 'inactive'}>Artists </span>
+        <span onClick={() => actions.switchLibraryView('FOLDERS')} className={libraryView == 'FOLDERS' ? '' : 'inactive'}>Folders </span>
+      </h1>
     );
 
     let currentView = '';

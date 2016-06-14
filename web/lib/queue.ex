@@ -128,6 +128,17 @@ defmodule SummerSinger.Queue do
     end)
   end
 
+  def clear_queue do
+    Agent.update(__MODULE__, fn state ->
+      %{state |
+        queue: [],
+        queue_history: [],
+        queue_index: nil,
+        p_total: 0,
+      }
+    end)
+  end
+
   defp decrement_history_index(history, queue_index) do
     Enum.reject(history, fn {index, _track_id} -> index == queue_index end)
     |> Enum.map(fn {index, track_id} ->

@@ -22,6 +22,7 @@ import {
 
 import {
   REMOVE_QUEUE_TRACK,
+  CLEAR_QUEUE,
 } from '../app/Queue/actions';
 
 export default socket => store => next => action => {
@@ -52,6 +53,9 @@ export default socket => store => next => action => {
       break;
     case REMOVE_QUEUE_TRACK:
       socket.removeQueueTrack(action.trackIndex);
+      break;
+    case CLEAR_QUEUE:
+      socket.clearQueue();
       break;
     case ADD_TRACK_TO_PLAYLIST:
       socket.addTrackToPlaylist(action.trackId, action.playlistId);
