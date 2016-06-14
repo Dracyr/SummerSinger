@@ -11,7 +11,6 @@ export default class Track extends Component {
   }
 
   handleOnClick() {
-    console.log("OnClick");
     if (this.props.isSelected) {
       this.props.onClickHandler(this.props.track);
     } else {
@@ -25,11 +24,8 @@ export default class Track extends Component {
   }
 
   handleOnDragStart(e) {
-    // console.log(e);
-  }
-
-  handleTest(e) {
-    console.log("TEST");
+    const payload = JSON.stringify({ track_id: this.props.track.id });
+    e.dataTransfer.setData('text/plain', payload);
   }
 
   render() {
@@ -44,11 +40,10 @@ export default class Track extends Component {
     return (
       <div
         className="tr track"
-        onClick={this.handleOnClick}
-        onContextMenu={this.handleOnContextMenu}
         draggable
         onDragStart={this.handleOnDragStart}
-        onTouchStart={this.handleTest}
+        onClick={this.handleOnClick}
+        onContextMenu={this.handleOnContextMenu}
         style={trackStyle}
       >
         <div className="td td-title" alt={title}><div>

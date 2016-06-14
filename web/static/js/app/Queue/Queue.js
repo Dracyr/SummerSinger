@@ -37,7 +37,8 @@ class Queue extends Component {
             <span onClick={this.clearQueue}>clear</span>
           </small>
         </h1>
-        <TrackList tracks={queue}
+        <TrackList
+          tracks={queue}
           keyAttr={"index"}
           currentKey={currentIndex}
           onClickHandler={this.handleClick}

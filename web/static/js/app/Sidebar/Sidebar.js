@@ -86,6 +86,7 @@ export default class Sidebar extends Component {
     const switchPlaylist = actions.views.switchPlaylist;
     const playlistViewActive = view === 'PLAYLIST';
     const openContextMenu = this.openContextMenu;
+    const addTrackToPlaylist = actions.playlist.addTrackToPlaylist;
 
     return (
       <div className="sidebar">
@@ -124,6 +125,7 @@ export default class Sidebar extends Component {
                   currentPlaylist={currentPlaylist}
                   switchPlaylist={switchPlaylist}
                   playlistViewActive={playlistViewActive}
+                  addTrackToPlaylist={addTrackToPlaylist}
                   openContextMenu={openContextMenu}
                 />
               );
