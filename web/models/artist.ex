@@ -1,6 +1,5 @@
 defmodule SummerSinger.Artist do
   use SummerSinger.Web, :model
-  alias SummerSinger.Artist
 
   schema "artists" do
     field :name, :string, unique: true
@@ -12,18 +11,16 @@ defmodule SummerSinger.Artist do
     timestamps
   end
 
-  @required_fields ~w(name)
-  @optional_fields ~w()
-
   @doc """
-  Creates a changeset based on the `model` and `params`.
+  Creates a changeset based on the `artist` and `params`.
 
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
-  def changeset(model, params \\ :empty) do
-    model
-    |> cast(params, @required_fields, @optional_fields)
+  def changeset(artist, params \\ %{}) do
+    artist
+    |> cast(params, [:name])
+    |> validate_required(:name)
     |> unique_constraint(:name)
   end
 

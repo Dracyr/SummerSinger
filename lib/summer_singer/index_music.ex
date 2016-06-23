@@ -1,4 +1,5 @@
 defmodule SummerSinger.IndexMusic do
+  alias SummerSinger.{Repo, Folder, Playlist}
 
   def run(path) do
     path = String.rstrip path, ?/

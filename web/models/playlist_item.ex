@@ -8,17 +8,15 @@ defmodule SummerSinger.PlaylistItem do
     timestamps
   end
 
-  @required_fields ~w(playlist track)
-  @optional_fields ~w()
-
   @doc """
-  Creates a changeset based on the `model` and `params`.
+  Creates a changeset based on the `playlist_item` and `params`.
 
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
-  def changeset(model, params \\ :empty) do
-    model
-    |> cast(params, @required_fields, @optional_fields)
+  def changeset(playlist_item, params \\ %{}) do
+    playlist_item
+    |> cast(params, [:playlist_id, :track_id])
+    |> validate_required([:playlist_id, :track_id])
   end
 end

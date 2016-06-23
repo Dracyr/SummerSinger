@@ -1,6 +1,5 @@
 defmodule SummerSinger.Track do
   use SummerSinger.Web, :model
-  alias SummerSinger.{Track, Album, Artist}
 
   schema "tracks" do
     field :title,    :string
@@ -29,9 +28,10 @@ defmodule SummerSinger.Track do
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
-  def changeset(model, params \\ :empty) do
-    model
-    |> cast(params, @required_fields, @optional_fields)
+  def changeset(track, params \\ %{}) do
+    track
+    |> cast(params, [:title, :filename, :metadata, :duration, :rating, :artist_id, :album_id, :folder_id])
+    |> validate_required([:title, :filename])
     |> unique_constraint(:filename)
   end
 

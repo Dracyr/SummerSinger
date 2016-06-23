@@ -1,6 +1,5 @@
 defmodule SummerSinger.Playlist do
   use SummerSinger.Web, :model
-  alias SummerSinger.{Playlist, Repo, Track}
 
   schema "playlists" do
     field :title, :string
@@ -12,18 +11,16 @@ defmodule SummerSinger.Playlist do
     timestamps
   end
 
-  @required_fields ~w(title)
-  @optional_fields ~w(path)
-
   @doc """
-  Creates a changeset based on the `model` and `params`.
+  Creates a changeset based on the `playlist` and `params`.
 
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
-  def changeset(model, params \\ :empty) do
-    model
-    |> cast(params, @required_fields, @optional_fields)
+  def changeset(playlist, params \\ %{}) do
+    playlist
+    |> cast(params, [:title, :path])
+    |> validate_required(:title)
     |> unique_constraint(:path)
   end
 

@@ -1,6 +1,5 @@
 defmodule SummerSinger.Folder do
   use SummerSinger.Web, :model
-  alias SummerSinger.{Folder, Track}
 
   schema "folders" do
     field :path,  :string
@@ -14,18 +13,16 @@ defmodule SummerSinger.Folder do
     timestamps
   end
 
-  @required_fields ~w(path title)
-  @optional_fields ~w(parent_id root)
-
   @doc """
-  Creates a changeset based on the `model` and `params`.
+  Creates a changeset based on the `folder` and `params`.
 
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
-  def changeset(model, params \\ :empty) do
-    model
-    |> cast(params, @required_fields, @optional_fields)
+  def changeset(folder, params \\ %{}) do
+    folder
+    |> cast(params, [:path, :title, :root, :parent_id])
+    |> validate_required([:path, :title])
     |> unique_constraint(:path)
   end
 

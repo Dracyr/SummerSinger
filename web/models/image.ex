@@ -12,17 +12,15 @@ defmodule SummerSinger.Image do
     timestamps
   end
 
-  @required_fields ~w()
-  @optional_fields ~w()
-
   @doc """
-  Creates a changeset based on the `model` and `params`.
+  Creates a changeset based on the `image` and `params`.
 
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
-  def changeset(model, params \\ :empty) do
-    model
-    |> cast(params, @required_fields, @optional_fields)
+  def changeset(image, params \\ %{}) do
+    image
+    |> cast(params, [:picture_type, :mime_type, :description, :file])
+    |> validate_required([:mime_type, :file])
   end
 end

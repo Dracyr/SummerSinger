@@ -85,7 +85,7 @@ defmodule SummerSinger.Queue do
   def next_track do
     state = Agent.get(__MODULE__, &(&1))
     if state[:shuffle] do
-      p_target = state[:p_total] * :random.uniform
+      p_target = state[:p_total] * :rand.uniform
       next_index = Enum.reduce_while(state[:queue], {0, 0}, fn {_t, prop}, {i, prop_acc} ->
         if prop + prop_acc >= p_target do
           {:halt, {i, prop + prop_acc}}

@@ -1,10 +1,9 @@
 defmodule SummerSinger.Album do
   use SummerSinger.Web, :model
-  alias SummerSinger.Album
 
   schema "albums" do
-    field :title, :string
-    field :year,  :string
+    field :title
+    field :year
 
     belongs_to :artist, SummerSinger.Artist
     has_many   :tracks, SummerSinger.Track
@@ -12,18 +11,16 @@ defmodule SummerSinger.Album do
     timestamps
   end
 
-  @required_fields ~w(title artist_id)
-  @optional_fields ~w(year)
-
   @doc """
-  Creates a changeset based on the `model` and `params`.
+  Creates a changeset based on the `album` and `params`.
 
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
-  def changeset(model, params \\ :empty) do
-    model
-    |> cast(params, @required_fields, @optional_fields)
+  def changeset(album, params \\ %{}) do
+    album
+    |> cast(params, [:title, :year, :artist_id])
+    |> validate_required([:title, :artist_id])
     |> unique_constraint(:title, name: :albums_title_artist_id_index)
   end
 

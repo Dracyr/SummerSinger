@@ -16,18 +16,26 @@ defmodule SummerSinger.Web do
   below.
   """
 
+  defmacro aliases do
+    quote do
+      alias SummerSinger.{Repo, Track, Album, Artist, Folder, Image, Playlist, PlaylistItem}
+    end
+  end
+
   def model do
     quote do
-      use Ecto.Model
-      alias SummerSinger.Repo
+      SummerSinger.Web.aliases()
+      use Ecto.Schema
+      import Ecto.Changeset
+      import Ecto.Query, only: [from: 2]
     end
   end
 
   def controller do
     quote do
       use Phoenix.Controller
+      SummerSinger.Web.aliases()
 
-      alias SummerSinger.Repo
       import Ecto.Model
       import Ecto.Query, only: [from: 2]
 
@@ -38,6 +46,7 @@ defmodule SummerSinger.Web do
   def view do
     quote do
       use Phoenix.View, root: "web/templates"
+      SummerSinger.Web.aliases()
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_csrf_token: 0, get_flash: 2, view_module: 1]
@@ -58,11 +67,10 @@ defmodule SummerSinger.Web do
   def channel do
     quote do
       use Phoenix.Channel
+      SummerSinger.Web.aliases()
 
-      alias SummerSinger.Repo
       import Ecto.Model
       import Ecto.Query, only: [from: 2]
-
     end
   end
 
