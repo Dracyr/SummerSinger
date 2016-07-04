@@ -23,10 +23,12 @@ class PlaylistView extends Component {
   }
 
   render() {
-    const { currentPlaylist, requestQueueAndPlayTrack } = this.props;
+    const { currentPlaylist, requestQueueAndPlayTrack, currentId } = this.props;
 
     return (
-      <Playlist playlist={currentPlaylist}
+      <Playlist
+        playlist={currentPlaylist}
+        currentId={currentId}
         requestQueueAndPlayTrack={requestQueueAndPlayTrack}
       />
     );
@@ -41,6 +43,7 @@ function mapState(state) {
   return {
     currentPlaylist,
     playlistView: state.playlist.playlistView,
+    currentId: state.player.currentTrack ? state.player.currentTrack.id : null,
   };
 }
 

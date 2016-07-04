@@ -35,7 +35,7 @@ defmodule SummerSinger.RoomChannel do
     {:noreply, socket}
   end
 
-  def handle_in("play_queued_track", %{"queue_id" => queue_id}, socket) do
+  def handle_in("play_track", %{"queue_id" => queue_id}, socket) do
     Player.play_queued_track(queue_id)
 
     broadcast! socket, "statusUpdate", current_status
@@ -93,19 +93,23 @@ defmodule SummerSinger.RoomChannel do
     {:noreply, socket}
   end
 
-  def handle_in("queue_playlist", %{"playlist_id" => playlist_id}, socket) do
+  def handle_in("queue_playlist", %{"playlist_id" => playlist_id, "play" => play}, socket) do
     Playlist.collect_tracks(playlist_id)
     |> Queue.queue_tracks
+    |> (&(play && Player.play_queued_track(&1))).()
 
     broadcast! socket, "queueUpdate", Queue.queue
+    broadcast! socket, "statusUpdate", current_status
     {:noreply, socket}
   end
 
-  def handle_in("queue_folder", %{"folder_id" => folder_id}, socket) do
+  def handle_in("queue_folder", %{"folder_id" => folder_id, "play" => play}, socket) do
     Folder.collect_tracks(folder_id)
     |> Queue.queue_tracks
+    |> (&(play && Player.play_queued_track(&1))).()
 
     broadcast! socket, "queueUpdate", Queue.queue
+    broadcast! socket, "statusUpdate", current_status
     {:noreply, socket}
   end
 

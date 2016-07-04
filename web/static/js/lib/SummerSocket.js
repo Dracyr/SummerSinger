@@ -1,4 +1,5 @@
-import { socketStatusUpdate, queueUpdate } from '../app/Player/actions';
+import { socketStatusUpdate, fetchStatus } from '../app/Player/actions';
+import { queueUpdate, fetchQueue } from '../app/Queue/actions';
 import { receivePlaylists } from '../app/Playlist/actions';
 
 import { Socket } from 'phoenix';
@@ -12,6 +13,10 @@ export default class SummerSocket {
   initialize(store) {
     this.store = store;
     const socket = this.socket;
+
+    // Immediately request queue and status, in case websocket connection is slow
+    this.store.dispatch(fetchQueue());
+    this.store.dispatch(fetchStatus());
 
     socket.connect();
     const broadcastChannel = socket.channel('status:broadcast', {});
@@ -50,18 +55,6 @@ export default class SummerSocket {
     this.broadcastChannel.push('playback', { playback });
   }
 
-  requestQueueTrack(trackId) {
-    this.broadcastChannel.push('queue_track', { track_id: trackId, play: false });
-  }
-
-  requestPlayTrack(queueId) {
-    this.broadcastChannel.push('play_queued_track', { queue_id: queueId });
-  }
-
-  requestQueueAndPlayTrack(trackId) {
-    this.broadcastChannel.push('queue_track', { track_id: trackId, play: true });
-  }
-
   requestPreviousTrack() {
     this.broadcastChannel.push('previous_track');
   }
@@ -74,6 +67,34 @@ export default class SummerSocket {
     this.broadcastChannel.push('seek', { percent });
   }
 
+  requestQueueTrack(trackId) {
+    this.broadcastChannel.push('queue_track', { track_id: trackId, play: false });
+  }
+
+  requestPlayTrack(queueId) {
+    this.broadcastChannel.push('play_track', { queue_id: queueId });
+  }
+
+  requestQueueAndPlayTrack(trackId) {
+    this.broadcastChannel.push('queue_track', { track_id: trackId, play: true });
+  }
+
+  removeQueueTrack(trackIndex) {
+    this.broadcastChannel.push('remove_queue_track', { track_index: trackIndex });
+  }
+
+  queueFolder(folderId, play = false) {
+    this.broadcastChannel.push('queue_folder', { folder_id: folderId, play });
+  }
+
+  queuePlaylist(playlistId, play = false) {
+    this.broadcastChannel.push('queue_playlist', { playlist_id: playlistId, play });
+  }
+
+  clearQueue() {
+    this.broadcastChannel.push('clear_queue');
+  }
+
   requestVolume(percent) {
     this.broadcastChannel.push('volume', { percent });
   }
@@ -83,22 +104,6 @@ export default class SummerSocket {
       track_id: trackId,
       playlist_id: playlistId,
     });
-  }
-
-  queueFolder(folderId) {
-    this.broadcastChannel.push('queue_folder', { folder_id: folderId });
-  }
-
-  queuePlaylist(playlistId) {
-    this.broadcastChannel.push('queue_playlist', { playlist_id: playlistId });
-  }
-
-  removeQueueTrack(trackIndex) {
-    this.broadcastChannel.push('remove_queue_track', { track_index: trackIndex });
-  }
-
-  clearQueue() {
-    this.broadcastChannel.push('clear_queue');
   }
 
   seek(seekPercent) {

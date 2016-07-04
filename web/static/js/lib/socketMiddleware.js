@@ -61,10 +61,14 @@ export default socket => store => next => action => {
       socket.addTrackToPlaylist(action.trackId, action.playlistId);
       break;
     case PLAY_FOLDER:
+      socket.queueFolder(action.folderId, true);
+      break;
     case QUEUE_FOLDER:
       socket.queueFolder(action.folderId);
       break;
     case PLAY_PLAYLIST:
+      socket.queuePlaylist(action.playlistId, true);
+      break;
     case QUEUE_PLAYLIST:
       socket.queuePlaylist(action.playlistId);
       break;

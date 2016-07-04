@@ -129,7 +129,8 @@ export default class TrackList extends Component {
         (keyAttr === 'index' && index === this.state.selectedIndex));
 
       trackComponent = (
-        <Track track={track}
+        <Track
+          track={track}
           key={key}
           isPlaying={isPlaying}
           isSelected={isSelected}

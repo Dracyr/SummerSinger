@@ -23,6 +23,8 @@ defmodule SummerSinger.Router do
   scope "/api", SummerSinger do
     pipe_through :api
 
+    get "/status", StatusController, :show
+    get "/queue", QueueController, :show
     resources "/tracks", TrackController, except: [:new, :edit]
     resources "/albums", AlbumController, except: [:new, :edit]
     resources "/artists", ArtistController, except: [:new, :edit]

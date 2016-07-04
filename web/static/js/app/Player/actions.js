@@ -7,11 +7,18 @@ export const REQUEST_NEXT_TRACK = 'REQUEST_NEXT_TRACK';
 export const REQUEST_SEEK = 'REQUEST_SEEK';
 export const REQUEST_VOLUME = 'REQUEST_VOLUME';
 
-export const SOCKET_STATUS_UPDATE = 'SOCKET_STATUS_UPDATE';
-export const QUEUE_UPDATE = 'QUEUE_UPDATE';
+export const PLAYER_UPDATE = 'PLAYER_UPDATE';
 
 export function socketStatusUpdate(statusUpdate) {
-  return { type: SOCKET_STATUS_UPDATE, statusUpdate };
+  return { type: PLAYER_UPDATE, statusUpdate };
+}
+
+export function fetchStatus() {
+  return dispatch => {
+    return fetch('/api/status')
+      .then(response => response.json())
+      .then(json => dispatch(socketStatusUpdate(json)));
+  };
 }
 
 export function requestPlayback(playback) {
@@ -44,8 +51,4 @@ export function requestSeek(percent) {
 
 export function requestVolume(percent) {
   return { type: REQUEST_VOLUME, percent };
-}
-
-export function queueUpdate(queue) {
-  return { type: QUEUE_UPDATE, queue };
 }

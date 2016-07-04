@@ -1,4 +1,5 @@
-import { SOCKET_STATUS_UPDATE, QUEUE_UPDATE } from './actions';
+import { PLAYER_UPDATE } from './actions';
+import { QUEUE_UPDATE } from '../Queue/actions';
 
 const initialPlayer = {
   playing: false,
@@ -13,7 +14,7 @@ const initialPlayer = {
 
 export default function player(state = initialPlayer, action) {
   switch (action.type) {
-    case SOCKET_STATUS_UPDATE: {
+    case PLAYER_UPDATE: {
       const normalizedStartTime = action.statusUpdate.start_time +
         (Date.now() - action.statusUpdate.current_time);
 

@@ -103,7 +103,6 @@ class Folders extends Component {
       const trackIndex = index - folder.children.length;
       const track = folder.tracks[trackIndex];
       const playTrack = () => this.props.playerActions.requestQueueAndPlayTrack(track.id);
-
       return (
         <Track key={key}
           track={track}
@@ -119,10 +118,7 @@ class Folders extends Component {
 
   renderItems(items, ref) {
     const folderParent = this.props.pathParts.length > 1 ? (
-      <div key={0}
-        className="tr track"
-        onClick={this.goToParent}
-      >
+      <div key={0} className="tr track"onClick={this.goToParent}>
         <div className="td ">..</div>
         <div className="td "></div>
         <div className="td "></div>
