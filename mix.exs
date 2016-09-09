@@ -53,7 +53,8 @@ defmodule SummerSinger.Mixfile do
      {:cowboy, "~> 1.0"},
      {:codepagex, "~> 0.1.2"},
      {:poolboy, "~> 1.5"},
-     {:exrm, "~> 1.0.0-rc7"}
+     {:distillery, "~> 0.9"},
+     {:credo, "~> 0.4", only: [:dev, :test]}
    ]
   end
 
