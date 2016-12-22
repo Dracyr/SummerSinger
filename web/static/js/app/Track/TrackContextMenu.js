@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as PlayerActions from '../app/Player/actions';
-import * as PlaylistActions from '../app/Playlist/actions';
+import * as PlayerActions from '../Player/actions';
+import * as PlaylistActions from '../Playlist/actions';
 
-import ContextMenu, { MenuItem, Submenu } from './ContextMenu';
+import ContextMenu, { MenuItem, Submenu } from '../../components/ContextMenu';
 
 class PlaylistItem extends Component {
   constructor() {
@@ -26,7 +26,7 @@ class PlaylistItem extends Component {
   }
 }
 
-export default class TrackContextMenu extends Component {
+class TrackContextMenu extends Component {
   constructor() {
     super();
     this.playTrack = this.playTrack.bind(this);

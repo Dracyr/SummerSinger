@@ -5,6 +5,8 @@ import {
   SORT_LIBRARY,
 } from './actions';
 
+import { TRACK_UPDATE } from '../Track/actions';
+
 const initialLibrary = {
   libraryView: 'TRACKS',
   librarySort: { sortBy: 'title', dir: 'asc' },
@@ -44,6 +46,12 @@ export default function library(state = initialLibrary, action) {
       return { ...state, search: action.search };
     case SORT_LIBRARY:
       return { ...state, librarySort: action.sort, tracks: [] };
+    case TRACK_UPDATE:
+      return { ...state,
+        tracks: state.tracks.map(track =>
+          action.trackId === track.id ? action.track : track
+        ),
+      };
     default:
       return state;
   }

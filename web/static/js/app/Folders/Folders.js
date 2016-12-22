@@ -5,10 +5,10 @@ import { connect } from 'react-redux';
 import * as FolderActions from './actions';
 import * as PlayerActions from '../Player/actions';
 import Folder from './Folder';
-import Track from '../../components/Track';
-import TrackList from '../../components/TrackList';
+import Track from '../Track/Track';
+import TrackList from '../Track/TrackList';
 import FolderContextMenu from './FolderContextMenu';
-import TrackContextMenu from '../../components/TrackContextMenu';
+import TrackContextMenu from '../Track/TrackContextMenu';
 
 
 class Folders extends Component {

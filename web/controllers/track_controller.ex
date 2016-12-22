@@ -44,7 +44,7 @@ defmodule SummerSinger.TrackController do
   end
 
   def update(conn, %{"id" => id, "track" => track_params}) do
-    track = Repo.get!(Track, id)
+    track = Repo.get!(Track, id) |> Repo.preload([:artist, :album])
     changeset = Track.changeset(track, track_params)
 
     case Repo.update(changeset) do

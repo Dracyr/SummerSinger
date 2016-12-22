@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import TrackList from '../../components/TrackList';
+import TrackList from '../Track/TrackList';
 import { requestQueueAndPlayTrack } from '../Player/actions';
 
-export default class Search extends Component {
+class Search extends Component {
   render() {
     const { search, currentId } = this.props;
 

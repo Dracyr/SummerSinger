@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import InfiniteReactList from '../lib/InfiniteReactList';
-import { PlaceholderText, closestSelector } from '../lib/Util';
+import InfiniteReactList from '../../lib/InfiniteReactList';
+import { PlaceholderText, closestSelector } from '../../lib/Util';
 
 import StarRating from './StarRating';
 import TrackContextMenu from './TrackContextMenu';
@@ -137,6 +137,7 @@ export default class TrackList extends Component {
           onClickHandler={onClickHandler}
           openContextMenu={this.openContextMenu}
           selectTrack={this.selectTrack}
+          updateTrack={this.updateTrack}
           index={index}
         />);
     } else {

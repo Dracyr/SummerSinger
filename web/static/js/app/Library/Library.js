@@ -6,7 +6,7 @@ import * as PlayerActions from '../Player/actions';
 import * as LibraryActions from './actions';
 import _ from 'lodash';
 
-import TrackList from '../../components/TrackList';
+import TrackList from '../Track/TrackList';
 import AlbumList from '../../components/AlbumList';
 import ArtistList from '../../components/ArtistList';
 import Folders from '../Folders/Folders';

@@ -26,6 +26,8 @@ class Settings extends Component {
           value={this.props.volume}
           onChange={this.setVolume}
         />
+
+        <h4>Libraries</h4>
       </div>
     );
   }

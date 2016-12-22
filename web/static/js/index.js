@@ -9,10 +9,6 @@ import SummerSocket from './lib/SummerSocket';
 const summerSocket = new SummerSocket();
 const store = configureStore(summerSocket);
 
-export function getSummerSocket() {
-  return summerSocket;
-}
-
 render(
   <Provider store={store}>
     <App store={store} />

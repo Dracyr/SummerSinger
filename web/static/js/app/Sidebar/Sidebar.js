@@ -14,7 +14,7 @@ import * as PlaylistActions from '../Playlist/actions';
 import * as ViewsActions from '../../actions/views';
 import * as SidebarActions from './actions';
 
-export default class Sidebar extends Component {
+class Sidebar extends Component {
   constructor() {
     super();
     this.state = {

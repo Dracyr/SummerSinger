@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { requestPlayTrack } from '../Player/actions';
 import { removeQueueTrack, clearQueue } from './actions';
-import TrackList from '../../components/TrackList';
+import TrackList from '../Track/TrackList';
 
 class Queue extends Component {
   constructor() {

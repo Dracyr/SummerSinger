@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import TrackList from '../../components/TrackList';
+import TrackList from '../Track/TrackList';
 
 const Playlist = (props) => {
   const { playlist, currentId, requestQueueAndPlayTrack } = props;

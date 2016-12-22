@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 import undoable, { includeAction } from 'redux-undo';
 
 import player from '../app/Player/reducer';
-import queue from '../app/Queue/reducer';
 import library from '../app/Library/reducer';
 import folders from '../app/Folders/reducer';
 import playlist from '../app/Playlist/reducer';
@@ -21,7 +20,6 @@ const rootReducer = combineReducers({
   views,
   playlist,
   sidebar,
-  queue,
   folders: undoable(folders, {
     filter: includeAction([RECEIVE_FOLDER]),
     debub: true,

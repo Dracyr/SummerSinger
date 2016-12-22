@@ -1,13 +1,16 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
+import { updateTrack } from './actions';
 import StarRating from './StarRating';
 
-export default class Track extends Component {
+class Track extends Component {
   constructor() {
     super();
     this.handleOnClick = this.handleOnClick.bind(this);
     this.handleOnContextMenu = this.handleOnContextMenu.bind(this);
     this.handleOnDragStart = this.handleOnDragStart.bind(this);
+    this.updateTrack = this.updateTrack.bind(this);
   }
 
   handleOnClick() {
@@ -26,6 +29,10 @@ export default class Track extends Component {
   handleOnDragStart(e) {
     const payload = JSON.stringify({ track_id: this.props.track.id });
     e.dataTransfer.setData('text/plain', payload);
+  }
+
+  updateTrack(params) {
+    this.props.updateTrack(this.props.track.id, params);
   }
 
   render() {
@@ -52,11 +59,24 @@ export default class Track extends Component {
         </div></div>
         <div className="td td-artist" alt={track.artist}><div>{track.artist}</div></div>
         <div className="td td-album" alt={track.album}><div>{track.album}</div></div>
-        <div className="td td-rating"><StarRating rating={track.rating} /></div>
+        <div className="td td-rating">
+          <StarRating
+            rating={track.rating}
+            updateTrack={this.updateTrack}
+          />
+        </div>
       </div>
     );
   }
 }
+
+function mapDispatch(dispatch) {
+  return {
+    updateTrack: (...args) => dispatch(updateTrack(...args)),
+  };
+}
+
+export default connect(null, mapDispatch)(Track);
 
 Track.propTypes = {
   onClickHandler: PropTypes.func,
@@ -66,4 +86,5 @@ Track.propTypes = {
   isPlaying: PropTypes.bool,
   isSelected: PropTypes.bool,
   index: PropTypes.number,
+  updateTrack: PropTypes.func,
 };

@@ -1,5 +1,6 @@
 import { PLAYER_UPDATE } from './actions';
 import { QUEUE_UPDATE } from '../Queue/actions';
+import { TRACK_UPDATE } from '../Track/actions';
 
 const initialPlayer = {
   playing: false,
@@ -32,6 +33,12 @@ export default function player(state = initialPlayer, action) {
       return { ...state,
         currentTrack: action.queue[state.queueIndex] || null,
         queue: action.queue,
+      };
+    case TRACK_UPDATE:
+      return { ...state,
+        queue: state.queue.map(track =>
+          action.trackId === track.id ? action.track : track
+        ),
       };
     default:
       return state;
