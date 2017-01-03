@@ -11,9 +11,7 @@ defmodule SummerSinger do
       supervisor(SummerSinger.Endpoint, []),
       # Start the Ecto repository
       worker(SummerSinger.Repo, []),
-      worker(SummerSinger.AudioPlayer, []),
-      worker(SummerSinger.Queue, [[]]),
-      worker(SummerSinger.Player, []),
+      worker(SummerSinger.PlayerSupervisor, []),
       worker(SummerSinger.IndexMusic.Supervisor, []),
       # Here you could define other workers and supervisors as children
       # worker(SummerSinger.Worker, [arg1, arg2, arg3]),

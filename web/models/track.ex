@@ -8,10 +8,10 @@ defmodule SummerSinger.Track do
     field :duration, :float, null: false
     field :rating,   :integer
 
-    belongs_to :artist, SummerSinger.Artist
-    belongs_to :album,  SummerSinger.Album
-    belongs_to :folder, SummerSinger.Folder
-    has_many   :images, SummerSinger.Image
+    belongs_to :artist,  SummerSinger.Artist
+    belongs_to :album,   SummerSinger.Album
+    belongs_to :folder,  SummerSinger.Folder
+    has_many   :images,  SummerSinger.Image
 
     has_many   :playlist_items, SummerSinger.PlaylistItem
     has_many   :playlists, through: [:playlist_items, :playlist]
@@ -19,8 +19,7 @@ defmodule SummerSinger.Track do
     timestamps
   end
 
-  @required_fields ~w(title filename duration folder)
-  @optional_fields ~w(rating metadata)
+  @allowed_fields ~w(title filename metadata duration rating artist_id album_id folder_id)
 
   @doc """
   Creates a changeset based on the `model` and `params`.
@@ -30,7 +29,7 @@ defmodule SummerSinger.Track do
   """
   def changeset(track, params \\ %{}) do
     track
-    |> cast(params, [:title, :filename, :metadata, :duration, :rating, :artist_id, :album_id, :folder_id])
+    |> cast(params, @allowed_fields)
     |> validate_required([:title, :filename])
     |> unique_constraint(:filename)
   end

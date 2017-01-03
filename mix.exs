@@ -31,6 +31,9 @@ defmodule SummerSinger.Mixfile do
         :codepagex,
         :connection,
         :runtime_tools,
+        :fs,
+        :sentix,
+        :poison
       ]
     ]
   end
@@ -54,7 +57,11 @@ defmodule SummerSinger.Mixfile do
      {:codepagex, "~> 0.1.2"},
      {:poolboy, "~> 1.5"},
      {:distillery, "~> 0.9"},
-     {:credo, "~> 0.4", only: [:dev, :test]}
+     {:credo, "~> 0.5", only: [:dev, :test]},
+     {:sentix, "~> 1.0.0"},
+     {:poison, "~> 2.0"}
+     # {:fs, "~> 0.9.1"}
+     # {:fs, github: "synrc/fs"}
    ]
   end
 

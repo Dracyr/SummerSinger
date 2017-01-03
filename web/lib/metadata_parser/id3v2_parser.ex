@@ -6,7 +6,7 @@ defmodule ID3v2Parser do
       {:ok, header_info} ->
         parse_binary(binary, header_info)
       _ ->
-        {:no_tag, :id3v2}
+        {:error, :no_tag}
     end
   end
 

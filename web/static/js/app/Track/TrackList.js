@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import InfiniteReactList from '../../lib/InfiniteReactList';
-import { PlaceholderText, closestSelector } from '../../lib/Util';
+import { PlaceholderText, closestSelector, debounce } from '../../lib/Util';
 
 import StarRating from './StarRating';
 import TrackContextMenu from './TrackContextMenu';
@@ -25,6 +25,7 @@ export default class TrackList extends Component {
     this.renderItems = this.renderItems.bind(this);
     this.isRowLoaded = this.isRowLoaded.bind(this);
     this.loadMoreRows = this.loadMoreRows.bind(this);
+
     this.selectTrack = this.selectTrack.bind(this);
 
     this.sortTracks = this.sortTracks.bind(this);

@@ -24,7 +24,7 @@ defmodule SummerSinger.Player do
       paused_duration = target
 
   """
-  alias SummerSinger.{Track, Repo, Queue}
+  alias SummerSinger.{Track, Repo, Queue, BackendPlayer}
 
   def start_link do
     Agent.start_link(fn ->
@@ -50,7 +50,7 @@ defmodule SummerSinger.Player do
   def playback(playback) do
     queue_index = Queue.status()[:queue_index]
     if queue_index do
-      send :audio_player, {:playback, playback}
+      BackendPlayer.playback(playback)
     else
       next_track()
     end
@@ -82,7 +82,7 @@ defmodule SummerSinger.Player do
 
   def play_track(track_id) do
     track = Repo.get!(Track, track_id)
-    send :audio_player, {:load, track.filename}
+    BackendPlayer.load(track.filename)
 
     Agent.update(__MODULE__, fn state ->
       %{state |
@@ -118,7 +118,7 @@ defmodule SummerSinger.Player do
   end
 
   def seek(percent) do
-    send :audio_player, {:seek, percent}
+    BackendPlayer.seek(percent)
 
     current_track_id = Queue.status |> Map.fetch!(:queue_index) |> Queue.track
     track = Repo.get!(Track, current_track_id)
@@ -133,7 +133,7 @@ defmodule SummerSinger.Player do
   end
 
   def volume(percent) do
-    send :audio_player, {:volume, percent}
+    BackendPlayer.volume(percent)
 
     Agent.update(__MODULE__, fn state ->
       %{state | volume: percent }

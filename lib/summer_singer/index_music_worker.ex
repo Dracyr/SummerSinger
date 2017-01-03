@@ -12,7 +12,12 @@ defmodule SummerSinger.IndexMusic.Worker do
 
   def handle_call(track_path, _from, state) do
     if is_nil(Repo.get_by(Track, filename: track_path)) do
-      add_track(track_path)
+      case add_track(track_path) do
+        {:ok, track} ->
+          IO.inspect("** ADDED: " <> track_path)
+        {:error, reason} ->
+          IO.inspect("[ERROR] " <> track_path <> " " <> reason)
+      end
     end
     {:reply, track_path, state}
   end
@@ -22,41 +27,44 @@ defmodule SummerSinger.IndexMusic.Worker do
   end
 
   defp add_track(track_path) do
-    # TODO: Elixir 1.3, 'with'
-    case MetadataParser.parse(track_path) do
-      {:ok, audio_data, metadata} ->
-        case create_track(track_path, metadata, audio_data) do
-          {:ok, track} ->
-            case Repo.insert(track) do
-              {:ok, _track} ->
-                IO.inspect("** ADDED: " <> track_path)
-              {:error, reason} ->
-                IO.inspect("[ERROR] " <> track_path <> " " <> reason)
-            end
-          {:error, reason} ->
-            IO.inspect("WE FUCKED UP " <> reason)
-            raise "WE FUCKED UP"
-        end
-      {:error, _reason} ->
-        IO.inspect("Error, could not add track: " <> track_path)
-    end
+    with  {:ok, audio_data, metadata} <- MetadataParser.parse(track_path),
+          {:ok, track} <- track_changeset(track_path, audio_data, metadata),
+          {:ok, track} <- Repo.insert(track),
+            do: {:ok, track}
   end
 
-  defp create_track(track_path, metadata, audio_data) do
-    artist = Artist.find_or_create(metadata[:artist])
-    album = Album.find_or_create(metadata[:album], artist)
+  defp track_changeset(track_path, audio_data, metadata) do
+    artist = Artist.find_or_create(metadata["ARTIST"])
+
+    album_artist =
+      if metadata["ALBUM"] do
+        Artist.find_or_create(metadata["ALBUMARTIST"])
+      else
+        nil
+      end
+
+    album = Album.find_or_create(metadata["ALBUM"], artist)
     folder = Repo.get_by(Folder, path: Path.dirname(track_path))
 
-    track = %Track{
-      title: metadata[:title],
+    rating =
+      if metadata["RATING"] do
+        if is_integer(metadata["RATING"]) do
+          metadata["RATING"]
+        else
+          String.to_integer(metadata["RATING"])
+        end
+      else
+        0
+      end
+
+    {:ok, %Track{
+      title: metadata["TITLE"],
       artist_id: artist && artist.id,
       album_id: album && album.id,
       filename: track_path,
-      duration: audio_data.duration,
-      rating: metadata[:rating] || 0,
+      duration: audio_data["duration"] / 1,
+      rating: rating,
       folder_id: folder.id
-    }
-
-    {:ok, track}
+    }}
   end
 end

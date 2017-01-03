@@ -18,7 +18,7 @@ defmodule SummerSinger.Web do
 
   defmacro aliases do
     quote do
-      alias SummerSinger.{Repo, Track, Album, Artist, Folder, Image, Playlist, PlaylistItem}
+      alias SummerSinger.{Repo, Track, Album, Artist, Folder, Image, Playlist, PlaylistItem, Library}
     end
   end
 

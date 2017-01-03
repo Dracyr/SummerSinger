@@ -1,33 +1,20 @@
 defmodule MetadataParser do
 
   def parse(file_name) do
-    if String.contains?(file_name, ".mp3") do
-      case File.read(file_name) do
-        {:ok, binary} ->
-          audio_data = case MPEGParser.parse_binary(binary) do
-            {:ok, audio_data} ->
-              audio_data
-            {:error, _reason} ->
-              nil
-          end
+    port = Port.open({:spawn, "tagreader read \"#{file_name}\""}, [:binary, line: 65_536])
 
-          metadata = case ID3v2Parser.parse_binary(binary) do
-            {:ok, metadata} ->
-              metadata
-            {:error, _reason} ->
-              nil
-          end
-
-          if is_nil(audio_data) || is_nil(metadata) do
-            {:error, "Error in reading metadata"}
-          else
-            {:ok, audio_data, metadata}
-          end
-        _ ->
-          IO.puts("Couldn't open #{file_name}")
+    data =
+      receive do
+        {^port, {:data, {:eol, result}}} ->
+          Poison.decode!(result)
+      after
+        10_000 -> nil
       end
+
+    if data["audio_properties"] do
+      {:ok, data["audio_properties"], data["tags"]}
     else
-      IO.puts("Non mp3 file #{file_name}")
+      {:error, "Could not parse file"}
     end
   end
 end

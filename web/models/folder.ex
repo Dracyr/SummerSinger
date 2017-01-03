@@ -6,12 +6,15 @@ defmodule SummerSinger.Folder do
     field :title, :string
     field :root,  :boolean
 
+    belongs_to :library,  SummerSinger.Library
     belongs_to :parent,   Folder, foreign_key: :parent_id
     has_many   :children, Folder, foreign_key: :parent_id
     has_many   :tracks,   SummerSinger.Track
 
     timestamps
   end
+
+  @allowed_fields ~w(path title root parent_id library_id)
 
   @doc """
   Creates a changeset based on the `folder` and `params`.
@@ -21,17 +24,18 @@ defmodule SummerSinger.Folder do
   """
   def changeset(folder, params \\ %{}) do
     folder
-    |> cast(params, [:path, :title, :root, :parent_id])
+    |> cast(params, @allowed_fields)
     |> validate_required([:path, :title])
     |> unique_constraint(:path)
   end
 
-  def create!(path, root \\ false) do
+  def create!(path, library, root \\ false) do
     {:ok, folder} = Repo.transaction(fn ->
       changeset = if root do
         %{
           path: path,
           title: Path.basename(path),
+          library_id: library.id,
           root: root
         }
       else
@@ -41,6 +45,7 @@ defmodule SummerSinger.Folder do
           path: path,
           title: Path.basename(path),
           parent_id: parent.id,
+          library_id: library.id,
           root: root
         }
       end
@@ -53,7 +58,7 @@ defmodule SummerSinger.Folder do
 
   def orphans do
     from f in Folder,
-    where: is_nil(f.parent_id)
+      where: is_nil(f.parent_id)
   end
 
   def collect_tracks(folder_id) do
