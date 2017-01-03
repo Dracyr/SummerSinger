@@ -95,14 +95,36 @@ class Sidebar extends Component {
             active={view === 'SEARCH'}
             search={actions.library.fetchSearch}
           />
-          <SidebarItem title="Now Playing" itemView="NOW_PLAYING"
-            view={view} switchView={switchView} />
-          <SidebarItem title="Queue" itemView="QUEUE"
-            view={view} switchView={switchView} />
-          <SidebarItem title="Library" itemView="LIBRARY"
-            view={view} switchView={switchView} />
-          <SidebarItem title="Setting" itemView="SETTINGS"
-            view={view} switchView={switchView} />
+          <SidebarItem
+            title="Now Playing"
+            itemView="NOW_PLAYING"
+            view={view}
+            switchView={switchView}
+          />
+          <SidebarItem
+            title="Queue"
+            itemView="QUEUE"
+            view={view}
+            switchView={switchView}
+          />
+          <SidebarItem
+            title="Inbox"
+            itemView="INBOX"
+            view={view}
+            switchView={switchView}
+          />
+          <SidebarItem
+            title="Library"
+            itemView="LIBRARY"
+            view={view}
+            switchView={switchView}
+          />
+          <SidebarItem
+            title="Setting"
+            itemView="SETTINGS"
+            view={view}
+            switchView={switchView}
+          />
         </ul>
 
         <div className="sidebar-playlist-header">

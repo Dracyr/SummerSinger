@@ -1,24 +1,45 @@
 defmodule SummerSinger.TrackController do
   use SummerSinger.Web, :controller
+  use Filterable
+
   alias SummerSinger.Track
   import Ecto.Query
 
   plug :scrub_params, "track" when action in [:create, :update]
 
-  def index(conn, params) do
-    tracks = case params do
-      %{"search" => search_term} ->
-        from(t in Track)
-        |> Track.search(search_term)
-      %{"sort_by" => sort_by, "sort_dir" => sort_dir} ->
-        from(t in Track)
-        |> Track.order_by(sort_by, sort_dir)
-        |> limit_tracks(params["offset"], params["limit"])
-      nil ->
-        from(t in Track) |> limit_tracks(params["offset"], params["limit"])
-    end |> Repo.all |> Repo.preload([:artist, :album])
+  defmodule Filterable do
+    def search(_conn, query, value) do
+      query |> Track.search(value)
+    end
 
-    track_count = Repo.all(from t in Track, select: count(t.id)) |> Enum.at(0)
+    def limit(_conn, query, value) do
+      query |> limit(^value)
+    end
+
+    def offset(_conn, query, value) do
+      query |> offset(^value)
+    end
+
+    def inbox(_conn, query, value) when value in ~w(true false) do
+      query |> where(inbox: ^value)
+    end
+
+    def sort_by(conn, query, value) when value in ~w(title album artist rating) do
+      sort_dir = conn.params["sort_dir"]
+      query |> Track.order_by(value, sort_dir)
+    end
+  end
+
+  def index(conn, params) do
+    is_inbox = (conn.params["inbox"] == "true")
+
+    tracks = Track
+    |> apply_filters(conn)
+    |> (&(if is_inbox, do: &1, else: &1 |> where(inbox: false))).()
+    |> Repo.all
+    |> Repo.preload([:artist, :album])
+
+    track_count = Repo.all(from t in Track, select: count(t.id), where: t.inbox == ^is_inbox) |> Enum.at(0)
     render(conn, "index.json", tracks: tracks, track_count: track_count)
   end
 
@@ -49,6 +70,7 @@ defmodule SummerSinger.TrackController do
 
     case Repo.update(changeset) do
       {:ok, track} ->
+        SummerSinger.RoomChannel.track_update(track)
         render(conn, "show.json", track: track)
       {:error, changeset} ->
         conn
@@ -65,14 +87,5 @@ defmodule SummerSinger.TrackController do
     Repo.delete!(track)
 
     send_resp(conn, :no_content, "")
-  end
-
-  defp limit_tracks(query, offset, limit) when is_nil(offset) and is_nil(limit) do
-    from t in query
-  end
-
-  defp limit_tracks(query, offset, limit) do
-    from t in query,
-    offset: ^offset, limit: ^limit
   end
 end

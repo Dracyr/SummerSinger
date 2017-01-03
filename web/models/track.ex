@@ -7,6 +7,7 @@ defmodule SummerSinger.Track do
     field :metadata, :map
     field :duration, :float, null: false
     field :rating,   :integer
+    field :inbox,   :boolean
 
     belongs_to :artist,  SummerSinger.Artist
     belongs_to :album,   SummerSinger.Album
@@ -19,7 +20,7 @@ defmodule SummerSinger.Track do
     timestamps
   end
 
-  @allowed_fields ~w(title filename metadata duration rating artist_id album_id folder_id)
+  @allowed_fields ~w(title filename metadata duration rating artist_id album_id folder_id inbox)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

@@ -78,7 +78,8 @@ export default class TrackList extends Component {
   }
 
   isRowLoaded(index) {
-    return this.props.tracks ? !!this.props.tracks[index] : true;
+    // console.log("checking loaded: ", this.props.tracks[index], index);
+    return !!(this.props.tracks && this.props.tracks[index]);
   }
 
   selectTrack(track, index) {

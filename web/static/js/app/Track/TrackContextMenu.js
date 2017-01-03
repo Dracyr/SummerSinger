@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import * as PlayerActions from '../Player/actions';
 import * as PlaylistActions from '../Playlist/actions';
+import { addTrackToLibrary } from '../Inbox/actions';
 
 import ContextMenu, { MenuItem, Submenu } from '../../components/ContextMenu';
 
@@ -32,6 +33,7 @@ class TrackContextMenu extends Component {
     this.playTrack = this.playTrack.bind(this);
     this.queueTrack = this.queueTrack.bind(this);
     this.addTrackToPlaylist = this.addTrackToPlaylist.bind(this);
+    this.addTrackToLibrary = this.addTrackToLibrary.bind(this);
   }
 
   playTrack() {
@@ -46,6 +48,10 @@ class TrackContextMenu extends Component {
 
   addTrackToPlaylist(playlist) {
     this.props.actions.playlist.addTrackToPlaylist(this.props.track.id, playlist.id);
+  }
+
+  addTrackToLibrary() {
+    this.props.actions.addTrackToLibrary(this.props.track.id);
   }
 
   render() {
@@ -66,6 +72,9 @@ class TrackContextMenu extends Component {
             );
           })}
         </Submenu>
+        {this.props.track && this.props.track.inbox ?
+          <MenuItem onClick={this.addTrackToLibrary}>Add to Library</MenuItem> : ''
+        }
       </ContextMenu>
     );
   }
@@ -90,6 +99,7 @@ function mapDispatch(dispatch) {
     actions: {
       player: bindActionCreators(PlayerActions, dispatch),
       playlist: bindActionCreators(PlaylistActions, dispatch),
+      addTrackToLibrary: (...args) => dispatch(addTrackToLibrary(...args)),
     },
   };
 }

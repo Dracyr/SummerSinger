@@ -59,7 +59,8 @@ defmodule SummerSinger.Mixfile do
      {:distillery, "~> 0.9"},
      {:credo, "~> 0.5", only: [:dev, :test]},
      {:sentix, "~> 1.0.0"},
-     {:poison, "~> 2.0"}
+     {:poison, "~> 2.0"},
+     {:filterable, "~> 0.0.1"}
      # {:fs, "~> 0.9.1"}
      # {:fs, github: "synrc/fs"}
    ]

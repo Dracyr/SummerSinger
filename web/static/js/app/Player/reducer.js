@@ -37,7 +37,7 @@ export default function player(state = initialPlayer, action) {
     case TRACK_UPDATE:
       return { ...state,
         queue: state.queue.map(track =>
-          action.trackId === track.id ? action.track : track
+          action.track.id === track.id ? action.track : track
         ),
       };
     default:

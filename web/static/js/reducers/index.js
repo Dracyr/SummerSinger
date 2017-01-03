@@ -3,6 +3,7 @@ import undoable, { includeAction } from 'redux-undo';
 
 import player from '../app/Player/reducer';
 import library from '../app/Library/reducer';
+import inbox from '../app/Inbox/reducer';
 import folders from '../app/Folders/reducer';
 import playlist from '../app/Playlist/reducer';
 import sidebar from '../app/Sidebar/reducer';
@@ -17,6 +18,7 @@ import {
 const rootReducer = combineReducers({
   player,
   library,
+  inbox,
   views,
   playlist,
   sidebar,

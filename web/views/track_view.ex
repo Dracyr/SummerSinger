@@ -21,6 +21,7 @@ defmodule SummerSinger.TrackView do
       rating: track.rating,
       album: track.album && track.album.title,
       filename: Path.basename(track.filename),
+      inbox: track.inbox
     }
   end
 end

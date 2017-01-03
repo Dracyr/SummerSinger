@@ -31,7 +31,6 @@ function receiveLibrary(libraryType, full = true, total, library) {
 
 export function fetchLibrary(libraryType, offset = 0, limit = 0, librarySort = null) {
   return (dispatch, getState) => {
-    console.log(limit);
     const total = offset + limit;
     if (!librarySort && getState().library[libraryType].length >= total) {
       return null;

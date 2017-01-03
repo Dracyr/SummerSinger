@@ -1,5 +1,6 @@
 defmodule SummerSinger.IndexMusic.Worker do
   use GenServer
+  require Logger
   alias SummerSinger.{Repo, Track, Artist, Album, Folder}
 
   def start_link(state) do
@@ -14,9 +15,9 @@ defmodule SummerSinger.IndexMusic.Worker do
     if is_nil(Repo.get_by(Track, filename: track_path)) do
       case add_track(track_path) do
         {:ok, track} ->
-          IO.inspect("** ADDED: " <> track_path)
+          Logger.info("ADDED TRACK: " <> track_path)
         {:error, reason} ->
-          IO.inspect("[ERROR] " <> track_path <> " " <> reason)
+          Logger.error("COULD NOT ADD TRACK: " <> track_path <> ", " <> reason)
       end
     end
     {:reply, track_path, state}

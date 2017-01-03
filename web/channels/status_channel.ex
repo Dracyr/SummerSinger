@@ -125,6 +125,12 @@ defmodule SummerSinger.RoomChannel do
     SummerSinger.Endpoint.broadcast! "status:broadcast", "playlistsUpdate", data
   end
 
+  def track_update(track) do
+    data = SummerSinger.TrackView.render("show.json", %{track: track})
+
+    SummerSinger.Endpoint.broadcast! "status:broadcast", "trackUpdate", data
+  end
+
   defp current_status do
     Player.status |> Map.merge(%{current_time: DateUtil.now})
   end

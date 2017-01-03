@@ -7,6 +7,7 @@ import Settings from '../app/Settings/Settings';
 import Library  from '../app/Library/Library';
 import Search   from '../app/Search/Search';
 import Queue    from '../app/Queue/Queue';
+import Inbox    from '../app/Inbox/Inbox';
 import PlaylistView from '../app/Playlist/PlaylistView';
 
 const mainView = (view) => {
@@ -21,6 +22,8 @@ const mainView = (view) => {
       return <Library />;
     case 'SEARCH':
       return <Search />;
+    case 'INBOX':
+      return <Inbox />;
     default:
       return '';
   }

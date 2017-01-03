@@ -99,6 +99,10 @@ export class Submenu extends Component {
     return this.state.isVisible !== nextState.visible;
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.closetimer);
+  }
+
   handleMouseEnter() {
     if (this.closetimer) clearTimeout(this.closetimer);
     if (this.state.visible) return;

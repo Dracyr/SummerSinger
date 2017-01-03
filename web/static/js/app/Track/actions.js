@@ -3,8 +3,8 @@ import fetch from 'isomorphic-fetch';
 export const UPDATE_TRACK = 'UPDATE_TRACK';
 export const TRACK_UPDATE = 'TRACK_UPDATE';
 
-export function trackUpdate(trackId, track) {
-  return { type: TRACK_UPDATE, trackId, track };
+export function trackUpdate(track) {
+  return { type: TRACK_UPDATE, track };
 }
 
 export function updateTrack(trackId, params) {
@@ -20,7 +20,7 @@ export function updateTrack(trackId, params) {
     .then(response => response.json())
     .then(json => {
       const track = json.data;
-      dispatch(trackUpdate(track.id, track));
+      dispatch(trackUpdate(track));
     });
   };
 }

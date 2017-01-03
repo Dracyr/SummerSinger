@@ -1,6 +1,7 @@
 import { socketStatusUpdate, fetchStatus } from '../app/Player/actions';
 import { queueUpdate, fetchQueue } from '../app/Queue/actions';
 import { receivePlaylists } from '../app/Playlist/actions';
+import { trackUpdate } from '../app/Track/actions';
 
 import { Socket } from 'phoenix';
 
@@ -31,6 +32,7 @@ export default class SummerSocket {
     broadcastChannel.on('statusUpdate', this.statusUpdate.bind(this));
     broadcastChannel.on('queueUpdate', this.queueUpdate.bind(this));
     broadcastChannel.on('playlistsUpdate', this.playlistsUpdate.bind(this));
+    broadcastChannel.on('trackUpdate', this.trackUpdate.bind(this));
 
     this.state = this.state.bind(this);
   }
@@ -49,6 +51,10 @@ export default class SummerSocket {
 
   playlistsUpdate(json) {
     this.store.dispatch(receivePlaylists(json.data));
+  }
+
+  trackUpdate(json) {
+    this.store.dispatch(trackUpdate(json.data));
   }
 
   requestPlayback(playback) {
