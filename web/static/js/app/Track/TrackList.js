@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import InfiniteReactList from '../../lib/InfiniteReactList';
-import { PlaceholderText, closestSelector, debounce } from '../../lib/Util';
-
-import StarRating from './StarRating';
-import TrackContextMenu from './TrackContextMenu';
+import ReactList from 'react-list';
+import { PlaceholderText, closestSelector } from '../Util/Util';
 
 import Track from './Track';
+import TrackContextMenu from './TrackContextMenu';
+import StarRating from './StarRating';
 
 export default class TrackList extends Component {
   constructor(props) {
@@ -23,8 +22,6 @@ export default class TrackList extends Component {
     this.onClickHandler = this.onClickHandler.bind(this);
     this.renderItem = this.renderItem.bind(this);
     this.renderItems = this.renderItems.bind(this);
-    this.isRowLoaded = this.isRowLoaded.bind(this);
-    this.loadMoreRows = this.loadMoreRows.bind(this);
 
     this.selectTrack = this.selectTrack.bind(this);
 
@@ -71,19 +68,13 @@ export default class TrackList extends Component {
     });
   }
 
-  loadMoreRows(from, size) {
-    if (this.props.loadMoreRows) {
-      this.props.loadMoreRows(from, size);
-    }
-  }
-
-  isRowLoaded(index) {
-    // console.log("checking loaded: ", this.props.tracks[index], index);
-    return !!(this.props.tracks && this.props.tracks[index]);
-  }
-
   selectTrack(track, index) {
     this.setState({ selectedTrack: track, selectedIndex: index });
+    if (this.props.onSelectTrack) { this.props.onSelectTrack(track); }
+  }
+
+  getEntryList() {
+    return this.entryList;
   }
 
   sortTitle() {
@@ -120,9 +111,9 @@ export default class TrackList extends Component {
     }
 
     let trackComponent = '';
-    if (this.isRowLoaded(index)) {
-      const { tracks, keyAttr, currentKey, onClickHandler } = this.props;
-      const track = tracks[index];
+    if (this.props.entries && this.props.entries[index]) {
+      const { entries, keyAttr, currentKey, onClickHandler } = this.props;
+      const track = entries[index];
       const isPlaying = ((keyAttr === 'index' && index === currentKey) ||
                           (keyAttr === 'id' && track.id === currentKey));
 
@@ -145,9 +136,9 @@ export default class TrackList extends Component {
     } else {
       trackComponent = (
         <div className="tr track" key={key}>
-          <div className="td td-title"><div><PlaceholderText /></div></div>
-          <div className="td td-artist"><div><PlaceholderText /></div></div>
-          <div className="td td-album"><div></div></div>
+          <div className="td td-title"><PlaceholderText /></div>
+          <div className="td td-artist"><PlaceholderText /></div>
+          <div className="td td-album" />
           <div className="td td-rating"><StarRating rating={0} /></div>
         </div>
       );
@@ -199,8 +190,8 @@ export default class TrackList extends Component {
   }
 
   render() {
-    const { tracks, totalTracks, hideHeader } = this.props;
-    const localLength = (tracks && tracks.length) || 0;
+    const { entries, totalTracks, hideHeader } = this.props;
+    const localLength = (entries && entries.length) || 0;
     const trackCount = totalTracks || localLength;
 
     // Without arrow functions, will not rerender even if props changed
@@ -213,14 +204,14 @@ export default class TrackList extends Component {
       trackList = (
         <div className="display-table track-list">
           {header}
-          <InfiniteReactList
+          <ReactList
             itemRenderer={itemRenderer}
             itemsRenderer={this.renderItems}
             length={trackCount}
             localLength={localLength || trackCount}
             type="uniform"
-            isRowLoaded={this.isRowLoaded}
-            loadMoreRows={this.loadMoreRows}
+            ref={(c) => { this.entryList = c; }}
+            useStaticSize
             useTranslate3d
           />
           {this.state.contextMenu ?
@@ -234,8 +225,8 @@ export default class TrackList extends Component {
       );
     } else {
       trackList = (
-        <div className="no_tracks_banner">
-          No tracks.
+        <div className="display-table track-list">
+          {header}
         </div>
       );
     }
@@ -245,7 +236,7 @@ export default class TrackList extends Component {
 }
 
 TrackList.propTypes = {
-  tracks: React.PropTypes.array,
+  entries: React.PropTypes.array,
   keyAttr: React.PropTypes.string,
   currentKey: React.PropTypes.number,
   onClickHandler: React.PropTypes.func,
@@ -257,4 +248,5 @@ TrackList.propTypes = {
   hideHeader: React.PropTypes.bool,
   sortTracks: React.PropTypes.func,
   sort: React.PropTypes.object,
+  onSelectTrack: React.PropTypes.func,
 };

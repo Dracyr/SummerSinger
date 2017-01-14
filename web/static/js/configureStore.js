@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import rootReducer from './reducers/index';
-import socketMiddleware from './lib/socketMiddleware';
+import socketMiddleware from './socketMiddleware';
 
 import thunk from 'redux-thunk';
 

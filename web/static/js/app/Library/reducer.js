@@ -6,6 +6,7 @@ import {
 } from './actions';
 
 import { TRACK_UPDATE } from '../Track/actions';
+import { insertAtOffset } from '../Util/Util';
 
 const initialLibrary = {
   libraryView: 'TRACKS',
@@ -18,19 +19,44 @@ const initialLibrary = {
   artists: [],
   playlists: [],
   search: [],
+  viewContext: {
+    libraryView: 'TRACKS',
+    sort: { sortBy: 'title', dir: 'asc' },
+  },
 };
 
-const recieveLibrary = (state, libraryType, libraryTracks, fullUpdate, total) => {
+const recieveLibrary = (state, libraryType, libraryTracks, fullUpdate, total, offset = 0) => {
   switch (libraryType) {
     case 'tracks':
-      const tracks = fullUpdate ? libraryTracks : [...state.tracks, ...libraryTracks];
-      return { ...state, tracks, totalTracks: total };
+      if (fullUpdate) {
+        return { ...state, tracks: libraryTracks, totalTracks: total };
+      }
+
+      return {
+        ...state,
+        tracks: insertAtOffset(state.tracks, libraryTracks, offset),
+        totalTracks: total,
+      };
     case 'albums':
-      const albums = fullUpdate ? libraryTracks : [...state.albums, ...libraryTracks];
-      return { ...state, albums, totalAlbums: total };
+      if (fullUpdate) {
+        return { ...state, albums: libraryTracks, totalAlbums: total };
+      }
+
+      return {
+        ...state,
+        albums: insertAtOffset(state.albums, libraryTracks, offset),
+        totalAlbums: total,
+      };
     case 'artists':
-      const artists = fullUpdate ? libraryTracks : [...state.artists, ...libraryTracks];
-      return { ...state, artists, totalArtists: total };
+      if (fullUpdate) {
+        return { ...state, artists: libraryTracks, totalArtists: total };
+      }
+
+      return {
+        ...state,
+        artists: insertAtOffset(state.artists, libraryTracks, offset),
+        totalArtists: total,
+      };
     default:
       return state;
   }
@@ -41,7 +67,7 @@ export default function library(state = initialLibrary, action) {
     case SWITCH_LIBRARY_VIEW:
       return { ...state, libraryView: action.libraryView };
     case RECEIVE_LIBRARY:
-      return recieveLibrary(state, action.libraryType, action.library, action.full, action.total);
+      return recieveLibrary(state, action.libraryType, action.library, action.full, action.total, action.offset);
     case RECEIVE_SEARCH:
       return { ...state, search: action.search };
     case SORT_LIBRARY:

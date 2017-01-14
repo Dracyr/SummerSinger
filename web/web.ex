@@ -36,7 +36,6 @@ defmodule SummerSinger.Web do
       use Phoenix.Controller
       SummerSinger.Web.aliases()
 
-      import Ecto.Model
       import Ecto.Query, only: [from: 2]
 
       import SummerSinger.Router.Helpers
@@ -69,7 +68,6 @@ defmodule SummerSinger.Web do
       use Phoenix.Channel
       SummerSinger.Web.aliases()
 
-      import Ecto.Model
       import Ecto.Query, only: [from: 2]
     end
   end

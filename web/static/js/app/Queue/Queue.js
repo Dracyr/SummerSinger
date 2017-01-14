@@ -34,11 +34,11 @@ class Queue extends Component {
         <h1 className="header">
           Queue
           <small className="header-controls">
-            <span onClick={this.clearQueue}>clear</span>
+            <span onClick={this.clearQueue}>clear queue</span>
           </small>
         </h1>
         <TrackList
-          tracks={queue}
+          entries={queue}
           keyAttr={"index"}
           currentKey={currentIndex}
           onClickHandler={this.handleClick}

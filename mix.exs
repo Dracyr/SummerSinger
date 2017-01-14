@@ -9,14 +9,17 @@ defmodule SummerSinger.Mixfile do
      compilers: [:phoenix] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     aliases: aliases,
-     deps: deps]
+     aliases: aliases(),
+     deps: deps()]
   end
 
   # Configuration for the OTP application
   #
   # Type `mix help compile.app` for more information
   def application do
+    # [extra_applications: [
+    #   :logger
+    # ]]
     [mod: {SummerSinger, []},
       applications: [
         :phoenix,
@@ -46,9 +49,9 @@ defmodule SummerSinger.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.2.0"},
+    [{:phoenix, "~> 1.2"},
      {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_ecto, "~> 3.0-rc"},
+     {:phoenix_ecto, "~> 3.0"},
      {:postgrex, ">= 0.0.0"},
      {:phoenix_html, "~> 2.5"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
@@ -56,7 +59,7 @@ defmodule SummerSinger.Mixfile do
      {:cowboy, "~> 1.0"},
      {:codepagex, "~> 0.1.2"},
      {:poolboy, "~> 1.5"},
-     {:distillery, "~> 0.9"},
+     {:distillery, "~> 0.9", runtime: false},
      {:credo, "~> 0.5", only: [:dev, :test]},
      {:sentix, "~> 1.0.0"},
      {:poison, "~> 2.0"},

@@ -7,6 +7,8 @@ export const SORT_INBOX = 'SORT_INBOX';
 
 export const ADD_TRACK_TO_LIBRARY = 'ADD_TRACK_TO_LIBRARY';
 
+export const CLEAR_INBOX = 'CLEAR_INBOX';
+
 function requestInbox(offset, limit) {
   return { type: REQUEST_INBOX, offset, limit };
 }
@@ -55,5 +57,21 @@ export function addTrackToLibrary(trackId) {
     });
 
     dispatch({ type: ADD_TRACK_TO_LIBRARY, trackId });
+  };
+}
+
+export function clearInbox() {
+  return dispatch => {
+    dispatch({ type: CLEAR_INBOX });
+
+    fetch(`/api/tracks/clear_inbox`, {
+      method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+
+    dispatch(fetchInbox(0, 50));
   };
 }

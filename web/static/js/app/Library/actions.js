@@ -21,23 +21,21 @@ export function switchLibraryView(libraryView) {
   return { type: SWITCH_LIBRARY_VIEW, libraryView };
 }
 
-function requestLibrary(libraryType, offset) {
-  return { type: REQUEST_LIBRARY, libraryType, offset };
+function requestLibrary(libraryType, offset, limit) {
+  return { type: REQUEST_LIBRARY, libraryType, offset, limit };
 }
 
-function receiveLibrary(libraryType, full = true, total, library) {
-  return { type: RECEIVE_LIBRARY, libraryType, full, total, library };
+function receiveLibrary(libraryType, full = true, total, library, offset) {
+  return { type: RECEIVE_LIBRARY, libraryType, full, total, library, offset };
 }
 
 export function fetchLibrary(libraryType, offset = 0, limit = 0, librarySort = null) {
   return (dispatch, getState) => {
     const total = offset + limit;
-    if (!librarySort && getState().library[libraryType].length >= total) {
-      return null;
-    }
+
     const sort = librarySort || getState().library.librarySort;
 
-    dispatch(requestLibrary(libraryType, total));
+    dispatch(requestLibrary(libraryType, offset, limit));
 
     const full = total === 0; //  || !librarySort;
     let query = full ? '?' : `?offset=${offset}&limit=${limit}&`;
@@ -45,7 +43,7 @@ export function fetchLibrary(libraryType, offset = 0, limit = 0, librarySort = n
       `${query}sort_by=${sort.sortBy}&sort_dir=${sort.dir}` : query;
     return fetch(`/api/${libraryType}${query}`)
       .then(response => response.json())
-      .then(json => dispatch(receiveLibrary(libraryType, full, json.total, json.data)));
+      .then(json => dispatch(receiveLibrary(libraryType, full, json.total, json.data, offset)));
   };
 }
 

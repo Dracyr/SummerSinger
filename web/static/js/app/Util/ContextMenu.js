@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { isParent } from '../lib/Util';
+import { isParent } from './Util';
 
 export default class ContextMenu extends Component {
   constructor() {

@@ -1,7 +1,7 @@
-import { socketStatusUpdate, fetchStatus } from '../app/Player/actions';
-import { queueUpdate, fetchQueue } from '../app/Queue/actions';
-import { receivePlaylists } from '../app/Playlist/actions';
-import { trackUpdate } from '../app/Track/actions';
+import { socketStatusUpdate, fetchStatus } from '../Player/actions';
+import { queueUpdate, fetchQueue } from '../Queue/actions';
+import { receivePlaylists } from '../Playlist/actions';
+import { trackUpdate } from '../Track/actions';
 
 import { Socket } from 'phoenix';
 

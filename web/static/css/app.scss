@@ -6,6 +6,7 @@
 @import "sidebar";
 @import "albums";
 @import "context-menu";
+@import "input";
 
 @import url(http://fonts.googleapis.com/css?family=Raleway:400,300,200);
 @import url(https://fonts.googleapis.com/css?family=Noto+Sans);
@@ -21,6 +22,8 @@ body {
   color: #666;
   background: #ddd;
   font-family: 'Noto Sans', sans-serif;
+
+  overflow: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -57,6 +60,8 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 10%;
   font-size: 40px;
   text-align: center;
+  opacity: 1;
+  transition: opacity 100ms;
 }
 
 .display-table {
@@ -157,8 +162,22 @@ h1, h2, h3, h4, h5, h6 {
 .track-edit-pane {
   position: absolute;
   bottom: 0;
+  transform: translateY(100px);
   background: #ddd;
-  padding: 20px;
+  padding: 5px 20px 10px 20px;
   width: calc(100% - 300px);
   left: 300px;
+
+  transition: all 250ms ease(in-out-quart);
+}
+
+.show-pane {
+  transform: translateY(0%);
+}
+
+.track-form-rating {
+  width: 80px;
+  float: right;
+  display: block;
+  margin-top: 38px;
 }

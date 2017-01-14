@@ -91,15 +91,10 @@ class Sidebar extends Component {
     return (
       <div className="sidebar">
         <ul className="sidebar-links list-unstyled">
-          <SidebarSearch switchView={switchView}
+          <SidebarSearch
+            switchView={switchView}
             active={view === 'SEARCH'}
             search={actions.library.fetchSearch}
-          />
-          <SidebarItem
-            title="Now Playing"
-            itemView="NOW_PLAYING"
-            view={view}
-            switchView={switchView}
           />
           <SidebarItem
             title="Queue"

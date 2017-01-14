@@ -60,7 +60,7 @@ class StarRating extends Component {
 
 
     return (
-      <span
+      <div
         ref="starRating"
         onMouseMove={this.handleOnMouseOver}
         onMouseLeave={this.handleOnMouseLeave}
@@ -75,7 +75,7 @@ class StarRating extends Component {
         {[...Array(5 - Math.floor(stars) - (halfStar ? 1 : 0))].map((x, i) =>
           <i key={Math.floor(stars) + i} className="fa fa-star-o"></i>
         )}
-      </span>
+      </div>
     );
   }
 }

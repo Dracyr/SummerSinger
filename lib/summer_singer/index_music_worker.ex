@@ -65,7 +65,11 @@ defmodule SummerSinger.IndexMusic.Worker do
       filename: track_path,
       duration: audio_data["duration"] / 1,
       rating: rating,
-      folder_id: folder.id
+      folder_id: folder.id,
+      metadata: %{
+        audio_data: audio_data,
+        tags: metadata,
+      }
     }}
   end
 end

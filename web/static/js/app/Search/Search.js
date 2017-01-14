@@ -10,14 +10,12 @@ class Search extends Component {
     const { search, currentId } = this.props;
 
     return (
-      <div>
-        <TrackList
-          tracks={search}
-          keyAttr={"id"}
-          currentKey={currentId}
-          onClickHandler={(track) => requestQueueAndPlayTrack(track.id)}
-        />
-      </div>
+      <TrackList
+        entries={search}
+        keyAttr={'id'}
+        currentKey={currentId}
+        onClickHandler={track => requestQueueAndPlayTrack(track.id)}
+      />
     );
   }
 }

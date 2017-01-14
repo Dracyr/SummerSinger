@@ -7,23 +7,23 @@ import {
   REQUEST_NEXT_TRACK,
   REQUEST_SEEK,
   REQUEST_VOLUME,
-} from '../app/Player/actions';
+} from './app/Player/actions';
 
 import {
   PLAY_FOLDER,
   QUEUE_FOLDER,
-} from '../app/Folders/actions';
+} from './app/Folders/actions';
 
 import {
   ADD_TRACK_TO_PLAYLIST,
   PLAY_PLAYLIST,
   QUEUE_PLAYLIST,
-} from '../app/Playlist/actions';
+} from './app/Playlist/actions';
 
 import {
   REMOVE_QUEUE_TRACK,
   CLEAR_QUEUE,
-} from '../app/Queue/actions';
+} from './app/Queue/actions';
 
 export default socket => store => next => action => {
   switch (action.type) {

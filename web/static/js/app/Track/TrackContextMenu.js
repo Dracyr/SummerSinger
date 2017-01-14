@@ -6,7 +6,7 @@ import * as PlayerActions from '../Player/actions';
 import * as PlaylistActions from '../Playlist/actions';
 import { addTrackToLibrary } from '../Inbox/actions';
 
-import ContextMenu, { MenuItem, Submenu } from '../../components/ContextMenu';
+import ContextMenu, { MenuItem, Submenu } from '../Util/ContextMenu';
 
 class PlaylistItem extends Component {
   constructor() {

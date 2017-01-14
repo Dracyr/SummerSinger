@@ -25,7 +25,10 @@ defmodule SummerSinger.Router do
 
     get "/status", StatusController, :show
     get "/queue", QueueController, :show
+
     resources "/tracks", TrackController, except: [:new, :edit]
+    post "/tracks/clear_inbox", TrackController, :clear_inbox
+
     resources "/albums", AlbumController, except: [:new, :edit]
     resources "/artists", ArtistController, except: [:new, :edit]
     resources "/playlists", PlaylistController

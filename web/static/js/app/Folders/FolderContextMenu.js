@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import ContextMenu, { MenuItem } from '../../components/ContextMenu';
+import ContextMenu, { MenuItem } from '../Util/ContextMenu';
 
 export default class FolderContextMenu extends Component {
   constructor() {

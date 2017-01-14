@@ -88,4 +88,9 @@ defmodule SummerSinger.TrackController do
 
     send_resp(conn, :no_content, "")
   end
+
+  def clear_inbox(conn, %{}) do
+    Repo.update_all(Track, set: [inbox: false])
+    send_resp(conn, :no_content, "")
+  end
 end

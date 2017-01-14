@@ -1,4 +1,5 @@
 import React from 'react';
+import { findDOMNode } from 'react-dom';
 
 export const PlaceholderText = () => {
   const style = {
@@ -54,4 +55,22 @@ export const closestSelector = (el, selector) => {
   }
 
   return null;
+};
+
+export function insertAtOffset(target, arr, offset) {
+  const newArr = Object.assign([], target);
+  for (let i = 0; i < arr.length; i++) {
+    newArr[offset + i] = arr[i];
+  }
+  return newArr;
+}
+
+export const getScrollParent = (node) => {
+  let el = findDOMNode(node);
+  while (el = el.parentElement) {
+    switch (window.getComputedStyle(el).overflowY) {
+      case 'auto': case 'scroll': case 'overlay': return el;
+    }
+  }
+  return window;
 };

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import InfiniteReactList from '../lib/InfiniteReactList';
+import ReactList from 'react-list';
+import { PlaceholderText } from '../Util/Util';
 
 class AlbumCard extends Component {
 
   render() {
-    const { album } = this.props;
+    const album = this.props.album;
 
     return (
       <div className="card">
@@ -12,9 +13,9 @@ class AlbumCard extends Component {
           <img src="/images/album_placeholder.png" width="150" height="150"></img>
         </div>
         <div className="card-content">
-          {album.title}
+          {album && album.title}
           <br />
-          <small>{album.artist}</small>
+          <small>{album && album.artist}</small>
         </div>
       </div>
     );
@@ -22,19 +23,14 @@ class AlbumCard extends Component {
 }
 
 export default class AlbumList extends Component {
-  isRowLoaded(index) {
-    return !!this.props.albums[index];
-  }
-
-  loadMoreRows(from, size) {
-    const { loadMoreRows } = this.props;
-    loadMoreRows && loadMoreRows(from, size);
+  getEntryList() {
+    return this.entryList;
   }
 
   renderItem(index, key) {
-    if (this.isRowLoaded(index)) {
-      const { albums } = this.props;
-      return <AlbumCard key={key} album={albums[index]} />;
+    if (this.props.entries[index]) {
+      const { entries } = this.props;
+      return <AlbumCard key={key} album={entries[index]} />;
     } else {
       return (
         <div className="card" key={key}>
@@ -48,20 +44,21 @@ export default class AlbumList extends Component {
   }
 
   render() {
-    const { albums, totalAlbums } = this.props;
-    const albumCount = totalAlbums || albums.length;
+    const { entries, totalAlbums } = this.props;
+    const albumCount = totalAlbums || entries.length;
 
     return (
-      <InfiniteReactList
-        itemRenderer={(index, key) => <AlbumCard key={key} album={albums[index]} />}
-        itemsRenderer={(items,ref) => <div className="card-list" ref={ref}>{items}</div>}
+      <ReactList
+        itemRenderer={(index, key) => <AlbumCard key={key} album={entries[index]} />}
+        itemsRenderer={(items, ref) => <div className="card-list" ref={ref}>{items}</div>}
         length={albumCount}
-        localLength={albums.length}
-        axis='y'
-        type='uniform'
-        useTranslate3d={true}
+        localLength={entries.length}
+        axis="y"
+        type="uniform"
+        useTranslate3d
         isRowLoaded={(index) => this.isRowLoaded(index)}
         loadMoreRows={(from, size) => this.loadMoreRows(from, size)}
+        ref={(c) => { this.entryList = c; }}
       />
     );
   }

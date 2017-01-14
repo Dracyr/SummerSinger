@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import reduceReducers from 'reduce-reducers';
 import undoable, { includeAction } from 'redux-undo';
 
 import player from '../app/Player/reducer';
@@ -7,7 +8,7 @@ import inbox from '../app/Inbox/reducer';
 import folders from '../app/Folders/reducer';
 import playlist from '../app/Playlist/reducer';
 import sidebar from '../app/Sidebar/reducer';
-import views from './views';
+import views, { viewContext } from './views';
 
 import {
   GO_TO_PARENT,
@@ -15,19 +16,22 @@ import {
   RECEIVE_FOLDER,
 } from '../app/Folders/actions';
 
-const rootReducer = combineReducers({
-  player,
-  library,
-  inbox,
-  views,
-  playlist,
-  sidebar,
-  folders: undoable(folders, {
-    filter: includeAction([RECEIVE_FOLDER]),
-    debub: true,
-    undoType: GO_TO_PARENT,
-    jumpToPastType: GO_TO_PARENT_N,
+const rootReducer = reduceReducers(
+  combineReducers({
+    player,
+    library,
+    inbox,
+    playlist,
+    sidebar,
+    views,
+    folders: undoable(folders, {
+      filter: includeAction([RECEIVE_FOLDER]),
+      debub: true,
+      undoType: GO_TO_PARENT,
+      jumpToPastType: GO_TO_PARENT_N,
+    }),
   }),
-});
+  (state, action) => viewContext(state, action),
+);
 
 export default rootReducer;

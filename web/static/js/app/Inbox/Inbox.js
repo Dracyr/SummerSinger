@@ -2,30 +2,48 @@ import React, { Component } from 'react';
 import Portal from 'react-portal';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import * as PlayerActions from '../Player/actions';
 import * as InboxActions from './actions';
 import _ from 'lodash';
 
-import TrackList from '../Track/TrackList';
+import InfiniteTrackList from '../Track/InfiniteTrackList';
+import StarRating from '../Track/StarRating';
 
 class Inbox extends Component {
   constructor() {
     super();
-    this.loadMoreRows = _.throttle(this.loadMoreRows, 100);
+    this.loadMoreRows = _.throttle(this.loadMoreRows, 100, { leading: true, trailing: true });
     this.sortTracks = this.sortTracks.bind(this);
+    this.clearInbox = this.clearInbox.bind(this);
+    this.onSelectTrack = this.onSelectTrack.bind(this);
+    this.state = {
+      selectedTrack: null,
+    };
   }
 
   componentDidMount() {
     this.props.actions.fetchInbox(0, 50);
+    this.refs.trackEditPanePortal.openPortal();
   }
 
-  loadMoreRows(from, size) {
-    this.props.actions.fetchInbox(from, size);
+
+  onSelectTrack(track) {
+    console.log("Select", track);
+    this.setState({ selectedTrack: track });
+  }
+
+  clearInbox() {
+    this.props.actions.clearInbox();
   }
 
   sortTracks(sort) {
     this.props.actions.sortInbox(sort);
+  }
+
+  loadMoreRows(first, size) {
+    this.props.actions.fetchInbox(first, size);
   }
 
   render() {
@@ -39,36 +57,134 @@ class Inbox extends Component {
 
     return (
       <div>
-        <h1 className="header"> Inbox </h1>
-        <TrackList
-          tracks={tracks}
+        <h1 className="header">
+          Inbox
+          <small className="header-controls">
+            <span onClick={this.clearInbox}>clear inbox</span>
+          </small>
+        </h1>
+        <InfiniteTrackList
+          entries={tracks}
           totalTracks={totalTracks}
           keyAttr={"id"}
           currentKey={currentId}
           sortTracks={this.sortTracks}
+          onSelectTrack={this.onSelectTrack}
           sort={inboxSort}
           loadMoreRows={(offset, size) => this.loadMoreRows(offset, size)}
           onClickHandler={(track) => actions.requestQueueAndPlayTrack(track.id)}
         />
-        <Portal closeOnEsc>
-          <TrackEditPane />
+        <Portal closeOnEsc isOpened ref="trackEditPanePortal">
+          <TrackEditPane track={this.state.selectedTrack} />
         </Portal>
       </div>
     );
   }
 }
 
+const TextInput = (props) => {
+  return (
+    <span className="input input--nao input--filled">
+      <input
+        className="input__field input__field--nao"
+        type="text"
+        value={props.value}
+        onChange={props.onChange}
+      />
+      <label className="input__label input__label--nao">
+        <span className="input__label-content input__label-content--nao">
+          {props.name}
+        </span>
+      </label>
+      <svg
+        className="graphic graphic--nao"
+        width="300%"
+        height="100%"
+        viewBox="0 0 1200 60"
+        preserveAspectRatio="none"
+      >
+        <path d="M0,56.5c0,0,298.666,0,399.333,0C448.336,56.5,513.994,46,597,46c77.327,0,135,10.5,200.999,10.5c95.996,0,402.001,0,402.001,0" />
+      </svg>
+    </span>
+  );
+};
+
 class TrackEditPane extends React.Component {
-  render() {
-    return (
-      <div className="track-edit-pane">
-        tjosan
-        {this.props.children}
-        <p><button onClick={this.props.closePortal}>Close this</button></p>
-      </div>
-    );
+  constructor() {
+    super();
+    this.state = {
+      track: null,
+      isOpened: false,
+    };
+
+    this.changeTitle = this.changeTitle.bind(this);
+    this.changeArtist = this.changeArtist.bind(this);
+    this.changeAlbum = this.changeAlbum.bind(this);
   }
 
+  componentWillReceiveProps(props) {
+    this.setState({
+      track: props.track,
+      isOpened: props.track != null,
+    });
+  }
+
+  changeTitle(event) {
+    this.setState({
+      track: { ...this.state.track, title: event.target.value },
+    });
+  }
+
+  changeArtist(event) {
+    this.setState({
+      track: { ...this.state.track, artist: event.target.value },
+    });
+  }
+
+  changeAlbum(event) {
+    this.setState({
+      track: { ...this.state.track, album: event.target.value },
+    });
+  }
+
+  close() {
+    this.props.closePortal();
+  }
+
+  render() {
+    const track = this.state.track;
+
+    return (
+      <ReactCSSTransitionGroup
+        transitionName="track-edit-pane"
+        transitionEnterTimeout={500}
+        transitionLeaveTimeout={300}
+      >
+        <div className={`track-edit-pane ${this.state.isOpened ? 'show-pane' : ''}`}>
+          <div className="track-form">
+            <TextInput
+              name="Title"
+              value={(track && track.title) || ''}
+              onChange={this.changeTitle}
+            />
+            <TextInput
+              name="Artist"
+              value={(track && track.artist) || ''}
+              onChange={this.changeArtist}
+            />
+            <TextInput
+              name="Album"
+              value={(track && track.album) || ''}
+              onChange={this.changeAlbum}
+            />
+            <div className="track-form-rating">
+              <StarRating rating={track && track.rating} />
+            </div>
+          </div>
+        </div>
+      </ReactCSSTransitionGroup>
+    );
+  }
 }
 
 function mapState(state) {

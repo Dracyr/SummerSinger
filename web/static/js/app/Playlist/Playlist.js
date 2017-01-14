@@ -7,7 +7,8 @@ const Playlist = (props) => {
   return (
     <div>
       <h1>{playlist.title}</h1>
-      <TrackList tracks={playlist.tracks || []}
+      <TrackList
+        entries={playlist.tracks || []}
         keyAttr={"id"}
         currentKey={currentId}
         onClickHandler={(track) => requestQueueAndPlayTrack(track.id)}
