@@ -6,11 +6,12 @@ class AlbumCard extends Component {
 
   render() {
     const album = this.props.album;
-
+          // <img src="/images/album_placeholder.png" width="150" height="150"></img>
+    console.log(album);
     return (
       <div className="card">
         <div className="card-image">
-          <img src="/images/album_placeholder.png" width="150" height="150"></img>
+          <img src={album && album.cover_art_url} width="150" height="150"></img>
         </div>
         <div className="card-content">
           {album && album.title}
@@ -56,7 +57,7 @@ export default class AlbumList extends Component {
         axis="y"
         type="uniform"
         useTranslate3d
-        isRowLoaded={(index) => this.isRowLoaded(index)}
+        isRowLoaded={index => this.isRowLoaded(index)}
         loadMoreRows={(from, size) => this.loadMoreRows(from, size)}
         ref={(c) => { this.entryList = c; }}
       />

@@ -36,7 +36,9 @@ defmodule SummerSinger.Mixfile do
         :runtime_tools,
         :fs,
         :sentix,
-        :poison
+        :poison,
+        :porcelain,
+        :arc_ecto
       ]
     ]
   end
@@ -60,10 +62,14 @@ defmodule SummerSinger.Mixfile do
      {:codepagex, "~> 0.1.2"},
      {:poolboy, "~> 1.5"},
      {:distillery, "~> 0.9", runtime: false},
-     {:credo, "~> 0.5", only: [:dev, :test]},
+     #{:credo, "~> 0.5", only: [:dev, :test]},
      {:sentix, "~> 1.0.0"},
      {:poison, "~> 2.0"},
-     {:filterable, "~> 0.0.1"}
+     {:filterable, "~> 0.0.1"},
+     {:gen_stage, "~> 0.11"},
+     {:porcelain, "~> 2.0"},
+     {:flow, "~> 0.11"},
+     {:arc_ecto, "0.5.0-rc1"} # To enable storing binary files
      # {:fs, "~> 0.9.1"}
      # {:fs, github: "synrc/fs"}
    ]

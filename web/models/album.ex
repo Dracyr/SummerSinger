@@ -5,8 +5,9 @@ defmodule SummerSinger.Album do
     field :title
     field :year
 
-    belongs_to :artist, SummerSinger.Artist
-    has_many   :tracks, SummerSinger.Track
+    belongs_to :artist,    SummerSinger.Artist
+    belongs_to :cover_art, SummerSinger.CoverArt
+    has_many   :tracks,    SummerSinger.Track
 
     timestamps
   end
@@ -19,7 +20,7 @@ defmodule SummerSinger.Album do
   """
   def changeset(album, params \\ %{}) do
     album
-    |> cast(params, [:title, :year, :artist_id])
+    |> cast(params, [:title, :year, :artist_id, :cover_art_id])
     |> validate_required([:title, :artist_id])
     |> unique_constraint(:title, name: :albums_title_artist_id_index)
   end

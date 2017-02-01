@@ -30,7 +30,7 @@ defmodule SummerSinger.TrackController do
     end
   end
 
-  def index(conn, params) do
+  def index(conn, _params) do
     is_inbox = (conn.params["inbox"] == "true")
 
     tracks = Track

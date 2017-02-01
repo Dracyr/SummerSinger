@@ -14,7 +14,7 @@ defmodule SummerSinger.IndexMusic.Worker do
   def handle_call(track_path, _from, state) do
     if is_nil(Repo.get_by(Track, filename: track_path)) do
       case add_track(track_path) do
-        {:ok, track} ->
+        {:ok, _track} ->
           Logger.info("ADDED TRACK: " <> track_path)
         {:error, reason} ->
           Logger.error("COULD NOT ADD TRACK: " <> track_path <> ", " <> reason)
@@ -28,7 +28,7 @@ defmodule SummerSinger.IndexMusic.Worker do
   end
 
   defp add_track(track_path) do
-    with  {:ok, audio_data, metadata} <- MetadataParser.parse(track_path),
+    with  {:ok, audio_data, metadata} <- MetadataParser.fetch_tags(track_path),
           {:ok, track} <- track_changeset(track_path, audio_data, metadata),
           {:ok, track} <- Repo.insert(track),
             do: {:ok, track}
@@ -41,21 +41,19 @@ defmodule SummerSinger.IndexMusic.Worker do
       if metadata["ALBUM"] do
         Artist.find_or_create(metadata["ALBUMARTIST"])
       else
-        nil
+        artist
       end
 
-    album = Album.find_or_create(metadata["ALBUM"], artist)
+    album = Album.find_or_create(metadata["ALBUM"], album_artist)
     folder = Repo.get_by(Folder, path: Path.dirname(track_path))
 
     rating =
-      if metadata["RATING"] do
-        if is_integer(metadata["RATING"]) do
+      cond do
+        metadata["RATING"] && is_integer(metadata["RATING"]) ->
           metadata["RATING"]
-        else
+        metadata["RATING"] ->
           String.to_integer(metadata["RATING"])
-        end
-      else
-        0
+        true -> 0
       end
 
     {:ok, %Track{

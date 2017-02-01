@@ -12,7 +12,7 @@ defmodule SummerSinger.Track do
     belongs_to :artist,  SummerSinger.Artist
     belongs_to :album,   SummerSinger.Album
     belongs_to :folder,  SummerSinger.Folder
-    has_many   :images,  SummerSinger.Image
+    belongs_to :cover_art,   SummerSinger.CoverArt
 
     has_many   :playlist_items, SummerSinger.PlaylistItem
     has_many   :playlists, through: [:playlist_items, :playlist]
@@ -20,7 +20,9 @@ defmodule SummerSinger.Track do
     timestamps
   end
 
-  @allowed_fields ~w(title filename metadata duration rating artist_id album_id folder_id inbox)
+  @allowed_fields ~w(
+    title filename metadata duration rating artist_id album_id folder_id
+    inbox cover_art_id)
 
   @doc """
   Creates a changeset based on the `model` and `params`.
