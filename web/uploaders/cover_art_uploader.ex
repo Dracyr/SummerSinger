@@ -5,7 +5,7 @@ defmodule SummerSinger.CoverArt.Uploader do
   @versions [:original]
 
   # To add a thumbnail version:
-  # @versions [:original, :thumb]
+  @versions [:original, :small]
 
   def __storage, do: Arc.Storage.Local
 
@@ -15,12 +15,12 @@ defmodule SummerSinger.CoverArt.Uploader do
   end
 
   # Define a thumbnail transformation:
-  # def transform(:thumb, _) do
-  #   {:convert, "-strip -thumbnail 250x250^ -gravity center -extent 250x250 -format png", :png}
-  # end
+  def transform(:small, _) do
+    {:convert, "-strip -thumbnail 150x150^ -gravity center -extent 150x150 -format png", :png}
+  end
 
-  def filename(_version, {_file, scope}) do
-    "#{scope.id}"
+  def filename(version, {_file, scope}) do
+    "#{scope.id}_#{version}"
   end
 
   def storage_dir(_version, {_file, scope}) do

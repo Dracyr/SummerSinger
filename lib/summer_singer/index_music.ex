@@ -52,8 +52,16 @@ defmodule SummerSinger.IndexMusic do
       where: is_nil(t.cover_art_id),
       preload: [:album]
 
-    Repo.all(query)
-    |> Enum.each(&add_coverart/1)
+    # select stuff
+      # check if album already has a coverart
+      # else fetch it
+        # add changesets
+    # insert to db
+
+    Repo.transaction do
+      Repo.all(query)
+      |> Enum.each(&add_coverart/1)
+    end
   end
 
   defp add_coverart(track) do
@@ -67,7 +75,7 @@ defmodule SummerSinger.IndexMusic do
             "image/jpeg" -> "jpg"
             "image/jpg" -> "jpg" # This isnt according to spec
             "image/png" -> "png"
-            _ -> ""
+            _ -> nil
           end
 
           res = CoverArt.changeset(%CoverArt{}, %{
@@ -76,8 +84,8 @@ defmodule SummerSinger.IndexMusic do
             picture_type: cover.picture_type,
           }) |> Repo.insert
 
-          case res do
-            {:ok, cover_art} ->
+          case {res, ext} do
+            {{:ok, cover_art}, ext} when not is_nil(ext) ->
 
               CoverArt.changeset(cover_art, %{
                 cover_art: %{filename: "cover.#{ext}", binary: cover.image}

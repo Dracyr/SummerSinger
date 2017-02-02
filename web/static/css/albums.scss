@@ -1,11 +1,17 @@
 .card-list {
-  display: flex;
-  flex-wrap: wrap;
+  // display: flex;
+  // flex-wrap: wrap;
+  // justify-content: space-around;
 }
 
 .card {
+  display: inline-block;
   width: 150px;
+  height: 195px;
+  // background-color: #ffffff;
+  // transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
   border-radius: 2px;
+  overflow: hidden;
   margin: 10px;
 
   &.expanded {
@@ -16,11 +22,20 @@
 }
 
 .card-content {
+  height: 45px;
   padding: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .card-image {
   height: 150px;
   width: 150px;
   box-shadow: 0 1px 6px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.12);
+  transition: opacity 250ms;
+  opacity: 0;
+  &.loaded {
+    opacity: 1;
+  }
 }

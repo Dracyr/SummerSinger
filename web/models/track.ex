@@ -33,7 +33,7 @@ defmodule SummerSinger.Track do
   def changeset(track, params \\ %{}) do
     track
     |> cast(params, @allowed_fields)
-    |> validate_required([:title, :filename])
+    |> validate_required([:filename])
     |> unique_constraint(:filename)
   end
 
@@ -44,7 +44,7 @@ defmodule SummerSinger.Track do
   def to_map(track) do
      %{
       id: track.id,
-      title: track.title,
+      title: track.title || Path.basename(track.filename),
       artist: track.artist && track.artist.name,
       album: track.album && track.album.title,
       filename: Path.basename(track.filename),
