@@ -2,11 +2,10 @@ import fetch from 'isomorphic-fetch';
 
 export const REQUEST_INBOX = 'REQUEST_INBOX';
 export const RECEIVE_INBOX = 'RECEIVE_INBOX';
-
 export const SORT_INBOX = 'SORT_INBOX';
-
 export const ADD_TRACK_TO_LIBRARY = 'ADD_TRACK_TO_LIBRARY';
 
+export const REQUEST_CLEAR_INBOX = 'REQUEST_CLEAR_INBOX';
 export const CLEAR_INBOX = 'CLEAR_INBOX';
 
 function requestInbox(offset, limit) {
@@ -60,18 +59,12 @@ export function addTrackToLibrary(trackId) {
   };
 }
 
-export function clearInbox() {
-  return dispatch => {
-    dispatch({ type: CLEAR_INBOX });
 
-    fetch(`/api/tracks/clear_inbox`, {
-      method: 'post',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-
-    dispatch(fetchInbox(0, 50));
-  };
+export function requestClearInbox() {
+  return { type: REQUEST_CLEAR_INBOX };
 }
+
+export function clearInbox() {
+  return { type: CLEAR_INBOX };
+}
+

@@ -25,6 +25,10 @@ import {
   CLEAR_QUEUE,
 } from './app/Queue/actions';
 
+import {
+  REQUEST_CLEAR_INBOX,
+} from './app/Inbox/actions';
+
 export default socket => store => next => action => {
   switch (action.type) {
     case REQUEST_PLAYBACK:
@@ -72,6 +76,8 @@ export default socket => store => next => action => {
     case QUEUE_PLAYLIST:
       socket.queuePlaylist(action.playlistId);
       break;
+    case REQUEST_CLEAR_INBOX:
+      socket.requestClearInbox();
     default:
       break;
   }

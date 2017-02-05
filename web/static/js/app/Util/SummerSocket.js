@@ -2,6 +2,7 @@ import { socketStatusUpdate, fetchStatus } from '../Player/actions';
 import { queueUpdate, fetchQueue } from '../Queue/actions';
 import { receivePlaylists } from '../Playlist/actions';
 import { trackUpdate } from '../Track/actions';
+import { clearInbox } from '../Inbox/actions';
 
 import { Socket } from 'phoenix';
 
@@ -23,7 +24,7 @@ export default class SummerSocket {
     const broadcastChannel = socket.channel('status:broadcast', {});
     this.broadcastChannel = broadcastChannel;
 
-    broadcastChannel.join().receive('ok', initInfo => {
+    broadcastChannel.join().receive('ok', (initInfo) => {
       this.store.dispatch(socketStatusUpdate(initInfo.statusUpdate));
       this.store.dispatch(queueUpdate(initInfo.queue.queue));
       console.log('Summer connected to broadcast channel');
@@ -33,6 +34,7 @@ export default class SummerSocket {
     broadcastChannel.on('queueUpdate', this.queueUpdate.bind(this));
     broadcastChannel.on('playlistsUpdate', this.playlistsUpdate.bind(this));
     broadcastChannel.on('trackUpdate', this.trackUpdate.bind(this));
+    broadcastChannel.on('clearInbox', this.clearInbox.bind(this));
 
     this.state = this.state.bind(this);
   }
@@ -55,6 +57,10 @@ export default class SummerSocket {
 
   trackUpdate(json) {
     this.store.dispatch(trackUpdate(json.data));
+  }
+
+  clearInbox() {
+    this.store.dispatch(clearInbox());
   }
 
   requestPlayback(playback) {
@@ -99,6 +105,10 @@ export default class SummerSocket {
 
   clearQueue() {
     this.broadcastChannel.push('clear_queue');
+  }
+
+  requestClearInbox() {
+    this.broadcastChannel.push('clear_inbox');
   }
 
   requestVolume(percent) {

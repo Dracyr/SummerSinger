@@ -1,6 +1,7 @@
 import {
   RECEIVE_INBOX,
   SORT_INBOX,
+  CLEAR_INBOX,
 } from './actions';
 
 import { TRACK_UPDATE } from '../Track/actions';
@@ -33,6 +34,11 @@ export default function library(state = initialLibrary, action) {
             return action.track.id === track.id ? action.track : track;
           })
           .filter(track => track.inbox),
+      };
+    case CLEAR_INBOX:
+      return { ...state,
+        tracks: [],
+        totalTracks: 0,
       };
     default:
       return state;

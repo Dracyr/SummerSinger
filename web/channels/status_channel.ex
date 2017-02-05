@@ -120,6 +120,13 @@ defmodule SummerSinger.RoomChannel do
     {:noreply, socket}
   end
 
+  def handle_in("clear_inbox", %{}, socket) do
+    SummerSinger.Repo.update_all(SummerSinger.Track, set: [inbox: false])
+
+    SummerSinger.Endpoint.broadcast! "status:broadcast", "clearInbox", %{success: true}
+    {:noreply, socket}
+  end
+
   def playlists_update do
     data = SummerSinger.PlaylistView.render("index.json", playlists: SummerSinger.Repo.all(SummerSinger.Playlist))
     SummerSinger.Endpoint.broadcast! "status:broadcast", "playlistsUpdate", data

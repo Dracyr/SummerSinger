@@ -35,7 +35,7 @@ class Inbox extends Component {
   }
 
   clearInbox() {
-    this.props.actions.clearInbox();
+    this.props.actions.requestClearInbox();
   }
 
   sortTracks(sort) {
