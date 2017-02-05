@@ -55,16 +55,6 @@ defmodule SummerSinger.Track do
     }
   end
 
-  def search(search_term) do
-    search(Track, search_term) |> Repo.all
-  end
-
-  def search(query, search_term, limit \\ 0.25) do
-    from track in query,
-    where: fragment("similarity(?,?) > ?", track.title, ^search_term, ^limit),
-    order_by: fragment("similarity(?,?) DESC", track.title, ^search_term)
-  end
-
   def order_by(query, "title", dir) when dir in ["asc", "desc", nil] do
     from t in query,
     order_by: [{^String.to_atom(dir || "desc"), t.title}]
@@ -91,5 +81,20 @@ defmodule SummerSinger.Track do
   def order_by(query, "rating", dir) when dir == "desc" or is_nil(dir) do
     from t in query,
     order_by: fragment("rating DESC NULLS LAST")
+  end
+
+  def search(search_term) do
+    search(Track, search_term) |> Repo.all
+  end
+
+  def search(query, search_term, limit \\ 0.25) do
+    from track in query,
+      where:
+        fragment("substr(lower(unaccent(?)), 1, length(?)) = lower(?)", track.title, ^search_term, ^search_term)
+        or
+        fragment("? ILIKE ?", track.title, ^search_term)
+        or
+        fragment("similarity(?,?) > ?", track.title, ^search_term, ^limit),
+      order_by: fragment("similarity(?,?) DESC", track.title, ^search_term)
   end
 end

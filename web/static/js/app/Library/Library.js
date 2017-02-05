@@ -107,7 +107,7 @@ class Library extends Component {
           <InfiniteAlbumList
             entries={albums}
             totalAlbums={total.albums}
-            onClickHandler={(album) => actions.switchLibraryView('SHOW_ALBUM', album.id)}
+            onClickHandler={album => actions.switchLibraryView('SHOW_ALBUM', album.id)}
             loadMoreRows={(offset, size) => this.loadMoreRows('albums', offset, size)}
           />);
         break;
@@ -117,7 +117,7 @@ class Library extends Component {
             entries={artists}
             currentKey={currentId}
             totalArtists={total.artists}
-            onClickHandler={(artist) => actions.switchLibraryView('SHOW_ARTIST', artist.id)}
+            onClickHandler={artist => actions.switchLibraryView('SHOW_ARTIST', artist.id)}
             loadMoreRows={(offset, size) => this.loadMoreRows('artists', offset, size)}
           />);
         break;
@@ -140,6 +140,8 @@ class Library extends Component {
             onClickHandler={track => actions.requestQueueAndPlayTrack(track.id)}
           />);
         break;
+      default:
+        currentView = '';
     }
 
     return (

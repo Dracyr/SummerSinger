@@ -236,9 +236,12 @@ export default class TrackList extends Component {
 }
 
 TrackList.propTypes = {
-  entries: React.PropTypes.array,
+  entries: React.PropTypes.array.isRequired,
   keyAttr: React.PropTypes.string,
-  currentKey: React.PropTypes.number,
+  currentKey: React.PropTypes.oneOfType([
+    React.PropTypes.number,
+    React.PropTypes.string,
+  ]),
   onClickHandler: React.PropTypes.func,
   onDeleteHandler: React.PropTypes.func,
   totalTracks: React.PropTypes.number,

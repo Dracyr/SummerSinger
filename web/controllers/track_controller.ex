@@ -6,6 +6,8 @@ defmodule SummerSinger.TrackController do
 
   plug :scrub_params, "track" when action in [:create, :update]
 
+  @options allow_nil: true
+  filter search(query, "", _params), do: from(query, limit: 0)
   filter search(query, value, _params) do
     Track.search(query, value)
   end
