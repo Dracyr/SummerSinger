@@ -129,7 +129,8 @@ defmodule ID3v2Parser.TagFrame do
   defp to_utf8(string, encoding) do
     case encoding do
       0 -> # ISO-8859-1
-        Codepagex.to_string!(string, :iso_8859_1)
+        # Codepagex.to_string!(string, :iso_8859_1) # Removed dep
+        string
       1 -> # UCS-2 (UTF-16 with BOM)
         :unicode.characters_to_binary(string, elem(:unicode.bom_to_encoding(string), 0))
       2 -> #UTF-16BE encoded Unicode without BOM

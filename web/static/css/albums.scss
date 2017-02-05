@@ -33,9 +33,10 @@
   height: 150px;
   width: 150px;
   box-shadow: 0 1px 6px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.12);
-  transition: opacity 250ms;
-  opacity: 0;
-  &.loaded {
-    opacity: 1;
-  }
+  // transition: background-image 0.2s ease;
+  // transition: opacity 250ms;
+  // opacity: 0;
+  // &.loaded {
+  //   opacity: 1;
+  // }
 }

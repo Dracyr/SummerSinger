@@ -1,4 +1,4 @@
-defmodule MetadataParser do
+defmodule SummerSinger.Importer.MusicTagger do
 
   def fetch_tags(path) do
     {:ok, data} = exec_tagger(["read", path])
@@ -22,8 +22,7 @@ defmodule MetadataParser do
 
     case cover do
       {:ok, cover} when map_size(cover) == 4 -> {:ok, cover}
-      _ ->
-        cover_fallback(path)
+      _ -> cover_fallback(path)
     end
   end
 

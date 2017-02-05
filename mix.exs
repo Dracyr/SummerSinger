@@ -17,29 +17,8 @@ defmodule SummerSinger.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    # [extra_applications: [
-    #   :logger
-    # ]]
     [mod: {SummerSinger, []},
-      applications: [
-        :phoenix,
-        :phoenix_pubsub,
-        :phoenix_html,
-        :cowboy,
-        :logger,
-        :gettext,
-        :phoenix_ecto,
-        :postgrex,
-        :poolboy,
-        :codepagex,
-        :connection,
-        :runtime_tools,
-        :fs,
-        :sentix,
-        :poison,
-        :porcelain,
-        :arc_ecto
-      ]
+      extra_applications: []
     ]
   end
 
@@ -59,19 +38,13 @@ defmodule SummerSinger.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.9"},
      {:cowboy, "~> 1.0"},
-     {:codepagex, "~> 0.1.2"},
-     {:poolboy, "~> 1.5"},
-     {:distillery, "~> 0.9", runtime: false},
-     #{:credo, "~> 0.5", only: [:dev, :test]},
-     {:sentix, "~> 1.0.0"},
+     {:distillery, "~> 1.0", runtime: false},
+     {:filterable, "~> 0.1.3"},
      {:poison, "~> 2.0"},
-     {:filterable, "~> 0.0.1"},
-     {:gen_stage, "~> 0.11"},
      {:porcelain, "~> 2.0"},
-     {:flow, "~> 0.11"},
-     {:arc_ecto, "0.5.0-rc1"} # To enable storing binary files
-     # {:fs, "~> 0.9.1"}
-     # {:fs, github: "synrc/fs"}
+     {:arc_ecto, "0.5.0-rc1"}, # Old version to enable storing binary files
+     {:progress_bar, "> 0.0.0"},
+     {:credo, "~> 0.5", only: [:dev, :test]}
    ]
   end
 

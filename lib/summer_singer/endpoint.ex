@@ -35,6 +35,8 @@ defmodule SummerSinger.Endpoint do
     key: "_summer_singer_key",
     signing_salt: "QtvrNsvE"
 
-  plug Plug.Static, at: "/uploads", from: "uploads"
+  plug Plug.Static, at: "/uploads", from: "uploads",
+    gzip: true
+
   plug SummerSinger.Router
 end

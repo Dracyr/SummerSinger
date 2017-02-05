@@ -18,7 +18,7 @@ defmodule SummerSinger.AlbumView do
         SummerSinger.CoverArt.Uploader.url({
           album.cover_art.cover_art,
           album.cover_art
-        })
+        }, :small)
       else
         nil
       end

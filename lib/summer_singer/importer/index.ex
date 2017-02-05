@@ -1,8 +1,8 @@
-defmodule Importer.Index do
+defmodule SummerSinger.Importer.Index do
   alias SummerSinger.{Repo, Folder, Track}
   require Logger
 
-  defmodule Importer.Index.Folder do
+  defmodule SummerSinger.Importer.Index.Folder do
     defstruct path: nil, children: [], tracks: []
 
     def to_changesets(dir, library_id) do
@@ -15,22 +15,23 @@ defmodule Importer.Index do
       [folder] ++ Enum.flat_map(dir.children, &to_changesets(&1, library_id))
     end
   end
+  alias SummerSinger.Importer.Index.Folder, as: IndexFolder
 
-  def perform(path) do
+  def perform(library) do
+    path = library.path
     Logger.info("Indexing " <> path)
-    library = SummerSinger.Library.find_or_create!(path)
     root_dir = collect_dirs(path)
 
     {:ok, results} =
       root_dir
-      |> Importer.Index.Folder.to_changesets(library.id)
+      |> IndexFolder.to_changesets(library.id)
       |> Repo.multi_changesets(on_conflict: :replace_all, conflict_target: :path)
 
     folder_ids = Map.new(results, fn {_, fldr} -> {fldr.path, {fldr.id, fldr}} end)
     {folders, tracks} = collect_updates(root_dir, folder_ids, nil)
 
     Logger.info("Inserting, found #{length(folders)} folders, #{length(tracks)} tracks")
-    Repo.multi_changesets(folders, on_conflict: :replace_all, conflict_target: :path)
+    Repo.multi_changesets(folders)
     Repo.multi_changesets(tracks, on_conflict: :nothing)
 
     nil
@@ -51,7 +52,7 @@ defmodule Importer.Index do
         &Path.expand(&1, path)
       )
 
-    %Importer.Index.Folder{path: path, children: dirs, tracks: tracks}
+    %IndexFolder{path: path, children: dirs, tracks: tracks}
   end
 
   defp collect_updates(dir, folder_ids, parent_id) do
@@ -60,8 +61,8 @@ defmodule Importer.Index do
     changeset =
       if parent_id && is_nil(cset.parent_id) do
         cset
-        |> Repo.preload([:library, :parent, :children, :tracks])
         |> Folder.changeset(%{ parent_id: parent_id })
+        |> Map.put(:action, :update)
         |> List.wrap
       else
         []
@@ -70,7 +71,7 @@ defmodule Importer.Index do
     tracks = dir.tracks
       |> Enum.map(fn track ->
         Track.changeset(%Track{}, %{
-          filename: track,
+          path: track,
           folder_id: my_id,
           duration: 0,
         })

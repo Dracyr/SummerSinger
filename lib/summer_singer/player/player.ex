@@ -82,7 +82,7 @@ defmodule SummerSinger.Player do
 
   def play_track(track_id) do
     track = Repo.get!(Track, track_id)
-    BackendPlayer.load(track.filename)
+    BackendPlayer.load(track.path)
 
     Agent.update(__MODULE__, fn state ->
       %{state |
@@ -107,7 +107,7 @@ defmodule SummerSinger.Player do
     result = case Queue.next_track do
       {:ok, track_id} ->
         play_track(track_id)
-        broadcast_status = status |> Map.merge(%{current_time: DateUtil.now})
+        broadcast_status = status() |> Map.merge(%{current_time: DateUtil.now})
         if backend_next, do: SummerSinger.Endpoint.broadcast! "status:broadcast", "statusUpdate", broadcast_status
         :ok
       :none ->

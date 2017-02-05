@@ -3,11 +3,12 @@ defmodule SummerSinger.Track do
 
   schema "tracks" do
     field :title,    :string
-    field :filename, :string
+    field :path, :string
     field :metadata, :map
     field :duration, :float, null: false
     field :rating,   :integer
-    field :inbox,   :boolean
+    field :inbox,    :boolean
+    field :imported, :boolean
 
     belongs_to :artist,  SummerSinger.Artist
     belongs_to :album,   SummerSinger.Album
@@ -17,12 +18,13 @@ defmodule SummerSinger.Track do
     has_many   :playlist_items, SummerSinger.PlaylistItem
     has_many   :playlists, through: [:playlist_items, :playlist]
 
-    timestamps
+    timestamps()
   end
 
   @allowed_fields ~w(
-    title filename metadata duration rating artist_id album_id folder_id
-    inbox cover_art_id)
+    title path metadata duration rating artist_id album_id folder_id
+    inbox cover_art_id imported
+  )
 
   @doc """
   Creates a changeset based on the `model` and `params`.
@@ -33,8 +35,8 @@ defmodule SummerSinger.Track do
   def changeset(track, params \\ %{}) do
     track
     |> cast(params, @allowed_fields)
-    |> validate_required([:filename])
-    |> unique_constraint(:filename)
+    |> validate_required([:path])
+    |> unique_constraint(:path)
   end
 
   def to_map(track, index) do
@@ -44,17 +46,13 @@ defmodule SummerSinger.Track do
   def to_map(track) do
      %{
       id: track.id,
-      title: track.title || Path.basename(track.filename),
+      title: track.title || Path.basename(track.path),
       artist: track.artist && track.artist.name,
       album: track.album && track.album.title,
-      filename: Path.basename(track.filename),
+      path: Path.basename(track.path),
       duration: track.duration,
       rating: track.rating
     }
-  end
-
-  def filename_exists?(filename) do
-    !!Repo.get_by(__MODULE__, filename: filename)
   end
 
   def search(search_term) do

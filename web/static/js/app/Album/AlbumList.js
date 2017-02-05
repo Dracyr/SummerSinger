@@ -4,38 +4,17 @@ import { PlaceholderText } from '../Util/Util';
 
 class AlbumCard extends Component {
 
-  constructor() {
-    super();
-    this.state = {
-      imageLoaded: false,
-    };
-    this.onImageLoaded = this.onImageLoaded.bind(this);
-  }
-
-  onImageLoaded() {
-    this.setState({ imageLoaded: true });
-  }
-
-  componentWillReceiveProps() {
-    console.log("nrepros");
-    this.setState({ imageLoaded: false });
-  }
-
   render() {
     const album = this.props.album;
-    const { imageLoaded } = this.state;
-    // <img src="/images/album_placeholder.png" width="150" height="150"></img>
-    console.log(album);
     return (
       <div className="card">
-        <div className={`card-image ${imageLoaded ? 'loaded' : ''}`}>
+        <div className="card-image">
           <img
-            src={album && album.cover_art_url}
+            src={(album && album.cover_art_url) || '/images/album_placeholder.png'}
+            alt={album && album.title}
             width="150"
             height="150"
-            onLoad={this.onImageLoaded}
-            onError={this.onImageLoaded}
-          ></img>
+          />
         </div>
         <div className="card-content">
           {album && album.title}
@@ -80,7 +59,6 @@ export default class AlbumList extends Component {
         localLength={entries.length}
         axis="y"
         type="uniform"
-        useTranslate3d
         isRowLoaded={index => this.isRowLoaded(index)}
         loadMoreRows={(from, size) => this.loadMoreRows(from, size)}
         ref={(c) => { this.entryList = c; }}

@@ -69,7 +69,7 @@ defmodule SummerSinger.Playlist do
   defp add_track(track_path, playlist) do
     abs_path = Path.expand track_path, Path.dirname(playlist.path) # This line is magic, don't touch it
 
-    track = Repo.get_by(Track, filename: abs_path)
+    track = Repo.get_by(Track, path: abs_path)
     if !is_nil(track) do
       Ecto.build_assoc(playlist, :playlist_items, track_id: track.id)
       |> Repo.insert!

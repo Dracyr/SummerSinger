@@ -1,45 +1,44 @@
 defmodule SummerSinger.TrackController do
   use SummerSinger.Web, :controller
-  use Filterable
+  use Filterable.DSL
 
   alias SummerSinger.Track
-  import Ecto.Query
+  alias Ecto.Query
+  import Ecto.Query, only: [from: 2]
 
   plug :scrub_params, "track" when action in [:create, :update]
 
-  defmodule Filterable do
-    def search(_conn, query, value) do
-      query |> Track.search(value)
-    end
-
-    def limit(_conn, query, value) do
-      query |> limit(^value)
-    end
-
-    def offset(_conn, query, value) do
-      query |> offset(^value)
-    end
-
-    def inbox(_conn, query, value) when value in ~w(true false) do
-      query |> where(inbox: ^value)
-    end
-
-    def sort_by(conn, query, value) when value in ~w(title album artist rating) do
-      sort_dir = conn.params["sort_dir"]
-      query |> Track.order_by(value, sort_dir)
-    end
+  filter search(query, value, _params) do
+    Track.search(query, value)
   end
 
-  def index(conn, _params) do
-    is_inbox = (conn.params["inbox"] == "true")
+  filter limit(query, value, _params) do
+    Query.limit(query, ^value)
+  end
 
-    tracks = Track
-    |> apply_filters(conn)
-    |> (&(if is_inbox, do: &1, else: &1 |> where(inbox: false))).()
-    |> Repo.all
-    |> Repo.preload([:artist, :album])
+  filter offset(query, value, _params) do
+    Query.offset(query, ^value)
+  end
 
-    track_count = Repo.all(from t in Track, select: count(t.id), where: t.inbox == ^is_inbox) |> Enum.at(0)
+  filter sort_by(query, value, params) when value in ~w(title album artist rating) do
+    Track.order_by(query, value, params["sort_dir"])
+  end
+
+  def index(conn, params) do
+    tracks =
+      from(t in Track,
+        where: t.imported and t.inbox == ^(params["inbox"] == "true"),
+        preload: [:artist, :album])
+      |> apply_filters(params, share: params)
+      |> Repo.all
+
+    track_count =
+      from(t in Track,
+        where: t.imported and t.inbox == ^(params["inbox"] == "true"),
+        select: count(t.id))
+      |> Repo.all()
+      |> Enum.at(0)
+
     render(conn, "index.json", tracks: tracks, track_count: track_count)
   end
 

@@ -10,5 +10,6 @@ defmodule Mix.Tasks.SummerSinger.CleanRepo do
     Repo.delete_all(Album)
     Repo.delete_all(Artist)
     Repo.delete_all(Folder)
+    Repo.delete_all(CoverArt)
   end
 end
