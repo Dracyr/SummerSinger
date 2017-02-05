@@ -18,6 +18,9 @@ defmodule DateUtil do
   end
 
   def precision(number, precision) do
-    Integer.digits(number) |> Enum.take(precision) |> Integer.undigits
+    number
+    |> Integer.digits
+    |> Enum.take(precision)
+    |> Integer.undigits
   end
 end

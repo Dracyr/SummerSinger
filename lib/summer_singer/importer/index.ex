@@ -61,7 +61,7 @@ defmodule SummerSinger.Importer.Index do
     changeset =
       if parent_id && is_nil(cset.parent_id) do
         cset
-        |> Folder.changeset(%{ parent_id: parent_id })
+        |> Folder.changeset(%{parent_id: parent_id})
         |> Map.put(:action, :update)
         |> List.wrap
       else

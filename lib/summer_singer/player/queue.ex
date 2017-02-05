@@ -13,11 +13,12 @@ defmodule SummerSinger.Queue do
   end
 
   def queue do
-    queue = Agent.get(__MODULE__, &(Map.get(&1, :queue)))
-
-    tracks = queue |> Enum.with_index |> Enum.map(fn {{track_id, _prop}, index} ->
-      Repo.get(Track, track_id) |> Repo.preload([:artist, :album]) |> Track.to_map(index)
-    end)
+    tracks =
+      Agent.get(__MODULE__, &(Map.get(&1, :queue)))
+      |> Enum.with_index
+      |> Enum.map(fn {{track_id, _prop}, index} ->
+        Repo.get(Track, track_id) |> Repo.preload([:artist, :album]) |> Track.to_map(index)
+      end)
 
     %{queue: tracks}
   end
@@ -74,7 +75,7 @@ defmodule SummerSinger.Queue do
     case state[:queue_history] do
       [{index, _track_id} | history] ->
         Agent.update(__MODULE__, fn state ->
-          %{state | queue_history: history, queue_index: index }
+          %{state | queue_history: history, queue_index: index}
         end)
         {:ok, Enum.at(state[:queue], index) |> elem(0)}
       [] ->
@@ -98,11 +99,11 @@ defmodule SummerSinger.Queue do
     else
       queue_index = state[:queue_index] || 0
       queue_length = Enum.count(state[:queue])
-      cond do
-        queue_index + 1 < queue_length  ->
-          {:ok, queue_index + 1}
-        true ->
-          :none
+
+      if queue_index + 1 < queue_length do
+        {:ok, queue_index + 1}
+      else
+        :none
       end
     end
   end
@@ -110,7 +111,7 @@ defmodule SummerSinger.Queue do
   def remove_track(queue_index) do
     Agent.update(__MODULE__, fn state ->
       history = decrement_history_index(state[:queue_history], queue_index)
-      queue = List.delete_at(state[:queue], queue_index)
+      queued_tracks = List.delete_at(state[:queue], queue_index)
       current_index = cond do
         queue_index < state[:queue_index] ->
           state[:queue_index] - 1
@@ -121,7 +122,7 @@ defmodule SummerSinger.Queue do
       end
 
       %{state |
-        queue: queue,
+        queue: queued_tracks,
         queue_history: history,
         queue_index: current_index
       }
@@ -142,12 +143,8 @@ defmodule SummerSinger.Queue do
   defp decrement_history_index(history, queue_index) do
     Enum.reject(history, fn {index, _track_id} -> index == queue_index end)
     |> Enum.map(fn {index, track_id} ->
-      cond do
-        queue_index < index ->
-          {index - 1, track_id}
-        true ->
-          {index, track_id}
-      end
+      index = if queue_index < index, do: index - 1, else: index
+      {index, track_id}
     end)
   end
 end

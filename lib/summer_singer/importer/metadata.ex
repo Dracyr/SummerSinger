@@ -3,22 +3,18 @@ defmodule SummerSinger.Importer.Metadata do
   alias SummerSinger.Importer.MusicTagger
   import Ecto.Query
 
-  def perform(opts \\ [include_all: false]) do
+  def perform() do
     artists =
-      from(a in Artist, select: {a.name, a})
-      |> Repo.all()
+      Repo.all(from a in Artist, select: {a.name, a})
       |> Map.new
 
     albums =
-      from(a in Album, select: {{a.title, a.artist_id}, a}, preload: [:cover_art])
-      |> Repo.all()
+      Repo.all(from a in Album,
+        select: {{a.title, a.artist_id}, a},
+        preload: [:cover_art])
       |> Map.new
 
-    tracks =
-      if opts[:include_all],
-        do: from(t in Track),
-        else: from(t in Track, where: not t.imported)
-      |> Repo.all()
+    tracks = Repo.all(from t in Track, where: not t.imported)
 
     total_tracks = length(tracks)
     ProgressBar.render(0, total_tracks)
@@ -27,10 +23,9 @@ defmodule SummerSinger.Importer.Metadata do
     |> Stream.transform({artists, albums}, &to_changesets/2)
     |> Stream.chunk(30, 30, [])
     |> Stream.each(fn chunk ->
-      Enum.reduce(chunk, Ecto.Multi.new, fn(cset, multi) ->
-        Ecto.Multi.update(multi, Ecto.UUID.generate, cset)
-      end)
-      |> Repo.transaction
+      chunk
+      |> Enum.map(&Map.put(&1, :action, :update))
+      |> Repo.multi_changesets
     end)
     |> Stream.with_index
     |> Stream.each(fn {chunk, index} ->
@@ -48,7 +43,7 @@ defmodule SummerSinger.Importer.Metadata do
           {:ok, {artists, albums}, artist, album, cover_art} <-
             get_resources({artists, albums}, tags["ARTIST"], tags["ALBUMARTIST"], tags["ALBUM"], cover_art),
           {:ok, updated_track} <-
-            update_track(track, audio_properties, tags, artist, album, cover_art),
+            update_track(track, {audio_properties, tags}, artist, album, cover_art),
       do: {:ok, updated_track, {artists, albums}}
 
     case result do
@@ -59,6 +54,8 @@ defmodule SummerSinger.Importer.Metadata do
     end
   end
 
+  defp put_new(map, _key, nil), do: map
+  defp put_new(map, key, value), do: Map.put_new(map, key, value)
   def get_resources({artists, albums}, artist_name, album_artist_name, album_title, cover_art) do
     multi =
       Ecto.Multi.new
@@ -78,15 +75,9 @@ defmodule SummerSinger.Importer.Metadata do
           cover_art: cover_art
         } = res
 
-        artists = if artist,
-          do: Map.put_new(artists, artist.name, artist),
-          else: artists
-        artists = if album_artist,
-          do: Map.put_new(artists, album_artist.name, album_artist),
-          else: artists
-        albums = if album,
-          do: Map.put_new(albums, {album.title, album.artist_id}, album),
-          else: albums
+        artists = put_new(artists, artist.name, artist)
+        artists = put_new(artists, album_artist.name, album_artist)
+        albums = put_new(albums, {album.title, album.artist_id}, album)
 
         {:ok, {artists, albums}, artist, album, cover_art}
       _ ->
@@ -99,7 +90,8 @@ defmodule SummerSinger.Importer.Metadata do
     case Map.fetch(artists, artist_name) do
       {:ok, artist} -> {:ok, artist}
       :error ->
-        Artist.changeset(%Artist{}, %{name: artist_name})
+        %Artist{}
+        |> Artist.changeset(%{name: artist_name})
         |> Repo.insert
     end
   end
@@ -114,7 +106,8 @@ defmodule SummerSinger.Importer.Metadata do
     case album_artist do
       {:ok, artist} -> {:ok, artist}
       :error ->
-        Artist.changeset(%Artist{}, %{name: artist_name})
+        %Artist{}
+        |> Artist.changeset(%{name: artist_name})
         |> Repo.insert
     end
   end
@@ -126,10 +119,8 @@ defmodule SummerSinger.Importer.Metadata do
     case Map.fetch(albums, {album_title, artist_id}) do
       {:ok, album} -> {:ok, album}
       :error ->
-        Album.changeset(%Album{}, %{
-          title: album_title,
-          artist_id: artist_id
-        })
+        %Album{}
+        |> Album.changeset(%{title: album_title, artist_id: artist_id})
         |> Repo.insert
     end
   end
@@ -139,11 +130,12 @@ defmodule SummerSinger.Importer.Metadata do
     album = Repo.preload(album, :cover_art)
     case album.cover_art do
       nil ->
-        CoverArt.changeset(%CoverArt{}, %{
-          mime_type: cover_art.mime_type,
-          description: cover_art.description,
-          picture_type: cover_art.picture_type,
-        })
+        %CoverArt{}
+        |> CoverArt.changeset(%{
+            mime_type: cover_art.mime_type,
+            description: cover_art.description,
+            picture_type: cover_art.picture_type,
+          })
         |> Repo.insert
       cover_art -> {:ok, cover_art}
     end
@@ -159,13 +151,14 @@ defmodule SummerSinger.Importer.Metadata do
       _ -> nil
     end
 
-    if !is_nil(ext) do
-      CoverArt.changeset(cover_art, %{
-        cover_art: %{filename: "cover.#{ext}", binary: cover.image}
-      })
-      |> Repo.update
-    else
+    if is_nil(ext) do
       {:ok, nil}
+    else
+      cover_art
+      |> CoverArt.changeset(%{
+          cover_art: %{filename: "cover.#{ext}", binary: cover.image}
+        })
+      |> Repo.update
     end
   end
 
@@ -188,7 +181,7 @@ defmodule SummerSinger.Importer.Metadata do
   defp convert_rating(rating),
     do: rating
 
-  def update_track(track, audio_properties, tags, artist, album, cover_art) do
+  def update_track(track, {audio_properties, tags}, artist, album, cover_art) do
     {
       :ok,
       Track.changeset(track, %{

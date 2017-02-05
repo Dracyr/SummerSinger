@@ -136,7 +136,7 @@ defmodule SummerSinger.Player do
     BackendPlayer.volume(percent)
 
     Agent.update(__MODULE__, fn state ->
-      %{state | volume: percent }
+      %{state | volume: percent}
     end)
   end
 end
