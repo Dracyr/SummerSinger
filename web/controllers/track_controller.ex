@@ -1,8 +1,6 @@
 defmodule SummerSinger.TrackController do
   use SummerSinger.Web, :controller
   use Filterable.DSL
-
-  alias SummerSinger.Track
   alias Ecto.Query
   import Ecto.Query, only: [from: 2]
 

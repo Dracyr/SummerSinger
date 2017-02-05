@@ -8,6 +8,7 @@ import * as LibraryActions from './actions';
 import InfiniteTrackList from '../Track/InfiniteTrackList';
 import { InfiniteAlbumList } from '../Album/AlbumList';
 import Album from '../Album/Album';
+import Artist from '../Artist/Artist';
 import InfiniteArtistList from '../Artist/InfiniteArtistList';
 import Folders from '../Folders/Folders';
 
@@ -116,6 +117,7 @@ class Library extends Component {
             entries={artists}
             currentKey={currentId}
             totalArtists={total.artists}
+            onClickHandler={(artist) => actions.switchLibraryView('SHOW_ARTIST', artist.id)}
             loadMoreRows={(offset, size) => this.loadMoreRows('artists', offset, size)}
           />);
         break;
@@ -123,10 +125,20 @@ class Library extends Component {
         currentView = <Folders />;
         break;
       case 'SHOW_ALBUM':
-        const album = albums.find(el => el.id === showItem);
+        const album = albums.find(el => el && el.id === showItem);
         currentView = (
           <Album
             album={album}
+            currentId={currentId}
+            onClickHandler={track => actions.requestQueueAndPlayTrack(track.id)}
+          />);
+        break;
+      case 'SHOW_ARTIST':
+        console.log(artists);
+        const artist = artists.find(el => el && el.id === showItem);
+        currentView = (
+          <Artist
+            artist={artist}
             currentId={currentId}
             onClickHandler={track => actions.requestQueueAndPlayTrack(track.id)}
           />);

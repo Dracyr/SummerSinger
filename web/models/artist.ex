@@ -23,29 +23,4 @@ defmodule SummerSinger.Artist do
     |> validate_required(:name)
     |> unique_constraint(:name)
   end
-
-  def find_or_create(name)
-    when is_nil(name), do: nil
-  def find_or_create(name) do
-    try do
-      Repo.transaction(fn ->
-        case Repo.get_by(Artist, name: name) do
-          nil ->
-            %Artist{}
-            |> Artist.changeset(%{name: name})
-            |> Repo.insert!
-          artist -> artist
-        end
-      end)
-      |> case do
-        {:ok, artist} ->
-          artist
-        {:error, _reason} ->
-          find_or_create(name)
-      end
-    rescue
-      _e in Ecto.InvalidChangesetError ->
-        find_or_create(name)
-    end
-  end
 end

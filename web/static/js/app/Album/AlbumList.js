@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ReactList from 'react-list';
 import proxyList from '../Util/InfiniteList';
 import AlbumCard from './AlbumCard';
-import { PlaceholderText } from '../Util/Util';
 
 export default class AlbumList extends Component {
   // Used by others
@@ -23,13 +22,17 @@ export default class AlbumList extends Component {
             onClickHandler={this.props.onClickHandler}
           />
         }
-        itemsRenderer={(items, ref) => <div className="card-list" ref={ref}>{items}</div>}
+        itemsRenderer={(items, ref) =>
+          <div
+            className="card-list"
+            ref={ref}>{items}
+          </div>
+        }
         length={albumCount}
         localLength={entries.length}
         axis="y"
         type="uniform"
-        isRowLoaded={index => this.isRowLoaded(index)}
-        loadMoreRows={(from, size) => this.loadMoreRows(from, size)}
+        useStaticSize
         ref={(c) => { this.entryList = c; }}
       />
     );
