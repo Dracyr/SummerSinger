@@ -23,9 +23,8 @@ export default class AlbumList extends Component {
           />
         }
         itemsRenderer={(items, ref) =>
-          <div
-            className="card-list"
-            ref={ref}>{items}
+          <div className="card-list" ref={ref}>
+            {items}
           </div>
         }
         length={albumCount}

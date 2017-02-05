@@ -125,20 +125,17 @@ class Library extends Component {
         currentView = <Folders />;
         break;
       case 'SHOW_ALBUM':
-        const album = albums.find(el => el && el.id === showItem);
         currentView = (
           <Album
-            album={album}
+            album={albums.find(el => el && el.id === showItem)}
             currentId={currentId}
             onClickHandler={track => actions.requestQueueAndPlayTrack(track.id)}
           />);
         break;
       case 'SHOW_ARTIST':
-        console.log(artists);
-        const artist = artists.find(el => el && el.id === showItem);
         currentView = (
           <Artist
-            artist={artist}
+            artist={artists.find(el => el && el.id === showItem)}
             currentId={currentId}
             onClickHandler={track => actions.requestQueueAndPlayTrack(track.id)}
           />);

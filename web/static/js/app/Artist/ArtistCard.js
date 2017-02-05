@@ -36,7 +36,8 @@ export default class ArtistCard extends Component {
       <div className="card" onClick={this.handleOnClick}>
         <div className="card-image">
           <img
-            src="/images/album_placeholder.png"
+            src={artist.image_url || '/images/album_placeholder.png'}
+            alt={artist.name}
             role="presentation"
             width="150"
             height="150"

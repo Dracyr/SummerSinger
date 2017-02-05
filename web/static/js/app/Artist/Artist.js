@@ -6,8 +6,8 @@ import TrackList from '../Track/TrackList';
 export default class Artist extends Component {
   render() {
     const { artist, onClickHandler, currentId } = this.props;
-    console.log(artist);
-    var trackList = '';
+
+    let trackList = '';
     if (artist.artist_tracks.length > 0) {
       trackList = (
         <TrackList
