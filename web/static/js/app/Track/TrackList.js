@@ -113,13 +113,15 @@ export default class TrackList extends Component {
     let trackComponent = '';
     if (this.props.entries && this.props.entries[index]) {
       const { entries, keyAttr, currentKey, onClickHandler } = this.props;
+      const { selectedTrack, selectedIndex } = this.state;
+
       const track = entries[index];
       const isPlaying = ((keyAttr === 'index' && index === currentKey) ||
                           (keyAttr === 'id' && track.id === currentKey));
 
-      const isSelected = this.state.selectedTrack && (
-        (keyAttr === 'id' && track.id === this.state.selectedTrack.id) ||
-        (keyAttr === 'index' && index === this.state.selectedIndex));
+      const isSelected = selectedTrack && (
+        (keyAttr === 'id' && track.id === selectedTrack.id) ||
+        (keyAttr === 'index' && index === selectedIndex));
 
       trackComponent = (
         <Track
@@ -134,14 +136,7 @@ export default class TrackList extends Component {
           index={index}
         />);
     } else {
-      trackComponent = (
-        <div className="tr track" key={key}>
-          <div className="td td-title"><PlaceholderText /></div>
-          <div className="td td-artist"><PlaceholderText /></div>
-          <div className="td td-album" />
-          <div className="td td-rating"><StarRating rating={0} /></div>
-        </div>
-      );
+      trackComponent = <Track key={key} />;
     }
     return trackComponent;
   }

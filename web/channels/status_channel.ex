@@ -46,22 +46,20 @@ defmodule SummerSinger.RoomChannel do
     case Player.previous_track() do
       :ok ->
         broadcast! socket, "statusUpdate", current_status()
+        {:noreply, socket}
        _ ->
         {:noreply, socket}
     end
-
-    {:noreply, socket}
   end
 
   def handle_in("next_track", %{}, socket) do
     case Player.next_track() do
       :ok ->
         broadcast! socket, "statusUpdate", current_status()
+        {:noreply, socket}
        _ ->
         {:noreply, socket}
     end
-
-    {:noreply, socket}
   end
 
   def handle_in("seek", %{"percent" => percent}, socket) do

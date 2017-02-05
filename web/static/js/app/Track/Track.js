@@ -3,6 +3,16 @@ import { connect } from 'react-redux';
 
 import { updateTrack } from './actions';
 import StarRating from './StarRating';
+import { PlaceholderText } from '../Util/Util';
+
+const emptyTrack = (
+  <div className="tr track">
+    <div className="td td-title"><PlaceholderText /></div>
+    <div className="td td-artist"><PlaceholderText /></div>
+    <div className="td td-album" />
+    <div className="td td-rating"><StarRating rating={0} /></div>
+  </div>
+);
 
 class Track extends Component {
   constructor() {
@@ -37,6 +47,10 @@ class Track extends Component {
 
   render() {
     const { track, isPlaying, isSelected } = this.props;
+
+    if (!track) {
+      return emptyTrack;
+    }
 
     const currentTrack = isPlaying ?
       (<span className="playing-icon"><i className="fa fa-volume-up"></i></span>) : '';
