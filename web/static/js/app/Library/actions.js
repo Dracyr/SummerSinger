@@ -17,8 +17,8 @@ export const LibraryViews = {
   FOLDERS: 'FOLDERS',
 };
 
-export function switchLibraryView(libraryView) {
-  return { type: SWITCH_LIBRARY_VIEW, libraryView };
+export function switchLibraryView(libraryView, showItem = null) {
+  return { type: SWITCH_LIBRARY_VIEW, libraryView, showItem };
 }
 
 function requestLibrary(libraryType, offset, limit) {

@@ -21,6 +21,7 @@ const initialLibrary = {
   search: [],
   viewContext: {
     libraryView: 'TRACKS',
+    showItem: null,
     sort: { sortBy: 'title', dir: 'asc' },
   },
 };
@@ -65,7 +66,7 @@ const recieveLibrary = (state, libraryType, libraryTracks, fullUpdate, total, of
 export default function library(state = initialLibrary, action) {
   switch (action.type) {
     case SWITCH_LIBRARY_VIEW:
-      return { ...state, libraryView: action.libraryView };
+      return { ...state, libraryView: action.libraryView, showItem: action.showItem };
     case RECEIVE_LIBRARY:
       return recieveLibrary(state, action.libraryType, action.library, action.full, action.total, action.offset);
     case RECEIVE_SEARCH:

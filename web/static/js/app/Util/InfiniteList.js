@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
 import { getScrollParent } from '../Util/Util';
 
-function proxyList(WrappedList) {
-  return class PP extends Component {
+export default function proxyList(WrappedList) {
+  return class InfiniteListProxy extends Component {
     constructor() {
       super();
       this.requestedPages = new Set();
@@ -57,5 +57,3 @@ function proxyList(WrappedList) {
     }
   };
 }
-
-export default proxyList;

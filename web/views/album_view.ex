@@ -13,14 +13,22 @@ defmodule SummerSinger.AlbumView do
   end
 
   def render("album.json", %{album: album}) do
-    cover_art_url =
+    {cover_art_url, cover_art_thumb_url} =
       if album.cover_art do
-        SummerSinger.CoverArt.Uploader.url({
-          album.cover_art.cover_art,
-          album.cover_art
-        }, :small)
+        url =
+          SummerSinger.CoverArt.Uploader.url({
+            album.cover_art.cover_art,
+            album.cover_art
+          })
+
+        thumb =
+          SummerSinger.CoverArt.Uploader.url({
+            album.cover_art.cover_art,
+            album.cover_art
+          }, :small)
+        {url, thumb}
       else
-        nil
+        {nil, nil}
       end
 
     %{
@@ -29,7 +37,8 @@ defmodule SummerSinger.AlbumView do
       year: album.year,
       artist: album.artist.name,
       tracks: render_many(album.tracks, SummerSinger.TrackView, "track.json"),
-      cover_art_url: cover_art_url
+      cover_art_url: cover_art_url,
+      cover_art_thumb_url: cover_art_thumb_url,
     }
   end
 end

@@ -1,50 +1,13 @@
 import React, { Component } from 'react';
 import ReactList from 'react-list';
+import proxyList from '../Util/InfiniteList';
+import AlbumCard from './AlbumCard';
 import { PlaceholderText } from '../Util/Util';
 
-class AlbumCard extends Component {
-
-  render() {
-    const album = this.props.album;
-    return (
-      <div className="card">
-        <div className="card-image">
-          <img
-            src={(album && album.cover_art_url) || '/images/album_placeholder.png'}
-            alt={album && album.title}
-            width="150"
-            height="150"
-          />
-        </div>
-        <div className="card-content">
-          {album && album.title}
-          <br />
-          <small>{album && album.artist}</small>
-        </div>
-      </div>
-    );
-  }
-}
-
 export default class AlbumList extends Component {
+  // Used by others
   getEntryList() {
     return this.entryList;
-  }
-
-  renderItem(index, key) {
-    if (this.props.entries[index]) {
-      const { entries } = this.props;
-      return <AlbumCard key={key} album={entries[index]} />;
-    } else {
-      return (
-        <div className="card" key={key}>
-          <div className="card-image">
-            <img src="/images/album_placeholder.png" width="150" height="150"></img>
-          </div>
-          <div className="card-content"><PlaceholderText /></div>
-        </div>
-      );
-    }
   }
 
   render() {
@@ -53,7 +16,13 @@ export default class AlbumList extends Component {
 
     return (
       <ReactList
-        itemRenderer={(index, key) => <AlbumCard key={key} album={entries[index]} />}
+        itemRenderer={(index, key) =>
+          <AlbumCard
+            key={key}
+            album={entries[index]}
+            onClickHandler={this.props.onClickHandler}
+          />
+        }
         itemsRenderer={(items, ref) => <div className="card-list" ref={ref}>{items}</div>}
         length={albumCount}
         localLength={entries.length}
@@ -66,3 +35,5 @@ export default class AlbumList extends Component {
     );
   }
 }
+
+export const InfiniteAlbumList = proxyList(AlbumList);

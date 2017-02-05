@@ -6,7 +6,8 @@ import * as PlayerActions from '../Player/actions';
 import * as LibraryActions from './actions';
 
 import InfiniteTrackList from '../Track/InfiniteTrackList';
-import InfiniteAlbumList from '../Album/InfiniteAlbumList';
+import { InfiniteAlbumList } from '../Album/AlbumList';
+import Album from '../Album/Album';
 import InfiniteArtistList from '../Artist/InfiniteArtistList';
 import Folders from '../Folders/Folders';
 
@@ -28,7 +29,7 @@ class Library extends Component {
         prevProps.libraryView !== this.props.libraryView) {
       const view = this.props.libraryView.toLowerCase();
       const collection = this.props[view];
-      if (collection.length < 50) {
+      if (collection && collection.length < 50) {
         this.props.actions.fetchLibrary(view, 0, 50);
       }
     }
@@ -52,6 +53,7 @@ class Library extends Component {
       libraryView,
       librarySort,
       actions,
+      showItem,
     } = this.props;
 
     const libraryHeader = (
@@ -84,6 +86,7 @@ class Library extends Component {
     );
 
     let currentView = '';
+
     switch (libraryView) {
       case 'TRACKS':
         currentView = (
@@ -103,6 +106,7 @@ class Library extends Component {
           <InfiniteAlbumList
             entries={albums}
             totalAlbums={total.albums}
+            onClickHandler={(album) => actions.switchLibraryView('SHOW_ALBUM', album.id)}
             loadMoreRows={(offset, size) => this.loadMoreRows('albums', offset, size)}
           />);
         break;
@@ -118,6 +122,15 @@ class Library extends Component {
       case 'FOLDERS':
         currentView = <Folders />;
         break;
+      case 'SHOW_ALBUM':
+        const album = albums.find(el => el.id === showItem);
+        currentView = (
+          <Album
+            album={album}
+            currentId={currentId}
+            onClickHandler={track => actions.requestQueueAndPlayTrack(track.id)}
+          />);
+        break;
     }
 
     return (
@@ -132,6 +145,7 @@ function mapState(state) {
   return {
     currentId: state.player.currentTrack ? state.player.currentTrack.id : null,
     libraryView: state.library.libraryView,
+    showItem: state.library.showItem,
     librarySort: state.library.librarySort,
     tracks: state.library.tracks,
     albums: state.library.albums,
