@@ -8,7 +8,7 @@ defmodule SummerSinger.Artist do
     has_many :tracks, SummerSinger.Track
     has_many :album_tracks, through: [:albums, :tracks]
 
-    timestamps
+    timestamps()
   end
 
   @doc """

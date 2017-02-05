@@ -3,7 +3,7 @@
 /db
 /deps
 # Releases
-/rel
+/rel/summer_singer
 /*.ez
 .sass-cache/
 

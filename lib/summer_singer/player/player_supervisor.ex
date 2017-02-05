@@ -8,7 +8,7 @@ defmodule SummerSinger.PlayerSupervisor do
   def init([]) do
     children = [
       worker(SummerSinger.BackendPlayer, []),
-      worker(SummerSinger.Queue, [[]]),
+      worker(SummerSinger.Queue, []),
       worker(SummerSinger.Player, []),
     ]
 

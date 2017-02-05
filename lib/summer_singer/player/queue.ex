@@ -1,10 +1,10 @@
 defmodule SummerSinger.Queue do
   alias SummerSinger.{Track, Repo}
 
-  def start_link(initial_queue) do
+  def start_link() do
     Agent.start_link(fn ->
       %{
-        queue: initial_queue,
+        queue: [],
         queue_history: [],
         queue_index: nil,
         p_total: 0,

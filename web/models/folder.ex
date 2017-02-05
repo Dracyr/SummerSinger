@@ -11,7 +11,7 @@ defmodule SummerSinger.Folder do
     has_many   :children, Folder, foreign_key: :parent_id
     has_many   :tracks,   SummerSinger.Track
 
-    timestamps
+    timestamps()
   end
 
   @allowed_fields ~w(path title root parent_id library_id)

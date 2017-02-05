@@ -8,7 +8,7 @@ defmodule SummerSinger.Playlist do
     has_many :playlist_items, SummerSinger.PlaylistItem, on_delete: :delete_all
     has_many :tracks, through: [:playlist_items, :track]
 
-    timestamps
+    timestamps()
   end
 
   @doc """

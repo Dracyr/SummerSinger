@@ -5,7 +5,7 @@ defmodule SummerSinger.PlaylistItem do
     belongs_to :playlist, SummerSinger.Playlist
     belongs_to :track, SummerSinger.Track
 
-    timestamps
+    timestamps()
   end
 
   @doc """

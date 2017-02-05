@@ -3,7 +3,7 @@ defmodule SummerSinger.Mixfile do
 
   def project do
     [app: :summer_singer,
-     version: "0.0.1",
+     version: "1.0.0",
      elixir: "~> 1.0",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix] ++ Mix.compilers,
@@ -18,7 +18,23 @@ defmodule SummerSinger.Mixfile do
   # Type `mix help compile.app` for more information
   def application do
     [mod: {SummerSinger, []},
-      extra_applications: []
+      applications: [
+        :phoenix,
+        :phoenix_pubsub,
+        :phoenix_html,
+        :cowboy,
+        :logger,
+        :gettext,
+        :phoenix_ecto,
+        :postgrex,
+        :poison,
+        :porcelain,
+        :arc_ecto,
+        :arc,
+        :filterable,
+        :progress_bar,
+        :mix
+      ]
     ]
   end
 

@@ -87,12 +87,4 @@ defmodule SummerSinger.TrackController do
 
     send_resp(conn, :no_content, "")
   end
-
-  def clear_inbox(conn, %{}) do
-    Repo.update_all(Track, set: [inbox: false])
-
-    SummerSinger.RoomChannel.clear_inbox
-
-    send_resp(conn, :no_content, "")
-  end
 end

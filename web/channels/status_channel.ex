@@ -4,7 +4,7 @@ defmodule SummerSinger.RoomChannel do
 
   def join("status:broadcast", _auth_msg, socket) do
     {:ok, %{
-      statusUpdate: current_status,
+      statusUpdate: current_status(),
       queue: Queue.queue
       }, socket}
   end
@@ -16,13 +16,13 @@ defmodule SummerSinger.RoomChannel do
   def handle_in("playback", %{"playback" => playback}, socket) do
     Player.playback(playback)
 
-    broadcast! socket, "statusUpdate", current_status
+    broadcast! socket, "statusUpdate", current_status()
     {:noreply, socket}
   end
 
   def handle_in("queue_track", %{"track_id" => track_id, "play" => true}, socket) do
     Queue.queue_track(track_id) |> Player.play_queued_track
-    broadcast! socket, "statusUpdate", current_status
+    broadcast! socket, "statusUpdate", current_status()
 
     broadcast! socket, "queueUpdate", Queue.queue
     {:noreply, socket}
@@ -38,14 +38,14 @@ defmodule SummerSinger.RoomChannel do
   def handle_in("play_track", %{"queue_id" => queue_id}, socket) do
     Player.play_queued_track(queue_id)
 
-    broadcast! socket, "statusUpdate", current_status
+    broadcast! socket, "statusUpdate", current_status()
     {:noreply, socket}
   end
 
   def handle_in("previous_track", %{}, socket) do
     case Player.previous_track() do
       :ok ->
-        broadcast! socket, "statusUpdate", current_status
+        broadcast! socket, "statusUpdate", current_status()
        _ ->
         {:noreply, socket}
     end
@@ -56,7 +56,7 @@ defmodule SummerSinger.RoomChannel do
   def handle_in("next_track", %{}, socket) do
     case Player.next_track() do
       :ok ->
-        broadcast! socket, "statusUpdate", current_status
+        broadcast! socket, "statusUpdate", current_status()
        _ ->
         {:noreply, socket}
     end
@@ -67,14 +67,14 @@ defmodule SummerSinger.RoomChannel do
   def handle_in("seek", %{"percent" => percent}, socket) do
     Player.seek(percent)
 
-    broadcast! socket, "statusUpdate", current_status
+    broadcast! socket, "statusUpdate", current_status()
     {:noreply, socket}
   end
 
   def handle_in("volume", %{"percent" => percent}, socket) do
     Player.volume(percent)
 
-    broadcast! socket, "statusUpdate", current_status
+    broadcast! socket, "statusUpdate", current_status()
     {:noreply, socket}
   end
 
@@ -82,14 +82,14 @@ defmodule SummerSinger.RoomChannel do
     Queue.remove_track(track_index)
 
     broadcast! socket, "queueUpdate", Queue.queue
-    broadcast! socket, "statusUpdate", current_status
+    broadcast! socket, "statusUpdate", current_status()
     {:noreply, socket}
   end
 
   def handle_in("add_track_to_playlist", %{"track_id" => track_id, "playlist_id" => playlist_id}, socket) do
     Playlist.add_track_to_playlist(track_id, playlist_id)
 
-    playlists_update # TODO: Only delta updates
+    playlists_update() # TODO: Only delta updates
     {:noreply, socket}
   end
 
@@ -99,7 +99,7 @@ defmodule SummerSinger.RoomChannel do
     |> (&(play && Player.play_queued_track(&1))).()
 
     broadcast! socket, "queueUpdate", Queue.queue
-    broadcast! socket, "statusUpdate", current_status
+    broadcast! socket, "statusUpdate", current_status()
     {:noreply, socket}
   end
 
@@ -109,7 +109,7 @@ defmodule SummerSinger.RoomChannel do
     |> (&(play && Player.play_queued_track(&1))).()
 
     broadcast! socket, "queueUpdate", Queue.queue
-    broadcast! socket, "statusUpdate", current_status
+    broadcast! socket, "statusUpdate", current_status()
     {:noreply, socket}
   end
 

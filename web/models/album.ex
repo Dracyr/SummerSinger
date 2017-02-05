@@ -9,7 +9,7 @@ defmodule SummerSinger.Album do
     belongs_to :cover_art, SummerSinger.CoverArt
     has_many   :tracks,    SummerSinger.Track
 
-    timestamps
+    timestamps()
   end
 
   @doc """
