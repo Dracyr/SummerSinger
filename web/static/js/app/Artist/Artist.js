@@ -4,10 +4,23 @@ import { connect } from 'react-redux';
 import Album from '../Album/Album';
 import TrackList from '../Track/TrackList';
 import { requestQueueAndPlayTrack } from '../Player/actions';
+import { fetchArtist } from './actions';
 
 class Artist extends Component {
+  componentDidMount() {
+    const { artist, fetchArtist, match } = this.props;
+    if (match) {
+      const artistId = parseInt(match.params.artistId, 10);
+      if (!artist || artist.id !== artistId) {
+        fetchArtist(artistId);
+      }
+    }
+  }
+
   render() {
     const { artist, onClickHandler, currentId } = this.props;
+
+    if (!artist) { return null; }
 
     let trackList = '';
     if (artist.artist_tracks && artist.artist_tracks.length > 0) {
@@ -45,14 +58,8 @@ Artist.propTypes = {
 };
 
 function mapState(state, ownProps) {
-  let artist = ownProps.artist;
-  if (ownProps.match) {
-    const artistId = parseInt(ownProps.match.params.artistId, 10);
-    artist = state.library.artists.find(a => a && a.id === artistId);
-  }
-
   return {
-    artist,
+    artist: ownProps.artist || state.artists.artist,
     currentId: state.player.currentTrack ? state.player.currentTrack.id : null,
   };
 }
@@ -60,6 +67,7 @@ function mapState(state, ownProps) {
 function mapDispatch(dispatch) {
   return {
     onClickHandler: (...args) => dispatch(requestQueueAndPlayTrack(...args)),
+    fetchArtist: (...args) => dispatch(fetchArtist(...args)),
   };
 }
 

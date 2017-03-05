@@ -52,7 +52,7 @@ module.exports = {
       exclude: /node_modules/,
       options: {
         presets: ['react', ['es2015', { modules: false }]],
-        plugins: ['transform-object-rest-spread'],
+        plugins: ['transform-object-rest-spread', 'transform-class-properties'],
       },
     }],
   },

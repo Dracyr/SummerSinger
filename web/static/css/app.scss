@@ -83,9 +83,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .tr.track {
   cursor: pointer;
+
   &:hover {
     background: #ddd;
   }
+}
+
+.tr.track a {
+  color: $default-font-color;
 }
 
 .td {
@@ -93,13 +98,6 @@ h1, h2, h3, h4, h5, h6 {
   padding: 8px;
   border-top: 1px solid #ddd;
   height: 40px;
-  overflow: hidden;
-
-  & > div {
-    max-height: 23px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
   &.td-title {
     width: 40%;
@@ -126,6 +124,18 @@ h1, h2, h3, h4, h5, h6 {
     cursor: pointer;
     @include no-select();
   }
+}
+
+.track .td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 0px;
+}
+
+.tr.hide-album {
+  .td-artist { width: 40%; }
+  .td-title  { width: 45%; }
 }
 
 .thead {

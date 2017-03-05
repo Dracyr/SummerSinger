@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import { updateTrack } from './actions';
 import StarRating from './StarRating';
+import { updateTrack } from './actions';
 import { PlaceholderText } from '../Util/Util';
 
 const emptyTrack = (
@@ -60,19 +61,29 @@ class Track extends Component {
 
     return (
       <div
-        className="tr track"
+        className={`tr track ${this.props.hideAlbum ? 'hide-album' : ''}`}
         draggable
         onDragStart={this.handleOnDragStart}
         onClick={this.handleOnClick}
         onContextMenu={this.handleOnContextMenu}
         style={trackStyle}
       >
-        <div className="td td-title" alt={title}><div>
-          {title}
+        <div className="td td-title">
+          <span title={title}>{title}</span>
           {currentTrack}
-        </div></div>
-        <div className="td td-artist" alt={track.artist}><div>{track.artist}</div></div>
-        <div className="td td-album" alt={track.album}><div>{track.album}</div></div>
+        </div>
+        <div className="td td-artist">
+          <Link to={`/artists/${track.artist_id}`} title={track.artist}>
+            {track.artist}
+          </Link>
+        </div>
+        {!this.props.hideAlbum ? (
+          <div className="td td-album">
+            <Link to={`/albums/${track.album_id}`} title={track.album}>
+              {track.album}
+            </Link>
+          </div>
+        ) : null}
         <div className="td td-rating">
           <StarRating
             rating={track.rating}
@@ -90,7 +101,6 @@ function mapDispatch(dispatch) {
   };
 }
 
-export default connect(null, mapDispatch)(Track);
 
 Track.propTypes = {
   onClickHandler: PropTypes.func,
@@ -101,4 +111,11 @@ Track.propTypes = {
   isSelected: PropTypes.bool,
   index: PropTypes.number,
   updateTrack: PropTypes.func,
+  hideAlbum: PropTypes.bool,
 };
+
+Track.defaultProps = {
+  hideAlbum: false,
+};
+
+export default connect(null, mapDispatch)(Track);

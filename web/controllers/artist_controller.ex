@@ -55,9 +55,17 @@ defmodule SummerSinger.ArtistController do
   end
 
   def show(conn, %{"id" => id}) do
+    albumless_tracks = from t in Track,
+      join: a in assoc(t, :album),
+      where: is_nil(t.album_id) or t.artist_id != a.artist_id,
+      preload: [:artist, :album]
+
     artist_query = from artist in Artist,
       order_by: artist.name,
-      preload: [:tracks, albums: [tracks: :artist]]
+      preload: [
+        tracks: ^albumless_tracks,
+        albums: [:artist, :cover_art, tracks: [:artist, :album]]
+      ]
 
     artist = Repo.get(artist_query, id)
     render(conn, "show.json", artist: artist)

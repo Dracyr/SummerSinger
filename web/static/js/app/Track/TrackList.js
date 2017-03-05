@@ -126,6 +126,7 @@ export default class TrackList extends Component {
       trackComponent = (
         <Track
           track={track}
+          index={index}
           key={key}
           isPlaying={isPlaying}
           isSelected={isSelected}
@@ -133,7 +134,7 @@ export default class TrackList extends Component {
           openContextMenu={this.openContextMenu}
           selectTrack={this.selectTrack}
           updateTrack={this.updateTrack}
-          index={index}
+          hideAlbum={this.props.hideAlbum}
         />);
     } else {
       trackComponent = <Track key={key} />;
@@ -162,7 +163,7 @@ export default class TrackList extends Component {
 
     return (
       <div className="thead">
-        <div className="tr">
+        <div className={`tr ${this.props.hideAlbum ? 'hide-album' : ''}`}>
           <div className="td td-title">
             <span onClick={this.sortTitle}>Title </span>
             <i className={this.renderSortCol('title')} />
@@ -171,10 +172,12 @@ export default class TrackList extends Component {
             <span onClick={this.sortArtist}>Artist </span>
             <i className={this.renderSortCol('artist')} />
           </div>
-          <div className="td td-album">
-            <span onClick={this.sortAlbum}>Album </span>
-            <i className={this.renderSortCol('album')} />
-          </div>
+          {!this.props.hideAlbum ? (
+            <div className="td td-album">
+              <span onClick={this.sortAlbum}>Album </span>
+              <i className={this.renderSortCol('album')} />
+            </div>
+          ) : null}
           <div className="td td-rating">
             <span onClick={this.sortRating}>Rating </span>
             <i className={this.renderSortCol('rating')} />
@@ -247,4 +250,9 @@ TrackList.propTypes = {
   sortTracks: React.PropTypes.func,
   sort: React.PropTypes.object,
   onSelectTrack: React.PropTypes.func,
+  hideAlbum: React.PropTypes.bool,
 };
+
+TrackList.defaultProps = {
+  hideAlbum: false,
+}

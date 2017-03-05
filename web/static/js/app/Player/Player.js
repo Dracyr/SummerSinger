@@ -58,7 +58,7 @@ class Player extends Component {
           playing={playing}
           startTime={startTime}
           pausedDuration={pausedDuration}
-          duration={currentTrack.duration}
+          duration={currentTrack && currentTrack.duration}
         />
       </div>
     );

@@ -2,10 +2,22 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import TrackList from '../Track/TrackList';
 import { requestQueueAndPlayTrack } from '../Player/actions';
+import { fetchAlbum } from './actions';
 
 class Album extends Component {
+  componentDidMount() {
+    const { album, fetchAlbum, match } = this.props;
+    if (match) {
+      const albumId = parseInt(match.params.albumId, 10);
+      if (!album || album.id !== albumId) {
+        fetchAlbum(albumId);
+      }
+    }
+  }
+
   render() {
     const { album, requestQueueAndPlayTrack, currentId } = this.props;
+    if (!album) { return null; }
 
     return (
       <div>
@@ -22,9 +34,10 @@ class Album extends Component {
           <div style={{ width: '100%' }}>
             <TrackList
               entries={album.tracks || []}
-              keyAttr={'id'}
+              keyAttr="id"
               currentKey={currentId}
               onClickHandler={track => requestQueueAndPlayTrack(track.id)}
+              hideAlbum
             />
           </div>
         </div>
@@ -38,14 +51,8 @@ Album.propTypes = {
 };
 
 function mapState(state, ownProps) {
-  let album = ownProps.album;
-  if (ownProps.match) {
-    const albumId = parseInt(ownProps.match.params.albumId, 10);
-    album = state.library.albums.find(a => a && a.id === albumId);
-  }
-
   return {
-    album,
+    album: ownProps.album || state.albums.album,
     currentId: state.player.currentTrack ? state.player.currentTrack.id : null,
   };
 }
@@ -53,6 +60,7 @@ function mapState(state, ownProps) {
 function mapDispatch(dispatch) {
   return {
     requestQueueAndPlayTrack: (...args) => dispatch(requestQueueAndPlayTrack(...args)),
+    fetchAlbum: (...args) => dispatch(fetchAlbum(...args)),
   };
 }
 

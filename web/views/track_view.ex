@@ -15,12 +15,14 @@ defmodule SummerSinger.TrackView do
   def render("track.json", %{track: track}) do
     %{
       id: track.id,
+      filename: Path.basename(track.path),
       title: track.title,
       artist: track.artist && track.artist.name,
+      artist_id: track.artist_id,
+      album: track.album && track.album.title,
+      album_id: track.album_id,
       duration: track.duration,
       rating: track.rating,
-      album: track.album && track.album.title,
-      filename: Path.basename(track.path),
       inbox: track.inbox
     }
   end
