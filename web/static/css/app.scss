@@ -78,7 +78,7 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-table;
   width: 100%;
   height: 40px;
-
+  overflow: hidden;
 }
 
 .tr.track {
@@ -93,6 +93,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 8px;
   border-top: 1px solid #ddd;
   height: 40px;
+  overflow: hidden;
 
   & > div {
     max-height: 23px;

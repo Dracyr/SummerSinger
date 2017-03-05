@@ -4,6 +4,7 @@
     "development": {
       "plugins": [
         "transform-object-rest-spread",
+        "transform-class-properties",
         ["react-transform", {
           "transforms": [{
             "transform": "react-transform-hmr",
