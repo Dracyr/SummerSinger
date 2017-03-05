@@ -1,17 +1,16 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 import Dragula from 'react-dragula';
 
 import SidebarSearch from './SidebarSearch';
 import CreatePlaylist from './CreatePlaylist';
 import SidebarPlaylist from './SidebarPlaylist';
-import SidebarItem from './SidebarItem';
 import SidebarContextMenu from './SidebarContextMenu';
 
 import * as LibraryActions from '../Library/actions';
 import * as PlaylistActions from '../Playlist/actions';
-import * as ViewsActions from '../../actions/views';
 import * as SidebarActions from './actions';
 
 class Sidebar extends Component {
@@ -65,11 +64,6 @@ class Sidebar extends Component {
     this.props.actions.playlist.queuePlaylist(playlist.id);
   }
 
-  isActive() {
-    const { currentView, itemView } = this.props;
-    return currentView === itemView ? 'active' : '';
-  }
-
   toggleCreatePlaylist() {
     this.props.actions.sidebar.toggleCreatePlaylist();
   }
@@ -77,79 +71,58 @@ class Sidebar extends Component {
   render() {
     const {
       playlists,
-      currentPlaylist,
-      view,
-      search,
-      actions
+      actions,
     } = this.props;
-    const switchView = actions.views.switchView;
-    const switchPlaylist = actions.views.switchPlaylist;
-    const playlistViewActive = view === 'PLAYLIST';
     const openContextMenu = this.openContextMenu;
     const addTrackToPlaylist = actions.playlist.addTrackToPlaylist;
 
+    const sidebarNav = (
+      <div className="sidebar-links">
+        <SidebarSearch search={actions.library.fetchSearch} />
+        <NavLink to="/queue" activeClassName="active">Queue</NavLink>
+        <NavLink to="/inbox" activeClassName="active">Inbox</NavLink>
+        {/* <NavLink to="/library" activeClassName="active">Library</NavLink> */}
+        <NavLink to="/tracks" activeClassName="active">Tracks</NavLink>
+        <NavLink to="/artists" activeClassName="active">Artists</NavLink>
+        <NavLink to="/albums" activeClassName="active">Albums</NavLink>
+        <NavLink to="/folders" activeClassName="active">Folders</NavLink>
+        <NavLink to="/settings" activeClassName="active">Settings</NavLink>
+      </div>
+    );
+
+    const sidebarPlaylists = (
+      <div className="playlist-tab">
+        <ul className="playlist-list list-unstyled">
+          {this.props.showCreatePlaylist ?
+            <CreatePlaylist submit={actions.playlist.createPlaylist} /> : ''
+          }
+          <div ref={this.dragulaDecorator}>
+            {playlists.map(playlist => (
+              <SidebarPlaylist
+                key={playlist.id}
+                playlist={playlist}
+                addTrackToPlaylist={addTrackToPlaylist}
+                openContextMenu={openContextMenu}
+              />
+            ))}
+          </div>
+        </ul>
+      </div>
+    );
+
     return (
       <div className="sidebar">
-        <ul className="sidebar-links list-unstyled">
-          <SidebarSearch
-            switchView={switchView}
-            active={view === 'SEARCH'}
-            search={actions.library.fetchSearch}
-          />
-          <SidebarItem
-            title="Queue"
-            itemView="QUEUE"
-            view={view}
-            switchView={switchView}
-          />
-          <SidebarItem
-            title="Inbox"
-            itemView="INBOX"
-            view={view}
-            switchView={switchView}
-          />
-          <SidebarItem
-            title="Library"
-            itemView="LIBRARY"
-            view={view}
-            switchView={switchView}
-          />
-          <SidebarItem
-            title="Setting"
-            itemView="SETTINGS"
-            view={view}
-            switchView={switchView}
-          />
-        </ul>
+        {sidebarNav}
 
         <div className="sidebar-playlist-header">
           Playlists
-          <span className="fa fa-plus pull-right"
-            onClick={this.toggleCreatePlaylist}
-          ></span>
+          <span onClick={this.toggleCreatePlaylist}>
+            <i className="fa fa-plus pull-right" />
+          </span>
         </div>
 
-        <div className="playlist-tab">
-          <ul className="playlist-list list-unstyled">
-            {this.props.showCreatePlaylist ?
-              <CreatePlaylist submit={actions.playlist.createPlaylist} /> : ''
-            }
-            <div ref={this.dragulaDecorator}>
-            {playlists.map(function(playlist, index) {
-              return (
-                <SidebarPlaylist key={index}
-                  playlist={playlist}
-                  currentPlaylist={currentPlaylist}
-                  switchPlaylist={switchPlaylist}
-                  playlistViewActive={playlistViewActive}
-                  addTrackToPlaylist={addTrackToPlaylist}
-                  openContextMenu={openContextMenu}
-                />
-              );
-            })}
-            </div>
-          </ul>
-        </div>
+        {sidebarPlaylists}
+
         {this.state.contextMenu ?
           <SidebarContextMenu
             context={this.state.contextMenu}
@@ -164,15 +137,15 @@ class Sidebar extends Component {
   }
 }
 
-function mapState(state) {
-  const currentPlaylist = state.playlist.playlists.find((playlist) => {
-    return playlist.id === state.views.playlist ? playlist : false;
-  });
+Sidebar.propTypes = {
+  playlists: PropTypes.array,
+  actions: PropTypes.object,
+};
 
+
+function mapState(state) {
   return {
-    view: state.views.view,
     playlists: state.playlist.playlists,
-    currentPlaylist,
     showCreatePlaylist: state.sidebar.showCreatePlaylist,
   };
 }
@@ -181,7 +154,6 @@ function mapDispatch(dispatch) {
   return {
     actions: {
       library: bindActionCreators(LibraryActions, dispatch),
-      views: bindActionCreators(ViewsActions, dispatch),
       playlist: bindActionCreators(PlaylistActions, dispatch),
       sidebar: bindActionCreators(SidebarActions, dispatch),
     },
@@ -189,6 +161,3 @@ function mapDispatch(dispatch) {
 }
 
 export default connect(mapState, mapDispatch)(Sidebar);
-
-
-

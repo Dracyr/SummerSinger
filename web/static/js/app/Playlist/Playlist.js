@@ -9,9 +9,9 @@ const Playlist = (props) => {
       <h1>{playlist.title}</h1>
       <TrackList
         entries={playlist.tracks || []}
-        keyAttr={"id"}
+        keyAttr="id"
         currentKey={currentId}
-        onClickHandler={(track) => requestQueueAndPlayTrack(track.id)}
+        onClickHandler={track => requestQueueAndPlayTrack(track.id)}
       />
     </div>
   );
@@ -19,7 +19,7 @@ const Playlist = (props) => {
 
 Playlist.propTypes = {
   playlist: PropTypes.object,
-  currentId: PropTypes.number.isRequired,
+  currentId: PropTypes.number,
   requestQueueAndPlayTrack: PropTypes.func,
 };
 

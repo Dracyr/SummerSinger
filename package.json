@@ -36,6 +36,7 @@
     "react-portal": "^3.0.0",
     "react-redux": "^5.0.2",
     "react-router": "next",
+    "react-router-dom": "next",
     "react-tap-event-plugin": "^2.0.1",
     "reduce-reducers": "^0.1.2",
     "redux": "^3.5.2",

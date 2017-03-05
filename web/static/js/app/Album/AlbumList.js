@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactList from 'react-list';
+
 import proxyList from '../Util/InfiniteList';
 import AlbumCard from './AlbumCard';
 
@@ -16,11 +17,7 @@ export default class AlbumList extends Component {
     return (
       <ReactList
         itemRenderer={(index, key) =>
-          <AlbumCard
-            key={key}
-            album={entries[index]}
-            onClickHandler={this.props.onClickHandler}
-          />
+          <AlbumCard key={key} album={entries[index]} />
         }
         itemsRenderer={(items, ref) =>
           <div className="card-list" ref={ref}>

@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { NavLink } from 'react-router-dom';
+
 
 export default class SidebarSearch extends Component {
   constructor(props) {
@@ -6,7 +8,8 @@ export default class SidebarSearch extends Component {
     this.state = { value: 'Search' };
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.switchViewToSearch = this.switchViewToSearch.bind(this);
+    this.onBlur = this.handleOnBlur.bind(this);
+    this.onFocus = this.handleOnFocus.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -27,25 +30,31 @@ export default class SidebarSearch extends Component {
     }
   }
 
+  handleOnBlur() {
+    this.setState({ value: 'Search' });
+  }
+
+  handleOnFocus() {
+    this.setState({ value: '' });
+  }
+
   search(searchTerm) {
     this.props.search(searchTerm);
   }
 
-  switchViewToSearch() {
-    this.props.switchView('SEARCH');
-  }
-
   render() {
     return (
-      <li onClick={this.switchViewToSearch}
-        className={this.props.active ? 'search active' : 'search'}
-      >
-        <input type="text" className="unstyled-input"
+      <NavLink to="/search" className="search">
+        <input
+          type="text"
+          className="unstyled-input"
           value={this.state.value}
           onChange={this.handleChange}
           onKeyPress={this.handleKeyPress}
+          onBlur={this.onBlur}
+          onFocus={this.onFocus}
         />
-      </li>
+      </NavLink>
     );
   }
 }
@@ -53,5 +62,4 @@ export default class SidebarSearch extends Component {
 SidebarSearch.propTypes = {
   active: React.PropTypes.bool,
   search: React.PropTypes.func,
-  switchView: React.PropTypes.func,
 };

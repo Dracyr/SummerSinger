@@ -1,15 +1,7 @@
 import React from 'react';
 import { findDOMNode } from 'react-dom';
 
-export const PlaceholderText = () => {
-  const style = {
-    width: '50%',
-    height: '1em',
-    display: 'inline-block',
-    backgroundColor: '#ddd',
-  };
-  return <div style={style}></div>;
-};
+export const PlaceholderText = () => <div className="placeholder-text" />;
 
 export const isParent = (source, target) => {
   let parent = null;

@@ -1,37 +1,50 @@
 import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router-dom';
 
-export default class AlbumCard extends Component {
-  constructor() {
-    super();
-    this.handleOnClick = this.handleOnClick.bind(this);
+import { PlaceholderText } from '../Util/Util';
+
+const emptyCard = (
+  <div className="card">
+    <div className="card-image">
+      <img
+        src="/images/album_placeholder.png"
+        role="presentation"
+        width="150"
+        height="150"
+      />
+    </div>
+    <div className="card-content"><PlaceholderText /></div>
+  </div>
+);
+
+const AlbumCard = (props) => {
+  const album = props.album;
+
+  if (!album) {
+    return emptyCard;
   }
 
-  handleOnClick() {
-    this.props.onClickHandler(this.props.album);
-  }
-
-  render() {
-    const { album } = this.props;
-    return (
-      <div className="card" onClick={this.handleOnClick}>
-        <div className="card-image">
-          <img
-            src={(album && album.cover_art_thumb_url) || '/images/album_placeholder.png'}
-            alt={album && album.title}
-            width="150"
-            height="150"
-          />
-        </div>
-        <div className="card-content">
-          {album && album.title}
-          <br />
-          <small>{album && album.artist}</small>
-        </div>
+  return (
+    <Link to={`/albums/${album.id}`} className="card">
+      <div className="card-image">
+        <img
+          src={(album && album.cover_art_thumb_url) || '/images/album_placeholder.png'}
+          alt={album && album.title}
+          width="150"
+          height="150"
+        />
       </div>
-    );
-  }
+      <div className="card-content">
+        {album && album.title}
+        <br />
+        <small>{album && album.artist}</small>
+      </div>
+    </Link>
+  );
 }
 
 AlbumCard.propTypes = {
   album: PropTypes.object,
 };
+
+export default AlbumCard;

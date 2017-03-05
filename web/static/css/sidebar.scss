@@ -53,6 +53,30 @@
     background: $color-primary;
     color: #FFF;
   }
+
+  a {
+    cursor: pointer;
+    display: block;
+    color: $default-font-color;
+    text-decoration: none;
+    padding-left: 40px;
+    transition: background 100ms ease-in,
+                color 100ms ease-in,
+                padding-top 100ms ease-in-out,
+                padding-bottom 100ms ease-in-out;
+
+    &:hover {
+      background: $color-primary;
+      color: #FFF;
+      input { background: $color-primary; }
+    }
+
+    &.active {
+      border-left: 10px solid $color-primary;
+      padding: 4px 0 4px 30px;
+      input { background: $color-primary; }
+    }
+  }
 }
 
 .unstyled-input {
@@ -88,15 +112,29 @@
   word-wrap: break-word;
 }
 
-.playlist-list li {
-  transition: color 50ms ease;
-  cursor: pointer;
+.playlist-list a {
+  display: block;
   margin-bottom: 4px;
+  padding-right: 20px;
+  color: $default-font-color;
+  cursor: pointer;
   font-size: 15px;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  // transition: color 50ms ease;
+  transition: background 100ms ease-in,
+              color 100ms ease-in;
 
   &:hover,
   &.active {
     color: $color-primary;
+  }
+
+  &.dragging {
+    color: #FFF;
+    background-color: $color-primary;
   }
 }
 

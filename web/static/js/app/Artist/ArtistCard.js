@@ -1,4 +1,6 @@
 import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router-dom';
+
 import { PlaceholderText } from '../Util/Util';
 
 const emptyCard = (
@@ -16,15 +18,6 @@ const emptyCard = (
 );
 
 export default class ArtistCard extends Component {
-  constructor() {
-    super();
-    this.handleOnClick = this.handleOnClick.bind(this);
-  }
-
-  handleOnClick() {
-    this.props.onClickHandler(this.props.artist);
-  }
-
   render() {
     const { artist } = this.props;
 
@@ -33,7 +26,7 @@ export default class ArtistCard extends Component {
     }
 
     return (
-      <div className="card" onClick={this.handleOnClick}>
+      <Link to={`/artists/${artist.id}`} className="card">
         <div className="card-image">
           <img
             src={artist.image_url || '/images/album_placeholder.png'}
@@ -44,7 +37,7 @@ export default class ArtistCard extends Component {
           />
         </div>
         <div className="card-content">{artist.name}</div>
-      </div>
+      </Link>
     );
   }
 }

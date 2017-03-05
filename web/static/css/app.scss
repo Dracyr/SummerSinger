@@ -19,7 +19,7 @@ body {
   min-height: 100vh;
   margin: 0;
 
-  color: #666;
+  color: $default-font-color;
   background: #ddd;
   font-family: 'Noto Sans', sans-serif;
 
@@ -180,4 +180,11 @@ h1, h2, h3, h4, h5, h6 {
   float: right;
   display: block;
   margin-top: 38px;
+}
+
+.placeholder-text {
+  width: '50%';
+  height: '1em';
+  display: 'inline-block';
+  background-color: '#ddd';
 }

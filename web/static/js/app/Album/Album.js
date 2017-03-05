@@ -1,9 +1,11 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import TrackList from '../Track/TrackList';
+import { requestQueueAndPlayTrack } from '../Player/actions';
 
-export default class Album extends Component {
+class Album extends Component {
   render() {
-    const { album, onClickHandler, currentId } = this.props;
+    const { album, requestQueueAndPlayTrack, currentId } = this.props;
 
     return (
       <div>
@@ -22,7 +24,7 @@ export default class Album extends Component {
               entries={album.tracks || []}
               keyAttr={'id'}
               currentKey={currentId}
-              onClickHandler={onClickHandler}
+              onClickHandler={track => requestQueueAndPlayTrack(track.id)}
             />
           </div>
         </div>
@@ -34,3 +36,24 @@ export default class Album extends Component {
 Album.propTypes = {
   album: PropTypes.object,
 };
+
+function mapState(state, ownProps) {
+  let album = ownProps.album;
+  if (ownProps.match) {
+    const albumId = parseInt(ownProps.match.params.albumId, 10);
+    album = state.library.albums.find(a => a && a.id === albumId);
+  }
+
+  return {
+    album,
+    currentId: state.player.currentTrack ? state.player.currentTrack.id : null,
+  };
+}
+
+function mapDispatch(dispatch) {
+  return {
+    requestQueueAndPlayTrack: (...args) => dispatch(requestQueueAndPlayTrack(...args)),
+  };
+}
+
+export default connect(mapState, mapDispatch)(Album);

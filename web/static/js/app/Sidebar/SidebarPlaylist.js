@@ -1,15 +1,16 @@
 import React, { Component, PropTypes } from 'react';
+import { NavLink } from 'react-router-dom';
 
 class SidebarPlaylist extends Component {
   constructor() {
     super();
-    this.onClick = this.onClick.bind(this);
     this.onDrop = this.onDrop.bind(this);
+    this.onDragOver = this.onDragOver.bind(this);
+    this.onDragLeave = this.onDragLeave.bind(this);
     this.onContextMenu = this.onContextMenu.bind(this);
-  }
-
-  onClick() {
-    this.props.switchPlaylist(this.props.playlist.id);
+    this.state = {
+      dragging: false,
+    };
   }
 
   onContextMenu(e) {
@@ -19,6 +20,12 @@ class SidebarPlaylist extends Component {
 
   onDragOver(e) {
     e.preventDefault();
+    this.setState({ dragging: true });
+  }
+
+  onDragLeave(e) {
+    e.preventDefault();
+    this.setState({ dragging: false });
   }
 
   onDrop(e) {
@@ -29,34 +36,28 @@ class SidebarPlaylist extends Component {
   }
 
   render() {
-    const {
-      playlist,
-      currentPlaylist,
-      playlistViewActive,
-    } = this.props;
-
-    const active = playlistViewActive && currentPlaylist &&
-      currentPlaylist.id === playlist.id ? 'active' : '';
+    const { playlist } = this.props;
 
     return (
-      <li
-        className={active}
-        onClick={this.onClick}
+      <NavLink
+        to={`/playlist/${playlist.id}`}
+        activeClassName="active"
         onContextMenu={this.onContextMenu}
         onDragOver={this.onDragOver}
         onDrop={this.onDrop}
+        onDragLeave={this.onDragLeave}
+        onDragEnd={this.onDragLeave}
+        onDragExit={this.onDragLeave}
+        className={this.state.dragging ? 'dragging' : ''}
       >
         {playlist.title}
-      </li>
+      </NavLink>
     );
   }
 }
 
 SidebarPlaylist.propTypes = {
   playlist: PropTypes.object,
-  switchPlaylist: PropTypes.func,
-  currentPlaylist: PropTypes.object,
-  playlistViewActive: PropTypes.bool,
   openContextMenu: PropTypes.func,
   addTrackToPlaylist: PropTypes.func,
 };

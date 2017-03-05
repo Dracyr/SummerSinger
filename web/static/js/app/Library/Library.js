@@ -9,7 +9,7 @@ import InfiniteTrackList from '../Track/InfiniteTrackList';
 import { InfiniteAlbumList } from '../Album/AlbumList';
 import Album from '../Album/Album';
 import Artist from '../Artist/Artist';
-import InfiniteArtistList from '../Artist/InfiniteArtistList';
+import { InfiniteArtistList } from '../Artist/ArtistList';
 import Folders from '../Folders/Folders';
 
 class Library extends Component {
@@ -152,6 +152,7 @@ class Library extends Component {
     );
   }
 }
+
 function mapState(state) {
   return {
     currentId: state.player.currentTrack ? state.player.currentTrack.id : null,

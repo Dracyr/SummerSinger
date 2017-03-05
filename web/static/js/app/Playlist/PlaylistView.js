@@ -9,25 +9,28 @@ import Playlist from './Playlist';
 
 class PlaylistView extends Component {
   componentDidMount() {
-    const { currentPlaylist, actions } = this.props;
-    if (currentPlaylist) {
-      actions.fetchPlaylist(currentPlaylist.id);
+    const { playlist, actions } = this.props;
+
+    if (playlist) {
+      actions.fetchPlaylist(playlist.id);
     }
   }
 
   componentDidUpdate() {
-    const { currentPlaylist, actions } = this.props;
-    if (currentPlaylist) {
-      actions.fetchPlaylist(currentPlaylist.id);
+    const { playlist, actions } = this.props;
+
+    if (playlist) {
+      actions.fetchPlaylist(playlist.id);
     }
   }
 
   render() {
-    const { currentPlaylist, requestQueueAndPlayTrack, currentId } = this.props;
+    const { playlist, requestQueueAndPlayTrack, currentId } = this.props;
+    if (!playlist) { return null; }
 
     return (
       <Playlist
-        playlist={currentPlaylist}
+        playlist={playlist}
         currentId={currentId}
         requestQueueAndPlayTrack={requestQueueAndPlayTrack}
       />
@@ -35,14 +38,14 @@ class PlaylistView extends Component {
   }
 }
 
-function mapState(state) {
-  const currentPlaylist = state.playlist.playlists.find((playlist) => {
-    return playlist.id === state.views.playlist ? playlist : false;
-  });
+function mapState(state, ownProps) {
+  const playlistId = parseInt(ownProps.match.params.playlistId, 10);
+  const playlist = state
+    .playlist
+    .playlists.find(p => (p.id === playlistId ? p : false));
 
   return {
-    currentPlaylist,
-    playlistView: state.playlist.playlistView,
+    playlist,
     currentId: state.player.currentTrack ? state.player.currentTrack.id : null,
   };
 }
@@ -55,5 +58,3 @@ function mapDispatch(dispatch) {
 }
 
 export default connect(mapState, mapDispatch)(PlaylistView);
-
-

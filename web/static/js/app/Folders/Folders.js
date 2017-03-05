@@ -91,7 +91,8 @@ class Folders extends Component {
   renderItem(index, key) {
     if (index < this.props.folder.children.length) {
       return (
-        <Folder key={key}
+        <Folder
+          key={key}
           folder={this.props.folder.children[index]}
           fetchFolder={this.props.actions.fetchFolder}
           openContextMenu={this.openContextMenu}
@@ -104,7 +105,8 @@ class Folders extends Component {
       const track = folder.tracks[trackIndex];
       const playTrack = () => this.props.playerActions.requestQueueAndPlayTrack(track.id);
       return (
-        <Track key={key}
+        <Track
+          key={key}
           track={track}
           isPlaying={currentId === track.id}
           isSelected={selectedTarget && selectedTarget.id === track.id}
@@ -134,8 +136,10 @@ class Folders extends Component {
 
     const totalLength = folder.children.length + folder.tracks.length;
     const contextMenu = this.renderContextMenu();
+
     return (
       <div>
+        <h1 className="header">Folders</h1>
         <h3>{pathParts.length > 1 ? pathParts.join(' / ') : '/'}</h3>
         <div className="display-table track-list">
           <TrackList

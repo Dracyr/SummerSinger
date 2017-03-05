@@ -8,7 +8,7 @@ export function trackUpdate(track) {
 }
 
 export function updateTrack(trackId, params) {
-  return dispatch => {
+  return (dispatch) => {
     fetch(`/api/tracks/${trackId}`, {
       method: 'put',
       headers: {
@@ -18,9 +18,6 @@ export function updateTrack(trackId, params) {
       body: JSON.stringify({ track: params }),
     })
     .then(response => response.json())
-    .then(json => {
-      const track = json.data;
-      dispatch(trackUpdate(track));
-    });
+    .then(json => dispatch(trackUpdate(json.data)));
   };
 }

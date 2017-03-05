@@ -13,13 +13,6 @@ defmodule SummerSinger.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", SummerSinger do
-    pipe_through :browser # Use the default browser stack
-
-    get "/", PageController, :index
-  end
-
-  # Other scopes may use custom stacks.
   scope "/api", SummerSinger do
     pipe_through :api
 
@@ -34,5 +27,17 @@ defmodule SummerSinger.Router do
     resources "/playlists", PlaylistController
     resources "/libraries", LibraryController
     resources "/folders", FolderController
+  end
+
+  scope "/", SummerSinger do
+    pipe_through :browser # Use the default browser stack
+
+    get "/", PageController, :index
+    for path <- ~w(search queue inbox library folder settings playlist tracks albums artists folders) do
+      get "/#{path}", PageController, :index
+    end
+    get "/playlist/:playlistId", PageController, :index
+    get "/albums/:albumId", PageController, :index
+    get "/artists/:artistId", PageController, :index
   end
 end

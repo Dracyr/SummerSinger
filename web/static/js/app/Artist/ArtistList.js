@@ -1,9 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import ReactList from 'react-list';
 
+import proxyList from '../Util/InfiniteList';
 import ArtistCard from './ArtistCard';
 
-class ArtistList extends Component {
+export default class ArtistList extends Component {
   constructor(props) {
     super(props);
     this.state = { selected: null };
@@ -23,13 +24,11 @@ class ArtistList extends Component {
           <ArtistCard
             key={key}
             artist={entries[index]}
-            onClickHandler={this.props.onClickHandler}
           />
         }
         itemsRenderer={(items, ref) =>
-          <div
-            className="card-list"
-            ref={ref}>{items}
+          <div className="card-list" ref={ref}>
+            {items}
           </div>
         }
         length={artistCount}
@@ -51,4 +50,5 @@ ArtistList.propTypes = {
   loadMoreRows: PropTypes.func,
 };
 
-export default ArtistList;
+export const InfiniteArtistList = proxyList(ArtistList);
+

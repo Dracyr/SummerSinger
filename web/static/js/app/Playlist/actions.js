@@ -56,13 +56,12 @@ function receivePlaylist(playlist) {
 
 export function fetchPlaylist(playlistId) {
   return (dispatch, getState) => {
-    const playlist = getState().playlist.playlists.find((playlist) => {
-      return playlist.id === playlistId ? playlist : false;
-    });
+    const playlist = getState()
+      .playlist
+      .playlists
+      .find(p => (p.id === playlistId ? p : false));
 
-    if (playlist.tracks) {
-      return null;
-    }
+    if (playlist.tracks) { return null; }
 
     dispatch(requestPlaylist(playlistId));
 
@@ -73,7 +72,7 @@ export function fetchPlaylist(playlistId) {
 }
 
 export function createPlaylist(title) {
-  return dispatch => {
+  return (dispatch) => {
     fetch('/api/playlists', {
       method: 'post',
       headers: {

@@ -157,7 +157,7 @@ export default class TrackList extends Component {
 
   renderHeader(hideHeader) {
     if (hideHeader) {
-      return '';
+      return null;
     }
 
     return (
@@ -231,7 +231,7 @@ export default class TrackList extends Component {
 }
 
 TrackList.propTypes = {
-  entries: React.PropTypes.array.isRequired,
+  entries: React.PropTypes.array,
   keyAttr: React.PropTypes.string,
   currentKey: React.PropTypes.oneOfType([
     React.PropTypes.number,
