@@ -15,11 +15,10 @@ export default function configureStore(socket, initialState) {
 
   socket.initialize(store);
 
-  // Hot reload reducers (requires Webpack or Browserify HMR to be enabled)
+  // Hot reload reducers
   if (module.hot) {
     module.hot.accept('./rootReducer', () => {
-      const nextRootReducer = require('./rootReducer');
-      store.replaceReducer(nextRootReducer);
+      store.replaceReducer(require('./rootReducer'));
     });
   }
 

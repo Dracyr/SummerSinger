@@ -8,7 +8,7 @@ import { fetchArtist } from './actions';
 
 class Artist extends PureComponent {
   static propTypes = {
-    artist: PropTypes.object.isRequired,
+    artist: PropTypes.object,
     fetch: PropTypes.func.isRequired,
     match: PropTypes.object,
     onClickHandler: PropTypes.func,
@@ -21,6 +21,7 @@ class Artist extends PureComponent {
   static defaultProps = {
     onClickHandler: () => {},
     currentId: null,
+    artist: null,
   }
 
   componentDidMount() {
@@ -55,11 +56,10 @@ class Artist extends PureComponent {
         <h1>{artist.name}</h1>
         {artist.albums.map(album =>
           <Album
+            key={album.id}
             album={album}
-            albumA={album}
             onClickHandler={onClickHandler}
             currentId={currentId}
-            key={album.id}
           />,
         )}
 

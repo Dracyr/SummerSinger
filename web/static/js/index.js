@@ -1,17 +1,28 @@
 import React from 'react';
-import { render } from 'react-dom';
+import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import App from './app/App';
+import { AppContainer } from 'react-hot-loader';
 
+import App from './app/App';
 import configureStore from './configureStore';
 import SummerSocket from './app/Util/SummerSocket';
 
 const summerSocket = new SummerSocket();
 const store = configureStore(summerSocket);
 
-render(
-  <Provider store={store}>
-    <App store={store} />
-  </Provider>,
-  document.getElementById('container'),
-);
+const render = (Component) => {
+  ReactDOM.render(
+    <AppContainer>
+      <Provider store={store}>
+        <Component store={store} />
+      </Provider>
+    </AppContainer>,
+    document.getElementById('container')
+  );
+};
+
+render(App);
+
+if (module.hot) {
+  module.hot.accept('./app/App', () => { render(App); });
+}

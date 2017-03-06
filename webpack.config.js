@@ -4,7 +4,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var env = process.env.MIX_ENV || 'dev';
 var prod = env === 'prod';
-var publicPath = 'http://localhost:4001/';
+var publicPath = 'http://localhost:8081/';
 
 var plugins = [
   new CopyWebpackPlugin([{ from: './web/static/assets', to: '../' }]),
@@ -30,20 +30,17 @@ if (prod) {
 
 var entry = './web/static/js/index.js';
 
-
-// eval - Each module is executed with eval and //@ sourceURL.
-// source-map - A SourceMap is emitted. See also output.sourceMapFilename.
-// hidden-source-map - Same as source-map, but doesn’t add a reference comment to the bundle.
-// inline-source-map - A SourceMap is added as DataUrl to the JavaScript file.
-// eval-source-map - Each module is executed with eval and a SourceMap is added as DataUrl to the eval.
-// cheap-source-map - A SourceMap without column-mappings. SourceMaps from loaders are not used.
-// cheap-module-source-map - A SourceMap without column-mappings. SourceMaps from loaders are simplified to a single mapping per line.
-
 module.exports = {
-  devtool: prod ? null : 'inline-source-map',
+  devtool: prod ? null : 'eval',
   entry: prod ? entry : [
-    'webpack-dev-server/client?' + publicPath,
-    'webpack/hot/dev-server',
+    // activate HMR for React
+    'react-hot-loader/patch',
+    // bundle the client for webpack-dev-server
+    // and connect to the provided endpoint
+    'webpack-dev-server/client?http://localhost:8081',
+    // bundle the client for hot reloading
+    // only- means to only hot reload for successful updates
+    'webpack/hot/only-dev-server',
     entry,
   ],
   output: output,
@@ -51,7 +48,7 @@ module.exports = {
   module: {
     rules: [{
       test: /\.js$/,
-      loader: 'babel-loader',
+      loaders: 'babel-loader',
       exclude: /node_modules/,
       options: {
         presets: ['react', ['es2015', { modules: false }]],
