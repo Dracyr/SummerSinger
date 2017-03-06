@@ -6,15 +6,19 @@ import { fetchAlbum } from './actions';
 
 class Album extends PureComponent {
   static propTypes = {
-    album: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired,
-    fetch: PropTypes.object.isRequired,
+    album: PropTypes.object,
+    match: PropTypes.object,
+    fetch: PropTypes.func.isRequired,
     requestQueueAndPlayTrack: PropTypes.func.isRequired,
     currentId: PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string,
     ]),
   };
+
+  static defaultProps = {
+    album: null,
+  }
 
   componentDidMount() {
     if (this.props.match) {
@@ -32,7 +36,7 @@ class Album extends PureComponent {
     if (!album) { return null; }
 
     return (
-      <div>
+      <div style={{ marginBottom: 100 }}>
         <h2>{album.title}</h2>
         <div style={{ display: 'flex' }}>
           <div style={{ height: '300px', width: '300px', marginRight: '30px', marginTop: '40px' }}>

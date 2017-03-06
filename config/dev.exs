@@ -13,7 +13,7 @@ config :summer_singer, SummerSinger.Endpoint,
   cache_static_lookup: false,
   check_origin: false,
   watchers: [
-    node: ["dev-server.js", cd: Path.expand("../", __DIR__)],
+    node: ["webpack-dev-server.js", cd: Path.expand("../", __DIR__)],
     npm: ["run", "watch:css", cd: Path.expand("../", __DIR__)],
   ]
 

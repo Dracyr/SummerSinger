@@ -16,7 +16,7 @@
     </div>
 
     <%= if Application.get_env(:summer_singer, :env) == :dev do %>
-      <script src='http://localhost:4001/bundle.js'></script>
+      <script src='http://localhost:8081/bundle.js'></script>
     <% else %>
       <script src="<%= static_path(@conn, "/js/bundle.js") %>"></script>
     <% end %>
