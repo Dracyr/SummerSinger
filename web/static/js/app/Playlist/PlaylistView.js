@@ -1,38 +1,50 @@
-import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
+import React, { PureComponent, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { requestQueueAndPlayTrack } from '../Player/actions';
-import * as PlaylistActions from './actions';
+import { fetchPlaylist } from './actions';
 
 import Playlist from './Playlist';
 
-class PlaylistView extends Component {
-  componentDidMount() {
-    const { playlist, actions } = this.props;
+class PlaylistView extends PureComponent {
+  static propTypes = {
+    playlist: PropTypes.shape({
+      id: PropTypes.number,
+    }).isRequired,
+    fetchPlaylist: PropTypes.func.isRequired,
+    requestQueueAndPlayTrack: PropTypes.func.isRequired,
+    currentId: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+  };
 
-    if (playlist) {
-      actions.fetchPlaylist(playlist.id);
+  static defaultProps = {
+    currentId: null,
+  };
+
+
+  componentDidMount() {
+    if (this.props.playlist) {
+      this.props.fetchPlaylist(this.props.playlist.id);
     }
   }
 
   componentDidUpdate() {
-    const { playlist, actions } = this.props;
-
-    if (playlist) {
-      actions.fetchPlaylist(playlist.id);
+    if (this.props.playlist) {
+      this.props.fetchPlaylist(this.props.playlist.id);
     }
   }
 
   render() {
-    const { playlist, requestQueueAndPlayTrack, currentId } = this.props;
+    const { playlist, currentId } = this.props;
     if (!playlist) { return null; }
 
     return (
       <Playlist
         playlist={playlist}
         currentId={currentId}
-        requestQueueAndPlayTrack={requestQueueAndPlayTrack}
+        requestQueueAndPlayTrack={this.props.requestQueueAndPlayTrack}
       />
     );
   }
@@ -52,8 +64,8 @@ function mapState(state, ownProps) {
 
 function mapDispatch(dispatch) {
   return {
-    actions: bindActionCreators(PlaylistActions, dispatch),
     requestQueueAndPlayTrack: (...args) => dispatch(requestQueueAndPlayTrack(...args)),
+    fetchPlaylist: (...args) => dispatch(fetchPlaylist(...args)),
   };
 }
 

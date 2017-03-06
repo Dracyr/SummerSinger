@@ -18,9 +18,19 @@ const Playlist = (props) => {
 };
 
 Playlist.propTypes = {
-  playlist: PropTypes.object,
-  currentId: PropTypes.number,
-  requestQueueAndPlayTrack: PropTypes.func,
+  playlist: PropTypes.shape({
+    title: PropTypes.string,
+    tracks: PropTypes.array,
+  }).isRequired,
+  currentId: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]),
+  requestQueueAndPlayTrack: PropTypes.func.isRequired,
+};
+
+Playlist.defaultProps = {
+  currentId: null,
 };
 
 export default Playlist;

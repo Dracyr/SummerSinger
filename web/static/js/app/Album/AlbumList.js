@@ -1,11 +1,20 @@
-import React, { Component } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import ReactList from 'react-list';
 
 import proxyList from '../Util/InfiniteList';
 import AlbumCard from './AlbumCard';
 
-export default class AlbumList extends Component {
-  // Used by others
+export default class AlbumList extends PureComponent {
+  static propTypes = {
+    entries: PropTypes.array.isRequired,
+    totalAlbums: PropTypes.number,
+  };
+
+  static defaultProps = {
+    totalAlbums: null,
+  }
+
+  // Used by InfiniteList
   getEntryList() {
     return this.entryList;
   }

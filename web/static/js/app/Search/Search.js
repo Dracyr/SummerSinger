@@ -1,25 +1,26 @@
-import React, { Component } from 'react';
+import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import TrackList from '../Track/TrackList';
 import { requestQueueAndPlayTrack } from '../Player/actions';
 
-class Search extends Component {
-  render() {
-    const { search, currentId } = this.props;
+const Search = props => (
+  <TrackList
+    entries={props.search}
+    keyAttr={'id'}
+    currentKey={props.currentId}
+    onClickHandler={track => requestQueueAndPlayTrack(track.id)}
+  />
+);
 
-    return (
-      <TrackList
-        entries={search}
-        keyAttr={'id'}
-        currentKey={currentId}
-        onClickHandler={track => requestQueueAndPlayTrack(track.id)}
-      />
-    );
-  }
-}
-
+Search.propTypes = {
+  search: PropTypes.array.isRequired,
+  currentId: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]),
+};
 
 function mapState(state) {
   return {

@@ -1,6 +1,19 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 
-export default class Folder extends Component {
+export default class Folder extends PureComponent {
+  static propTypes = {
+    folder: PropTypes.shape({
+      id: PropTypes.number,
+      title: PropTypes.string,
+    }).isRequired,
+    fetchFolder: PropTypes.func.isRequired,
+    openContextMenu: PropTypes.func,
+  };
+
+  static defaultProps = {
+    openContextMenu: () => {},
+  }
+
   constructor() {
     super();
     this.fetchFolder = this.fetchFolder.bind(this);
@@ -32,9 +45,3 @@ export default class Folder extends Component {
     );
   }
 }
-
-Folder.propTypes = {
-  folder: PropTypes.object,
-  fetchFolder: PropTypes.func,
-  openContextMenu: PropTypes.func,
-};

@@ -17,6 +17,10 @@ var output = {
 
 if (prod) {
   plugins.push(new webpack.optimize.UglifyJsPlugin());
+  plugins.push(new webpack.LoaderOptionsPlugin({
+    minimize: true,
+    debug: false,
+  }));
 } else {
   plugins.push(new webpack.HotModuleReplacementPlugin());
   plugins.push(new webpack.NoEmitOnErrorsPlugin());
@@ -36,7 +40,6 @@ var entry = './web/static/js/index.js';
 // cheap-module-source-map - A SourceMap without column-mappings. SourceMaps from loaders are simplified to a single mapping per line.
 
 module.exports = {
-  // devtool: prod ? null : 'cheap-source-map',
   devtool: prod ? null : 'inline-source-map',
   entry: prod ? entry : [
     'webpack-dev-server/client?' + publicPath,

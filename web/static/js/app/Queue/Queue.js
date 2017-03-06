@@ -1,11 +1,17 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 
+import TrackList from '../Track/TrackList';
 import { requestPlayTrack } from '../Player/actions';
 import { removeQueueTrack, clearQueue } from './actions';
-import TrackList from '../Track/TrackList';
 
-class Queue extends Component {
+class Queue extends PureComponent {
+  static propTypes = {
+    actions: React.PropTypes.object.isRequired,
+    queue: React.PropTypes.array.isRequired,
+    currentIndex: React.PropTypes.number.isRequired,
+  };
+
   constructor() {
     super();
 
@@ -39,7 +45,7 @@ class Queue extends Component {
         </h1>
         <TrackList
           entries={queue}
-          keyAttr={"index"}
+          keyAttr="index"
           currentKey={currentIndex}
           onClickHandler={this.handleClick}
           onDeleteHandler={this.handleDelete}
@@ -48,12 +54,6 @@ class Queue extends Component {
     );
   }
 }
-
-Queue.propTypes = {
-  actions: React.PropTypes.object,
-  queue: React.PropTypes.array,
-  currentIndex: React.PropTypes.number,
-};
 
 function mapState(state) {
   return {

@@ -1,32 +1,44 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import TrackList from '../Track/TrackList';
 import { requestQueueAndPlayTrack } from '../Player/actions';
 import { fetchAlbum } from './actions';
 
-class Album extends Component {
+class Album extends PureComponent {
+  static propTypes = {
+    album: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
+    fetch: PropTypes.object.isRequired,
+    requestQueueAndPlayTrack: PropTypes.func.isRequired,
+    currentId: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+  };
+
   componentDidMount() {
-    const { album, fetchAlbum, match } = this.props;
-    if (match) {
-      const albumId = parseInt(match.params.albumId, 10);
+    if (this.props.match) {
+      const album = this.props.album;
+      const albumId = parseInt(this.props.match.params.albumId, 10);
       if (!album || album.id !== albumId) {
-        fetchAlbum(albumId);
+        this.props.fetch(albumId);
       }
     }
   }
 
   render() {
-    const { album, requestQueueAndPlayTrack, currentId } = this.props;
+    const { album, currentId } = this.props;
+
     if (!album) { return null; }
 
     return (
       <div>
-        <h2>{album && album.title}</h2>
+        <h2>{album.title}</h2>
         <div style={{ display: 'flex' }}>
           <div style={{ height: '300px', width: '300px', marginRight: '30px', marginTop: '40px' }}>
             <img
-              src={(album && album.cover_art_url) || '/images/album_placeholder.png'}
-              alt={album && album.title}
+              src={(album.cover_art_url) || '/images/album_placeholder.png'}
+              alt={album.title}
               width="300"
               height="300"
             />
@@ -36,7 +48,7 @@ class Album extends Component {
               entries={album.tracks || []}
               keyAttr="id"
               currentKey={currentId}
-              onClickHandler={track => requestQueueAndPlayTrack(track.id)}
+              onClickHandler={track => this.props.requestQueueAndPlayTrack(track.id)}
               hideAlbum
             />
           </div>
@@ -45,10 +57,6 @@ class Album extends Component {
     );
   }
 }
-
-Album.propTypes = {
-  album: PropTypes.object,
-};
 
 function mapState(state, ownProps) {
   return {
@@ -60,7 +68,7 @@ function mapState(state, ownProps) {
 function mapDispatch(dispatch) {
   return {
     requestQueueAndPlayTrack: (...args) => dispatch(requestQueueAndPlayTrack(...args)),
-    fetchAlbum: (...args) => dispatch(fetchAlbum(...args)),
+    fetch: (...args) => dispatch(fetchAlbum(...args)),
   };
 }
 

@@ -1,6 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 
-export default class CreatePlaylist extends Component {
+export default class CreatePlaylist extends PureComponent {
+  static propTypes = {
+    submit: PropTypes.func.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = { value: '' };
@@ -9,7 +13,7 @@ export default class CreatePlaylist extends Component {
   }
 
   componentDidMount() {
-    this.refs.playlistInput.focus();
+    this.playlistInput.focus();
   }
 
   handleChange(event) {
@@ -30,18 +34,16 @@ export default class CreatePlaylist extends Component {
   render() {
     return (
       <li className="create-playlist">
-        <input type="text" className="unstyled-input" ref="playlistInput"
+        <input
+          type="text"
+          className="unstyled-input"
           value={this.state.value}
           onChange={this.handleChange}
           onKeyPress={this.handleKeyPress}
           placeholder="Playlist name"
+          ref={(c) => { this.playlistInput = c; }}
         />
       </li>
     );
   }
 }
-
-CreatePlaylist.propTypes = {
-  active: React.PropTypes.bool,
-  submit: React.PropTypes.func,
-};

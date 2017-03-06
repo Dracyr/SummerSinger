@@ -1,15 +1,20 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import ReactList from 'react-list';
 
 import proxyList from '../Util/InfiniteList';
 import ArtistCard from './ArtistCard';
 
-export default class ArtistList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { selected: null };
+export default class ArtistList extends PureComponent {
+  static propTypes = {
+    entries: PropTypes.array.isRequired,
+    totalArtists: PropTypes.number,
+  };
+
+  static defaultProps = {
+    totalArtists: null,
   }
 
+  // Used by InfiniteList
   getEntryList() {
     return this.entryList;
   }
@@ -42,13 +47,6 @@ export default class ArtistList extends Component {
     );
   }
 }
-
-ArtistList.propTypes = {
-  entries: PropTypes.array,
-  totalArtists: PropTypes.number,
-  selected: PropTypes.bool,
-  loadMoreRows: PropTypes.func,
-};
 
 export const InfiniteArtistList = proxyList(ArtistList);
 

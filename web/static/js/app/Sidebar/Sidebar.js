@@ -1,10 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom';
 import Dragula from 'react-dragula';
 
-import SidebarSearch from './SidebarSearch';
+import SidebarLinks from './SidebarLinks';
 import CreatePlaylist from './CreatePlaylist';
 import SidebarPlaylist from './SidebarPlaylist';
 import SidebarContextMenu from './SidebarContextMenu';
@@ -13,7 +12,7 @@ import * as LibraryActions from '../Library/actions';
 import * as PlaylistActions from '../Playlist/actions';
 import * as SidebarActions from './actions';
 
-class Sidebar extends Component {
+class Sidebar extends PureComponent {
   constructor() {
     super();
     this.state = {
@@ -76,43 +75,9 @@ class Sidebar extends Component {
     const openContextMenu = this.openContextMenu;
     const addTrackToPlaylist = actions.playlist.addTrackToPlaylist;
 
-    const sidebarNav = (
-      <div className="sidebar-links">
-        <SidebarSearch search={actions.library.fetchSearch} />
-        <NavLink to="/queue" activeClassName="active">Queue</NavLink>
-        <NavLink to="/inbox" activeClassName="active">Inbox</NavLink>
-        {/* <NavLink to="/library" activeClassName="active">Library</NavLink> */}
-        <NavLink to="/tracks" activeClassName="active">Tracks</NavLink>
-        <NavLink to="/artists" activeClassName="active">Artists</NavLink>
-        <NavLink to="/albums" activeClassName="active">Albums</NavLink>
-        <NavLink to="/folders" activeClassName="active">Folders</NavLink>
-        <NavLink to="/settings" activeClassName="active">Settings</NavLink>
-      </div>
-    );
-
-    const sidebarPlaylists = (
-      <div className="playlist-tab">
-        <ul className="playlist-list list-unstyled">
-          {this.props.showCreatePlaylist ?
-            <CreatePlaylist submit={actions.playlist.createPlaylist} /> : ''
-          }
-          <div ref={this.dragulaDecorator}>
-            {playlists.map(playlist => (
-              <SidebarPlaylist
-                key={playlist.id}
-                playlist={playlist}
-                addTrackToPlaylist={addTrackToPlaylist}
-                openContextMenu={openContextMenu}
-              />
-            ))}
-          </div>
-        </ul>
-      </div>
-    );
-
     return (
       <div className="sidebar">
-        {sidebarNav}
+        <SidebarLinks fetchSearch={actions.library.fetchSearch} />
 
         <div className="sidebar-playlist-header">
           Playlists
@@ -121,7 +86,23 @@ class Sidebar extends Component {
           </span>
         </div>
 
-        {sidebarPlaylists}
+        <div className="playlist-tab">
+          <div className="playlist-list list-unstyled">
+            {this.props.showCreatePlaylist ?
+              <CreatePlaylist submit={actions.playlist.createPlaylist} /> : ''
+            }
+            <div ref={this.dragulaDecorator}>
+              {playlists.map(playlist => (
+                <SidebarPlaylist
+                  key={playlist.id}
+                  playlist={playlist}
+                  addTrackToPlaylist={addTrackToPlaylist}
+                  openContextMenu={openContextMenu}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
 
         {this.state.contextMenu ?
           <SidebarContextMenu

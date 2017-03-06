@@ -1,16 +1,26 @@
-import React, { Component } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchLibrary } from '../Library/actions';
 import { InfiniteAlbumList } from './AlbumList';
 
-class Albums extends Component {
+class Albums extends PureComponent {
+  static propTypes = {
+    fetchLibrary: PropTypes.func.isRequired,
+    albums: PropTypes.array.isRequired,
+    totalAlbums: PropTypes.number,
+  };
+
+  static defaultProps = {
+    totalAlbums: null,
+  };
+
   componentDidMount() {
     this.props.fetchLibrary('albums', 0, 50);
   }
 
   render() {
-    const { albums, totalAlbums, fetchLibrary } = this.props;
+    const { albums, totalAlbums } = this.props;
 
     return (
       <div>
@@ -20,7 +30,7 @@ class Albums extends Component {
           entries={albums}
           totalAlbums={totalAlbums}
           keyAttr="id"
-          loadMoreRows={(offset, size) => fetchLibrary('albums', offset, size)}
+          loadMoreRows={(offset, size) => this.props.fetchLibrary('albums', offset, size)}
         />
       </div>
     );

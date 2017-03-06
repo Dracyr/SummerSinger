@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { Link } from 'react-router-dom';
 
 import { PlaceholderText } from '../Util/Util';
@@ -8,7 +8,7 @@ const emptyCard = (
     <div className="card-image">
       <img
         src="/images/album_placeholder.png"
-        role="presentation"
+        alt="placeholder"
         width="150"
         height="150"
       />
@@ -17,7 +17,14 @@ const emptyCard = (
   </div>
 );
 
-export default class ArtistCard extends Component {
+export default class ArtistCard extends PureComponent {
+  static propTypes = {
+    artist: PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+    }).isRequired,
+  };
+
   render() {
     const { artist } = this.props;
 
@@ -41,8 +48,3 @@ export default class ArtistCard extends Component {
     );
   }
 }
-
-ArtistCard.propTypes = {
-  artist: PropTypes.object,
-  onClickHandler: PropTypes.func,
-};

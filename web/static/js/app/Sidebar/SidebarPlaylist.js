@@ -1,7 +1,16 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { NavLink } from 'react-router-dom';
 
-class SidebarPlaylist extends Component {
+class SidebarPlaylist extends PureComponent {
+  static propTypes = {
+    playlist: PropTypes.shape({
+      id: PropTypes.number,
+      title: PropTypes.string,
+    }).isRequired,
+    openContextMenu: PropTypes.func.isRequired,
+    addTrackToPlaylist: PropTypes.func.isRequired,
+  };
+
   constructor() {
     super();
     this.onDrop = this.onDrop.bind(this);
@@ -55,12 +64,5 @@ class SidebarPlaylist extends Component {
     );
   }
 }
-
-SidebarPlaylist.propTypes = {
-  playlist: PropTypes.object,
-  openContextMenu: PropTypes.func,
-  addTrackToPlaylist: PropTypes.func,
-};
-
 
 export default SidebarPlaylist;

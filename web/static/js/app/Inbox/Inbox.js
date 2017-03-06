@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Portal from 'react-portal';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -11,7 +11,15 @@ import _ from 'lodash';
 import InfiniteTrackList from '../Track/InfiniteTrackList';
 import StarRating from '../Track/StarRating';
 
-class Inbox extends Component {
+class Inbox extends PureComponent {
+  static propTypes = {
+    actions: React.PropTypes.object,
+    tracks: React.PropTypes.array,
+    currentId: React.PropTypes.number,
+    totalTracks: React.PropTypes.number,
+    inboxSort: React.PropTypes.object,
+  };
+
   constructor() {
     super();
     this.loadMoreRows = _.throttle(this.loadMoreRows, 100, { leading: true, trailing: true });
@@ -30,7 +38,6 @@ class Inbox extends Component {
 
 
   onSelectTrack(track) {
-    console.log("Select", track);
     this.setState({ selectedTrack: track });
   }
 
@@ -60,7 +67,7 @@ class Inbox extends Component {
         <h1 className="header">
           Inbox
           <small className="header-controls">
-            <span onClick={this.clearInbox}>clear inbox</span>
+            <span onClick={this.clearInbox}>add all to library</span>
           </small>
         </h1>
         <InfiniteTrackList
@@ -109,7 +116,7 @@ const TextInput = (props) => {
   );
 };
 
-class TrackEditPane extends React.Component {
+class TrackEditPane extends PureComponent {
   constructor() {
     super();
     this.state = {
@@ -201,14 +208,5 @@ function mapDispatch(dispatch) {
     actions: bindActionCreators(Object.assign({}, InboxActions, PlayerActions), dispatch),
   };
 }
-
-Inbox.propTypes = {
-  actions: React.PropTypes.object,
-  tracks: React.PropTypes.array,
-  currentId: React.PropTypes.number,
-  totalTracks: React.PropTypes.number,
-  inboxSort: React.PropTypes.object,
-};
-
 
 export default connect(mapState, mapDispatch)(Inbox);

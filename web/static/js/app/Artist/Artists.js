@@ -1,16 +1,26 @@
-import React, { Component } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchLibrary } from '../Library/actions';
 import { InfiniteArtistList } from './ArtistList';
 
-class Artists extends Component {
+class Artists extends PureComponent {
+  static propTypes = {
+    fetch: PropTypes.func.isRequired,
+    artists: PropTypes.array.isRequired,
+    totalArtists: PropTypes.number,
+  };
+
+  static defaultProps = {
+    totalArtists: null,
+  };
+
   componentDidMount() {
-    this.props.fetchLibrary('artists', 0, 50);
+    this.props.fetch('artists', 0, 50);
   }
 
   render() {
-    const { artists, totalArtists, fetchLibrary } = this.props;
+    const { artists, totalArtists, fetch } = this.props;
 
     return (
       <div>
@@ -20,7 +30,7 @@ class Artists extends Component {
           entries={artists}
           totalArtists={totalArtists}
           keyAttr="id"
-          loadMoreRows={(offset, size) => fetchLibrary('artists', offset, size)}
+          loadMoreRows={(offset, size) => fetch('artists', offset, size)}
         />
       </div>
     );
@@ -36,7 +46,7 @@ function mapState(state) {
 
 function mapDispatch(dispatch) {
   return {
-    fetchLibrary: (...args) => dispatch(fetchLibrary(...args)),
+    fetch: (...args) => dispatch(fetchLibrary(...args)),
   };
 }
 

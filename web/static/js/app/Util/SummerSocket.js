@@ -1,10 +1,10 @@
+import { Socket } from 'phoenix';
+
 import { socketStatusUpdate, fetchStatus } from '../Player/actions';
 import { queueUpdate, fetchQueue } from '../Queue/actions';
 import { receivePlaylists } from '../Playlist/actions';
 import { trackUpdate } from '../Track/actions';
 import { clearInbox } from '../Inbox/actions';
-
-import { Socket } from 'phoenix';
 
 export default class SummerSocket {
   constructor() {

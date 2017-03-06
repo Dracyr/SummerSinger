@@ -1,8 +1,16 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { NavLink } from 'react-router-dom';
 
+export default class SidebarSearch extends PureComponent {
+  static propTypes = {
+    active: React.PropTypes.bool,
+    search: React.PropTypes.func.isRequired,
+  };
 
-export default class SidebarSearch extends Component {
+  static defaultProps = {
+    active: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = { value: 'Search' };
@@ -58,8 +66,3 @@ export default class SidebarSearch extends Component {
     );
   }
 }
-
-SidebarSearch.propTypes = {
-  active: React.PropTypes.bool,
-  search: React.PropTypes.func,
-};

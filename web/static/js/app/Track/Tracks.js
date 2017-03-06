@@ -1,11 +1,24 @@
-import React, { Component } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { requestQueueAndPlayTrack } from '../Player/actions';
 import { fetchLibrary, sortLibrary } from '../Library/actions';
 import InfiniteTrackList from '../Track/InfiniteTrackList';
 
-class Tracks extends Component {
+class Tracks extends PureComponent {
+  static propTypes = {
+    fetchLibrary: PropTypes.func.isRequired,
+    onClickHandler: PropTypes.func.isRequired,
+    sortTracks: PropTypes.func.isRequired,
+    currentId: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+    librarySort: PropTypes.object.isRequired,
+    tracks: PropTypes.array.isRequired,
+    totalTracks: PropTypes.number.isRequired,
+  };
+
   componentDidMount() {
     this.props.fetchLibrary('tracks', 0, 50);
   }
@@ -16,9 +29,8 @@ class Tracks extends Component {
       currentId,
       totalTracks,
       librarySort,
-      fetchLibrary,
-      sortLibrary,
-      requestQueueAndPlayTrack,
+      sortTracks,
+      onClickHandler,
     } = this.props;
 
     return (
@@ -30,15 +42,16 @@ class Tracks extends Component {
           totalTracks={totalTracks}
           keyAttr={'id'}
           currentKey={currentId}
-          sortTracks={sortLibrary}
+          sortTracks={sortTracks}
           sort={librarySort}
-          loadMoreRows={(offset, size) => fetchLibrary('tracks', offset, size)}
-          onClickHandler={track => requestQueueAndPlayTrack(track.id)}
+          loadMoreRows={(offset, size) => this.props.fetchLibrary('tracks', offset, size)}
+          onClickHandler={track => onClickHandler(track.id)}
         />
       </div>
     );
   }
 }
+
 function mapState(state) {
   return {
     currentId: state.player.currentTrack ? state.player.currentTrack.id : null,
@@ -50,9 +63,9 @@ function mapState(state) {
 
 function mapDispatch(dispatch) {
   return {
-    requestQueueAndPlayTrack: (...args) => dispatch(requestQueueAndPlayTrack(...args)),
+    onClickHandler: (...args) => dispatch(requestQueueAndPlayTrack(...args)),
     fetchLibrary: (...args) => dispatch(fetchLibrary(...args)),
-    sortLibrary: (...args) => dispatch(sortLibrary(...args)),
+    sortTracks: (...args) => dispatch(sortLibrary(...args)),
   };
 }
 

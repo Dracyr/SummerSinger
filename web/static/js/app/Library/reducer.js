@@ -19,11 +19,6 @@ const initialLibrary = {
   artists: [],
   playlists: [],
   search: [],
-  viewContext: {
-    libraryView: 'TRACKS',
-    showItem: null,
-    sort: { sortBy: 'title', dir: 'asc' },
-  },
 };
 
 const recieveLibrary = (state, libraryType, libraryTracks, fullUpdate, total, offset = 0) => {
@@ -68,7 +63,12 @@ export default function library(state = initialLibrary, action) {
     case SWITCH_LIBRARY_VIEW:
       return { ...state, libraryView: action.libraryView, showItem: action.showItem };
     case RECEIVE_LIBRARY:
-      return recieveLibrary(state, action.libraryType, action.library, action.full, action.total, action.offset);
+      return recieveLibrary(state,
+                            action.libraryType,
+                            action.library,
+                            action.full,
+                            action.total,
+                            action.offset);
     case RECEIVE_SEARCH:
       return { ...state, search: action.search };
     case SORT_LIBRARY:
@@ -76,7 +76,7 @@ export default function library(state = initialLibrary, action) {
     case TRACK_UPDATE:
       return { ...state,
         tracks: state.tracks.map(track =>
-          action.track.id === track.id ? action.track : track
+          (action.track.id === track.id ? action.track : track),
         ),
       };
     default:

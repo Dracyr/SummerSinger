@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -8,26 +8,21 @@ import { addTrackToLibrary } from '../Inbox/actions';
 
 import ContextMenu, { MenuItem, Submenu } from '../Util/ContextMenu';
 
-class PlaylistItem extends Component {
-  constructor() {
-    super();
-    this.handleClick = this.handleClick.bind(this);
-  }
+class TrackContextMenu extends PureComponent {
+  static propTypes = {
+    track: React.PropTypes.shape({
+      id: PropTypes.number,
+      inbox: PropTypes.bool,
+    }).isRequired,
+    actions: React.PropTypes.object.isRequired,
+    hideContextMenu: React.PropTypes.func.isRequired,
+    context: React.PropTypes.object.isRequired,
+    playlists: React.PropTypes.shape({
+      id: PropTypes.number,
+      title: PropTypes.string,
+    }).isRequired,
+  };
 
-  handleClick() {
-    this.props.addTrackToPlaylist(this.props.playlist);
-  }
-
-  render() {
-    return (
-      <MenuItem onClick={this.handleClick}>
-        {this.props.playlist.title}
-      </MenuItem>
-    );
-  }
-}
-
-class TrackContextMenu extends Component {
   constructor() {
     super();
     this.playTrack = this.playTrack.bind(this);
@@ -63,14 +58,14 @@ class TrackContextMenu extends Component {
         <MenuItem onClick={this.playTrack}>Play Track</MenuItem>
         <MenuItem onClick={this.queueTrack}>Queue Track</MenuItem>
         <Submenu title="Add Track to Playlist">
-          {this.props.playlists.map((playlist, index) => {
-            return (
-              <PlaylistItem key={index}
-                playlist={playlist}
-                addTrackToPlaylist={this.addTrackToPlaylist}
-              />
-            );
-          })}
+          {this.props.playlists.map(playlist => (
+            <MenuItem
+              key={playlist.id}
+              onClick={() => this.addTrackToPlaylist(playlist)}
+            >
+              {playlist.title}
+            </MenuItem>
+          ))}
         </Submenu>
         {this.props.track && this.props.track.inbox ?
           <MenuItem onClick={this.addTrackToLibrary}>Add to Library</MenuItem> : ''
@@ -79,14 +74,6 @@ class TrackContextMenu extends Component {
     );
   }
 }
-
-TrackContextMenu.propTypes = {
-  track: React.PropTypes.object,
-  actions: React.PropTypes.object,
-  hideContextMenu: React.PropTypes.func,
-  context: React.PropTypes.object,
-  playlists: React.PropTypes.array,
-};
 
 function mapState(state) {
   return {
@@ -105,6 +92,3 @@ function mapDispatch(dispatch) {
 }
 
 export default connect(mapState, mapDispatch)(TrackContextMenu);
-
-
-

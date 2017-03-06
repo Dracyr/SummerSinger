@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import Album from '../Album/Album';
@@ -6,13 +6,29 @@ import TrackList from '../Track/TrackList';
 import { requestQueueAndPlayTrack } from '../Player/actions';
 import { fetchArtist } from './actions';
 
-class Artist extends Component {
+class Artist extends PureComponent {
+  static propTypes = {
+    artist: PropTypes.object.isRequired,
+    fetch: PropTypes.func.isRequired,
+    match: PropTypes.object,
+    onClickHandler: PropTypes.func,
+    currentId: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+  };
+
+  static defaultProps = {
+    onClickHandler: () => {},
+    currentId: null,
+  }
+
   componentDidMount() {
-    const { artist, fetchArtist, match } = this.props;
+    const { artist, fetch, match } = this.props;
     if (match) {
       const artistId = parseInt(match.params.artistId, 10);
       if (!artist || artist.id !== artistId) {
-        fetchArtist(artistId);
+        fetch(artistId);
       }
     }
   }
@@ -44,7 +60,7 @@ class Artist extends Component {
             onClickHandler={onClickHandler}
             currentId={currentId}
             key={album.id}
-          />
+          />,
         )}
 
         {trackList}
@@ -52,10 +68,6 @@ class Artist extends Component {
     );
   }
 }
-
-Artist.propTypes = {
-  artist: PropTypes.object,
-};
 
 function mapState(state, ownProps) {
   return {
@@ -67,7 +79,7 @@ function mapState(state, ownProps) {
 function mapDispatch(dispatch) {
   return {
     onClickHandler: (...args) => dispatch(requestQueueAndPlayTrack(...args)),
-    fetchArtist: (...args) => dispatch(fetchArtist(...args)),
+    fetch: (...args) => dispatch(fetchArtist(...args)),
   };
 }
 

@@ -1,12 +1,46 @@
-import React, { Component } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import ReactList from 'react-list';
-import { PlaceholderText, closestSelector } from '../Util/Util';
+import { closestSelector } from '../Util/Util';
 
 import Track from './Track';
 import TrackContextMenu from './TrackContextMenu';
-import StarRating from './StarRating';
 
-export default class TrackList extends Component {
+export default class TrackList extends PureComponent {
+  static propTypes = {
+    entries: PropTypes.array,
+    keyAttr: PropTypes.string,
+    currentKey: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
+    onClickHandler: PropTypes.func,
+    onDeleteHandler: PropTypes.func,
+    totalTracks: PropTypes.number,
+    renderItem: PropTypes.func,
+    renderItems: PropTypes.func,
+    hideHeader: PropTypes.bool,
+    sortTracks: PropTypes.func,
+    sort: PropTypes.object,
+    onSelectTrack: PropTypes.func,
+    hideAlbum: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    entries: [],
+    keyAttr: 'id',
+    currentKey: null,
+    hideAlbum: false,
+    onClickHandler: () => {},
+    onDeleteHandler: () => {},
+    totalTracks: null,
+    renderItem: null,
+    renderItems: null,
+    hideHeader: false,
+    sortTracks: () => {},
+    sort: null,
+    onSelectTrack: () => {},
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -54,6 +88,15 @@ export default class TrackList extends Component {
     }
   }
 
+  getEntryList() {
+    return this.entryList;
+  }
+
+  selectTrack(track, index) {
+    this.setState({ selectedTrack: track, selectedIndex: index });
+    if (this.props.onSelectTrack) { this.props.onSelectTrack(track); }
+  }
+
   openContextMenu(track, x, y, type = 'track') {
     this.setState({
       contextMenu: { x, y, type },
@@ -66,15 +109,6 @@ export default class TrackList extends Component {
       contextMenu: false,
       selectedTrack: null,
     });
-  }
-
-  selectTrack(track, index) {
-    this.setState({ selectedTrack: track, selectedIndex: index });
-    if (this.props.onSelectTrack) { this.props.onSelectTrack(track); }
-  }
-
-  getEntryList() {
-    return this.entryList;
   }
 
   sortTitle() {
@@ -192,67 +226,37 @@ export default class TrackList extends Component {
     const localLength = (entries && entries.length) || 0;
     const trackCount = totalTracks || localLength;
 
-    // Without arrow functions, will not rerender even if props changed
-    const itemRenderer = (index, key) => this.renderItem(index, key);
-
     const header = this.renderHeader(hideHeader);
 
-    let trackList;
-    if (trackCount > 0 || this.props.hideHeader) {
-      trackList = (
-        <div className="display-table track-list">
-          {header}
-          <ReactList
-            itemRenderer={itemRenderer}
-            itemsRenderer={this.renderItems}
-            length={trackCount}
-            localLength={localLength || trackCount}
-            type="uniform"
-            ref={(c) => { this.entryList = c; }}
-            useStaticSize
-            useTranslate3d
-          />
-          {this.state.contextMenu ?
-            <TrackContextMenu
-              context={this.state.contextMenu}
-              hideContextMenu={this.hideContextMenu}
-              track={this.state.selectedTrack}
-            /> : ''
-          }
-        </div>
-      );
-    } else {
-      trackList = (
+    if (trackCount === 0 && !this.props.hideHeader) {
+      return (
         <div className="display-table track-list">
           {header}
         </div>
       );
     }
 
-    return trackList;
+    return (
+      <div className="display-table track-list">
+        {header}
+        <ReactList
+          itemRenderer={this.renderItem}
+          itemsRenderer={this.renderItems}
+          length={trackCount}
+          localLength={localLength || trackCount}
+          type="uniform"
+          ref={(c) => { this.entryList = c; }}
+          useStaticSize
+          useTranslate3d
+        />
+        {this.state.contextMenu ?
+          <TrackContextMenu
+            context={this.state.contextMenu}
+            hideContextMenu={this.hideContextMenu}
+            track={this.state.selectedTrack}
+          /> : ''
+        }
+      </div>
+    );
   }
-}
-
-TrackList.propTypes = {
-  entries: React.PropTypes.array,
-  keyAttr: React.PropTypes.string,
-  currentKey: React.PropTypes.oneOfType([
-    React.PropTypes.number,
-    React.PropTypes.string,
-  ]),
-  onClickHandler: React.PropTypes.func,
-  onDeleteHandler: React.PropTypes.func,
-  totalTracks: React.PropTypes.number,
-  loadMoreRows: React.PropTypes.func,
-  renderItem: React.PropTypes.func,
-  renderItems: React.PropTypes.func,
-  hideHeader: React.PropTypes.bool,
-  sortTracks: React.PropTypes.func,
-  sort: React.PropTypes.object,
-  onSelectTrack: React.PropTypes.func,
-  hideAlbum: React.PropTypes.bool,
-};
-
-TrackList.defaultProps = {
-  hideAlbum: false,
 }

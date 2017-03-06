@@ -1,9 +1,7 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React, { PureComponent, PropTypes } from 'react';
 import { Link } from 'react-router-dom';
 
 import StarRating from './StarRating';
-import { updateTrack } from './actions';
 import { PlaceholderText } from '../Util/Util';
 
 const emptyTrack = (
@@ -15,13 +13,37 @@ const emptyTrack = (
   </div>
 );
 
-class Track extends Component {
+class Track extends PureComponent {
+  static propTypes = {
+    onClickHandler: PropTypes.func,
+    openContextMenu: PropTypes.func,
+    selectTrack: PropTypes.func,
+    track: PropTypes.shape({
+      title: PropTypes.string,
+      id: PropTypes.number,
+    }),
+    isPlaying: PropTypes.bool,
+    isSelected: PropTypes.bool,
+    index: PropTypes.number,
+    hideAlbum: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    hideAlbum: false,
+    onClickHandler: () => {},
+    openContextMenu: () => {},
+    selectTrack: () => {},
+    track: null,
+    isPlaying: false,
+    isSelected: false,
+    index: null,
+  };
+
   constructor() {
     super();
     this.handleOnClick = this.handleOnClick.bind(this);
     this.handleOnContextMenu = this.handleOnContextMenu.bind(this);
     this.handleOnDragStart = this.handleOnDragStart.bind(this);
-    this.updateTrack = this.updateTrack.bind(this);
   }
 
   handleOnClick() {
@@ -42,19 +64,13 @@ class Track extends Component {
     e.dataTransfer.setData('text/plain', payload);
   }
 
-  updateTrack(params) {
-    this.props.updateTrack(this.props.track.id, params);
-  }
-
   render() {
     const { track, isPlaying, isSelected } = this.props;
 
-    if (!track) {
-      return emptyTrack;
-    }
+    if (!track) { return emptyTrack; }
 
     const currentTrack = isPlaying ?
-      (<span className="playing-icon"><i className="fa fa-volume-up"></i></span>) : '';
+      (<span className="playing-icon"><i className="fa fa-volume-up" /></span>) : '';
     const trackStyle = isSelected ? { background: '#dadada' } : {};
 
     const title = track.title ? track.title : track.filename;
@@ -85,37 +101,11 @@ class Track extends Component {
           </div>
         ) : null}
         <div className="td td-rating">
-          <StarRating
-            rating={track.rating}
-            updateTrack={this.updateTrack}
-          />
+          <StarRating track={track} />
         </div>
       </div>
     );
   }
 }
 
-function mapDispatch(dispatch) {
-  return {
-    updateTrack: (...args) => dispatch(updateTrack(...args)),
-  };
-}
-
-
-Track.propTypes = {
-  onClickHandler: PropTypes.func,
-  openContextMenu: PropTypes.func,
-  selectTrack: PropTypes.func,
-  track: PropTypes.object,
-  isPlaying: PropTypes.bool,
-  isSelected: PropTypes.bool,
-  index: PropTypes.number,
-  updateTrack: PropTypes.func,
-  hideAlbum: PropTypes.bool,
-};
-
-Track.defaultProps = {
-  hideAlbum: false,
-};
-
-export default connect(null, mapDispatch)(Track);
+export default Track;

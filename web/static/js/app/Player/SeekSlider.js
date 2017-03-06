@@ -1,6 +1,6 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 
-export default class SeekSlider extends Component {
+export default class SeekSlider extends PureComponent {
   static propTypes = {
     playing: PropTypes.bool,
     startTime: PropTypes.number,

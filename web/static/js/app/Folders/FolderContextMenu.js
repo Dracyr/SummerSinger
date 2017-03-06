@@ -1,8 +1,15 @@
-import React, { Component } from 'react';
-
+import React, { PureComponent } from 'react';
 import ContextMenu, { MenuItem } from '../Util/ContextMenu';
 
-export default class FolderContextMenu extends Component {
+export default class FolderContextMenu extends PureComponent {
+  static propTypes = {
+    folder: React.PropTypes.object.isRequired,
+    playFolder: React.PropTypes.func.isRequired,
+    queueFolder: React.PropTypes.func.isRequired,
+    hideContextMenu: React.PropTypes.func.isRequired,
+    context: React.PropTypes.object.isRequired,
+  };
+
   constructor() {
     super();
     this.playFolder = this.playFolder.bind(this);
@@ -31,14 +38,3 @@ export default class FolderContextMenu extends Component {
     );
   }
 }
-
-FolderContextMenu.propTypes = {
-  folder: React.PropTypes.object,
-  playFolder: React.PropTypes.func,
-  queueFolder: React.PropTypes.func,
-  hideContextMenu: React.PropTypes.func,
-  context: React.PropTypes.object,
-};
-
-
-

@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -10,8 +10,15 @@ import TrackList from '../Track/TrackList';
 import FolderContextMenu from './FolderContextMenu';
 import TrackContextMenu from '../Track/TrackContextMenu';
 
+class Folders extends PureComponent {
+  static propTypes = {
+    pathParts: PropTypes.array,
+    folder: PropTypes.object,
+    actions: PropTypes.object,
+    currentId: PropTypes.number,
+    playerActions: PropTypes.object,
+  };
 
-class Folders extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -96,26 +103,28 @@ class Folders extends Component {
           folder={this.props.folder.children[index]}
           fetchFolder={this.props.actions.fetchFolder}
           openContextMenu={this.openContextMenu}
-        />);
-    } else {
-      const { folder, currentId } = this.props;
-      const { selectedTarget } = this.state;
-
-      const trackIndex = index - folder.children.length;
-      const track = folder.tracks[trackIndex];
-      const playTrack = () => this.props.playerActions.requestQueueAndPlayTrack(track.id);
-      return (
-        <Track
-          key={key}
-          track={track}
-          isPlaying={currentId === track.id}
-          isSelected={selectedTarget && selectedTarget.id === track.id}
-          selectTrack={this.selectTarget}
-          openContextMenu={this.openContextMenu}
-          onClickHandler={playTrack}
-          index={index}
-        />);
+        />
+      );
     }
+
+    const { folder, currentId } = this.props;
+    const { selectedTarget } = this.state;
+
+    const trackIndex = index - folder.children.length;
+    const track = folder.tracks[trackIndex];
+    const playTrack = () => this.props.playerActions.requestQueueAndPlayTrack(track.id);
+    return (
+      <Track
+        key={key}
+        track={track}
+        isPlaying={currentId === track.id}
+        isSelected={selectedTarget && selectedTarget.id === track.id}
+        selectTrack={this.selectTarget}
+        openContextMenu={this.openContextMenu}
+        onClickHandler={playTrack}
+        index={index}
+      />
+    );
   }
 
   renderItems(items, ref) {
@@ -154,14 +163,6 @@ class Folders extends Component {
     );
   }
 }
-
-Folders.propTypes = {
-  pathParts: PropTypes.array,
-  folder: PropTypes.object,
-  actions: PropTypes.object,
-  currentId: PropTypes.number,
-  playerActions: PropTypes.object,
-};
 
 function mapState(state) {
   return {

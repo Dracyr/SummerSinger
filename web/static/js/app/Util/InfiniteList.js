@@ -1,9 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import _ from 'lodash';
 import { getScrollParent } from '../Util/Util';
 
 export default function proxyList(WrappedList) {
-  return class InfiniteListProxy extends Component {
+  return class InfiniteListProxy extends PureComponent {
     constructor() {
       super();
       this.requestedPages = new Set();

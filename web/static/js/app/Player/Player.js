@@ -1,11 +1,30 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as PlayerActions from './actions';
 
 import SeekSlider from './SeekSlider';
 
-class Player extends Component {
+class Player extends PureComponent {
+  static propTypes = {
+    actions: PropTypes.object.isRequired,
+    playing: PropTypes.bool.isRequired,
+    currentTrack: PropTypes.shape({
+      id: PropTypes.number,
+      artist: PropTypes.string,
+      title: PropTypes.string,
+      album: PropTypes.string,
+    }),
+    startTime: PropTypes.number,
+    pausedDuration: PropTypes.number,
+  };
+
+  static defaultProps = {
+    currentTrack: null,
+    startTime: null,
+    pausedDuration: null,
+  }
+
   constructor() {
     super();
     this.requestPlayback = this.requestPlayback.bind(this);
@@ -64,14 +83,6 @@ class Player extends Component {
     );
   }
 }
-
-Player.propTypes = {
-  actions: PropTypes.object,
-  playing: PropTypes.bool.isRequired,
-  currentTrack: PropTypes.object,
-  startTime: PropTypes.number,
-  pausedDuration: PropTypes.number,
-};
 
 function mapState(state) {
   return {

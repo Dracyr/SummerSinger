@@ -1,7 +1,5 @@
 import fetch from 'isomorphic-fetch';
 
-export const SWITCH_LIBRARY_VIEW = 'SWITCH_LIBRARY_VIEW';
-
 export const REQUEST_LIBRARY = 'REQUEST_LIBRARY';
 export const RECEIVE_LIBRARY = 'RECEIVE_LIBRARY';
 
@@ -9,17 +7,6 @@ export const REQUEST_SEARCH = 'REQUEST_SEARCH';
 export const RECEIVE_SEARCH = 'RECEIVE_SEARCH';
 
 export const SORT_LIBRARY = 'SORT_LIBRARY';
-
-export const LibraryViews = {
-  TRACKS: 'TRACKS',
-  ARTISTS: 'ARTISTS',
-  ALBUMS: 'ALBUMS',
-  FOLDERS: 'FOLDERS',
-};
-
-export function switchLibraryView(libraryView, showItem = null) {
-  return { type: SWITCH_LIBRARY_VIEW, libraryView, showItem };
-}
 
 function requestLibrary(libraryType, offset, limit) {
   return { type: REQUEST_LIBRARY, libraryType, offset, limit };
@@ -56,7 +43,7 @@ function receiveSearch(search) {
 }
 
 export function fetchSearch(searchTerm) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(requestSearch(searchTerm));
 
     return fetch(`/api/tracks?search=${searchTerm}`)
@@ -66,7 +53,7 @@ export function fetchSearch(searchTerm) {
 }
 
 export function sortLibrary(sort) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({ type: SORT_LIBRARY, sort, client: false });
     dispatch(fetchLibrary('tracks', 0, 50, sort));
   };
