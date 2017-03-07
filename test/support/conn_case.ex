@@ -1,4 +1,4 @@
-defmodule SummerSinger.ConnCase do
+defmodule SummerSinger.Web.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -24,10 +24,10 @@ defmodule SummerSinger.ConnCase do
       import Ecto.Model
       import Ecto.Query, only: [from: 2]
 
-      import SummerSinger.Router.Helpers
+      import SummerSinger.Web.Router.Helpers
 
       # The default endpoint for testing
-      @endpoint SummerSinger.Endpoint
+      @endpoint SummerSinger.Web.Endpoint
     end
   end
 

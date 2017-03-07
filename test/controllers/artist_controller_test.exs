@@ -1,5 +1,5 @@
 defmodule SummerSinger.ArtistControllerTest do
-  use SummerSinger.ConnCase
+  use SummerSinger.Web.ConnCase
 
   alias SummerSinger.Artist
   @valid_attrs %{name: "some content"}

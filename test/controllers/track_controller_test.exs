@@ -1,5 +1,5 @@
 defmodule SummerSinger.TrackControllerTest do
-  use SummerSinger.ConnCase
+  use SummerSinger.Web.ConnCase
 
   alias SummerSinger.Track
   @valid_attrs %{duration: 42, filename: "some content", metadata: %{}, rating: 42, title: "some content"}

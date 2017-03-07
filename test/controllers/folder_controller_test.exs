@@ -1,5 +1,5 @@
 defmodule SummerSinger.FolderControllerTest do
-  use SummerSinger.ConnCase
+  use SummerSinger.Web.ConnCase
 
   alias SummerSinger.Folder
   @valid_attrs %{path: "some content", title: "some content"}

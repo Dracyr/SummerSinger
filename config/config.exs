@@ -6,7 +6,7 @@
 use Mix.Config
 
 # Configures the endpoint
-config :summer_singer, SummerSinger.Endpoint,
+config :summer_singer, SummerSinger.Web.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "tqW9azCIn08D2k+S7Ml8VXuMYdft8o7+NUBeyzycZr1YikaKv2i4aRiAlXfeiBJB",
   render_errors: [accepts: ~w(html json)],

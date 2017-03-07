@@ -1,3 +1,3 @@
-defmodule SummerSinger.PageViewTest do
-  use SummerSinger.ConnCase, async: true
+defmodule SummerSinger.Web.PageViewTest do
+  use SummerSinger.Web.ConnCase, async: true
 end

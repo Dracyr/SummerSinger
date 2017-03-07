@@ -1,5 +1,5 @@
 defmodule SummerSinger.PageControllerTest do
-  use SummerSinger.ConnCase
+  use SummerSinger.Web.ConnCase
 
   test "GET /" do
     conn = get conn(), "/"

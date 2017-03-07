@@ -1,4 +1,4 @@
-defmodule SummerSinger.ChannelCase do
+defmodule SummerSinger.Web.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -26,7 +26,7 @@ defmodule SummerSinger.ChannelCase do
 
 
       # The default endpoint for testing
-      @endpoint SummerSinger.Endpoint
+      @endpoint SummerSinger.Web.Endpoint
     end
   end
 

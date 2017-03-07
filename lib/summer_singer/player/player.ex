@@ -42,7 +42,7 @@ defmodule SummerSinger.Player do
 
         if backend_next do
           broadcast_status = Map.merge(status(), %{current_time: DateUtil.now})
-          SummerSinger.Endpoint.broadcast! "status:broadcast", "statusUpdate", broadcast_status
+          SummerSinger.Web.Endpoint.broadcast! "status:broadcast", "statusUpdate", broadcast_status
         end
 
         :ok

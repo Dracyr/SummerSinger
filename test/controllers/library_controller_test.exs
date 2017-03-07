@@ -1,5 +1,5 @@
 defmodule SummerSinger.LibraryControllerTest do
-  use SummerSinger.ConnCase
+  use SummerSinger.Web.ConnCase
 
   alias SummerSinger.Library
   @valid_attrs %{path: "some content", title: "some content"}
