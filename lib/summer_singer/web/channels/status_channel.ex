@@ -1,6 +1,7 @@
 defmodule SummerSinger.Web.RoomChannel do
   use Phoenix.Channel
-  alias SummerSinger.{Player, Queue, Playlist, Folder}
+  alias SummerSinger.{Repo, Player, Queue, Playlist, Folder}
+  alias SummerSinger.Web.{LibraryView, TrackView, PlaylistView, Endpoint}
 
   def join("status:broadcast", _auth_msg, socket) do
     {:ok, %{
@@ -113,22 +114,32 @@ defmodule SummerSinger.Web.RoomChannel do
   end
 
   def handle_in("clear_inbox", %{}, socket) do
-    SummerSinger.Repo.update_all(SummerSinger.Track, set: [inbox: false])
+    Repo.update_all(SummerSinger.Track, set: [inbox: false])
 
-    SummerSinger.Web.Endpoint.broadcast! "status:broadcast", "clearInbox", %{success: true}
+    Endpoint.broadcast! "status:broadcast", "clearInbox", %{success: true}
     {:noreply, socket}
   end
 
   def playlists_update do
-    data = SummerSinger.Web.PlaylistView.render("index.json", playlists: SummerSinger.Repo.all(SummerSinger.Playlist))
-    SummerSinger.Web.Endpoint.broadcast! "status:broadcast", "playlistsUpdate", data
+    data = PlaylistView.render("index.json", playlists: Repo.all(Playlist))
+    Endpoint.broadcast! "status:broadcast", "playlistsUpdate", data
   end
 
   def track_update(track) do
-    data = SummerSinger.Web.TrackView.render("show.json", %{track: track})
+    data = TrackView.render("show.json", %{track: track})
 
-    SummerSinger.Web.Endpoint.broadcast! "status:broadcast", "trackUpdate", data
+    Endpoint.broadcast! "status:broadcast", "trackUpdate", data
   end
+
+  def update(%{resource_type: :library, action: action, resource: resource}) do
+    data = %{
+      resource_type: :library,
+      action: action,
+      data: LibraryView.render("show.json", library: resource)
+    }
+    Endpoint.broadcast! "status:broadcast", "libraryUpdate", data
+  end
+
 
   defp current_status do
     Player.status |> Map.merge(%{current_time: DateUtil.now})

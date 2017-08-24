@@ -27,13 +27,14 @@ defmodule SummerSinger.Web.Router do
     resources "/playlists", PlaylistController
     resources "/libraries", LibraryController
     resources "/folders", FolderController
+    get "/file_system/:path", FileSystemController, :show
   end
 
   scope "/", SummerSinger.Web do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    for path <- ~w(search queue inbox library folder settings playlist tracks albums artists folders) do
+    for path <- ~w(search queue inbox library folder settings playlist tracks albums artists folders import_library) do
       get "/#{path}", PageController, :index
     end
     get "/playlist/:playlistId", PageController, :index

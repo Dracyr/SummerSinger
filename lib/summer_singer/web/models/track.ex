@@ -90,9 +90,7 @@ defmodule SummerSinger.Track do
   def search(query, search_term, limit \\ 0.25) do
     from track in query,
       where:
-        fragment("substr(lower(unaccent(?)), 1, length(?)) = lower(?)", track.title, ^search_term, ^search_term)
-        or
-        fragment("? ILIKE ?", track.title, ^search_term)
+        fragment("unaccent(?) ILIKE unaccent(?)", track.title, ^"%search_term%")
         or
         fragment("similarity(?,?) > ?", track.title, ^search_term, ^limit),
       order_by: fragment("similarity(?,?) DESC", track.title, ^search_term)

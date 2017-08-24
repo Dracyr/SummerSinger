@@ -33,7 +33,8 @@ defmodule SummerSinger.Mixfile do
         :arc,
         :filterable,
         :progress_bar,
-        :mix
+        :mix,
+        :mime
       ]
     ]
   end
@@ -60,7 +61,8 @@ defmodule SummerSinger.Mixfile do
      {:porcelain, "~> 2.0"},
      {:arc_ecto, "0.5.0-rc1"}, # Old version to enable storing binary files
      {:progress_bar, "> 0.0.0"},
-     {:credo, "~> 0.5", only: [:dev, :test]}
+     {:credo, "~> 0.5", only: [:dev, :test]},
+     {:mime, "~> 1.1"}
    ]
   end
 

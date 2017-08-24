@@ -26,7 +26,8 @@ defmodule SummerSinger.Web.TrackController do
     tracks =
       from(t in Track,
         where: t.imported and t.inbox == ^(params["inbox"] == "true"),
-        preload: [:artist, :album])
+        preload: [:artist, :album],
+      )
       |> apply_filters(params, share: params)
       |> Repo.all
 

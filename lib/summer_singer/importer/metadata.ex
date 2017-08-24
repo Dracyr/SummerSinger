@@ -14,7 +14,7 @@ defmodule SummerSinger.Importer.Metadata do
         preload: [:cover_art])
       |> Map.new
 
-    tracks = Repo.all(from t in Track, where: not t.imported)
+    tracks = Repo.all(from t in Track) #, where: not t.imported)
 
     total_tracks = length(tracks)
     ProgressBar.render(0, total_tracks)
@@ -30,18 +30,18 @@ defmodule SummerSinger.Importer.Metadata do
     |> Stream.with_index
     |> Stream.each(fn {chunk, index} ->
       ProgressBar.render(length(chunk) * index, total_tracks)
+      # Do a updated tracks broadcast
     end)
     |> Stream.run
   end
 
   def to_changesets(track, {artists, albums}) do
     result =
-      with {:ok, audio_properties, tags} <-
-            MusicTagger.fetch_tags(track.path),
-          {:ok, cover_art} <-
-            MusicTagger.fetch_cover(track.path),
+      with {:ok, audio_properties, tags, cover_art} <-
+            MusicTagger.read(track.path),
           {:ok, {artists, albums}, artist, album, cover_art} <-
-            get_resources({artists, albums}, tags["ARTIST"], tags["ALBUMARTIST"], tags["ALBUM"], cover_art),
+            get_resources({artists, albums}, tags, cover_art),
+            # get_resources({artists, albums}, tags["ARTIST"], tags["ALBUMARTIST"], tags["ALBUM"], cover_art),
           {:ok, updated_track} <-
             update_track(track, {audio_properties, tags}, artist, album, cover_art),
       do: {:ok, updated_track, {artists, albums}}
@@ -56,12 +56,13 @@ defmodule SummerSinger.Importer.Metadata do
 
   defp put_new(map, _key, nil), do: map
   defp put_new(map, key, value), do: Map.put_new(map, key, value)
-  def get_resources({artists, albums}, artist_name, album_artist_name, album_title, cover_art) do
+  # def get_resources({artists, albums}, artist_name, album_artist_name, album_title, cover_art) do
+  def get_resources({artists, albums}, tags, cover_art) do
     multi =
       Ecto.Multi.new
-      |> Ecto.Multi.run(:artist, &fetch_artist(&1, artists, artist_name))
-      |> Ecto.Multi.run(:album_artist, &fetch_album_artist(&1, artists, album_artist_name))
-      |> Ecto.Multi.run(:album, &fetch_album(&1, albums, album_title))
+      |> Ecto.Multi.run(:artist, &fetch_artist(&1, artists, tags))
+      |> Ecto.Multi.run(:album_artist, &fetch_album_artist(&1, artists, tags))
+      |> Ecto.Multi.run(:album, &fetch_album(&1, albums, tags))
       |> Ecto.Multi.run(:cover_art, &fetch_cover_art(&1, cover_art))
       |> Ecto.Multi.run(:cover_art_image, &update_cover_image(&1, cover_art))
       |> Ecto.Multi.run(:update_album_cover, &update_album_cover/1)
@@ -144,21 +145,14 @@ defmodule SummerSinger.Importer.Metadata do
   def update_cover_image(_, nil), do: {:ok, nil}
   def update_cover_image(%{cover_art: nil}, _), do: {:ok, nil}
   def update_cover_image(%{cover_art: cover_art}, cover) do
-    ext = case cover.mime_type do
-      "image/jpeg" -> "jpg"
-      "image/jpg" -> "jpg" # Hey, this isn't a real mimetype
-      "image/png" -> "png"
-      _ -> nil
-    end
-
-    if is_nil(ext) do
-      {:ok, nil}
-    else
-      cover_art
-      |> CoverArt.changeset(%{
-          cover_art: %{filename: "cover.#{ext}", binary: cover.image}
-        })
-      |> Repo.update
+    case MIME.extensions(cover.mime_type) |> Enum.at(0) do
+      nil -> {:ok, nil}
+      ext ->
+        cover_art
+        |> CoverArt.changeset(%{
+            cover_art: %{filename: "cover.#{ext}", binary: cover.image}
+          })
+        |> Repo.update
     end
   end
 

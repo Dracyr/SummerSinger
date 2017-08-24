@@ -2,12 +2,9 @@ defmodule SummerSinger.CoverArt.Uploader do
   use Arc.Definition
   use Arc.Ecto.Definition
 
-  @versions [:original]
-
-  # To add a thumbnail version:
-  @versions [:original, :small]
-
   def __storage, do: Arc.Storage.Local
+
+  @versions [:original, :small]
 
   # Whitelist file extensions:
   def validate({file, _}) do
@@ -38,6 +35,9 @@ defmodule SummerSinger.CoverArt.Uploader do
   #    :expect, :expires, :storage_class, :website_redirect_location]
   #
   # def s3_object_headers(version, {file, scope}) do
-  #   [content_type: Plug.MIME.path(file.file_name)]
+  #   [
+  #     content_type: Plug.MIME.path(file.file_name),
+  #     cache_control: "public, hej"
+  #   ]
   # end
 end

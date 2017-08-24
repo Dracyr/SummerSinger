@@ -13,6 +13,12 @@ defmodule SummerSinger.Web.LibraryController do
 
     case Repo.insert(changeset) do
       {:ok, library} ->
+        SummerSinger.Web.RoomChannel.update(%{
+          resource_type: :library,
+          action: :create,
+          resource: library,
+        })
+
         conn
         |> put_status(:created)
         |> put_resp_header("location", library_path(conn, :show, library))
