@@ -47,6 +47,7 @@ class Artist extends PureComponent {
           keyAttr={'id'}
           currentKey={currentId}
           onClickHandler={onClickHandler}
+          displayStatic
         />
       );
     }

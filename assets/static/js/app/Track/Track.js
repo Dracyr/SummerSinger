@@ -71,7 +71,7 @@ class Track extends PureComponent {
 
     const currentTrack = isPlaying ?
       (<span className="playing-icon"><i className="fa fa-volume-up" /></span>) : '';
-    const trackStyle = isSelected ? { background: '#dadada' } : {};
+    const trackStyle = isSelected ? { ...this.props.style, background: '#dadada' } : this.props.style;
 
     const title = track.title ? track.title : track.filename;
 

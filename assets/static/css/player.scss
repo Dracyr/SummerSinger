@@ -11,13 +11,6 @@ $color-primary: #aa79ff;
   width: 100%;
 
   background: #FAFAFA;
-
-  i {
-    cursor: pointer;
-    &:hover {
-      color: $color-primary;
-    }
-  }
 }
 
 #player-controls {
@@ -30,6 +23,13 @@ $color-primary: #aa79ff;
   font-size: 40px;
   line-height: 1.8;
   letter-spacing: 20px;
+
+  i {
+    cursor: pointer;
+    &:hover {
+      color: $color-primary;
+    }
+  }
 }
 
 .player-info {
@@ -118,4 +118,13 @@ $seek_slider_height: 10px;
 .track-list tr {
   cursor: pointer;
   @include no-select();
+}
+
+.now-playing-art {
+  margin-left: 25px;
+  margin-top: 25px;
+  margin-bottom: 20px;
+  height: 250px;
+  box-shadow: rgb(221, 221, 221) 5px 5px 10px 0px;
+  outline: 1px solid #ddd;
 }

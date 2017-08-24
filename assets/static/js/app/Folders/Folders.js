@@ -29,7 +29,7 @@ class Folders extends PureComponent {
     this.openContextMenu = this.openContextMenu.bind(this);
     this.hideContextMenu = this.hideContextMenu.bind(this);
     this.renderItem = this.renderItem.bind(this);
-    this.renderItems = this.renderItems.bind(this);
+    // this.renderItems = this.renderItems.bind(this);
     this.selectTarget = this.selectTarget.bind(this);
     this.goToParent = this.goToParent.bind(this);
     this.playFolder = this.playFolder.bind(this);
@@ -95,11 +95,12 @@ class Folders extends PureComponent {
     return contextMenu;
   }
 
-  renderItem(index, key) {
+  renderItem({ index, key, style }) {
     if (index < this.props.folder.children.length) {
       return (
         <Folder
           key={key}
+          style={style}
           folder={this.props.folder.children[index]}
           fetchFolder={this.props.actions.fetchFolder}
           openContextMenu={this.openContextMenu}
@@ -116,6 +117,7 @@ class Folders extends PureComponent {
     return (
       <Track
         key={key}
+        style={style}
         track={track}
         isPlaying={currentId === track.id}
         isSelected={selectedTarget && selectedTarget.id === track.id}
@@ -127,33 +129,29 @@ class Folders extends PureComponent {
     );
   }
 
-  renderItems(items, ref) {
-    const folderParent = this.props.pathParts.length > 1 ? (
-      <div key={0} className="tr track"onClick={this.goToParent}>
-        <div className="td ">..</div>
-        <div className="td "></div>
-        <div className="td "></div>
-        <div className="td "></div>
-      </div>
-    ) : '';
-
-    return <div className="tbody" ref={ref}>{folderParent}{items}</div>;
-  }
-
   render() {
     const { pathParts, folder } = this.props;
 
     const totalLength = folder.children.length + folder.tracks.length;
     const contextMenu = this.renderContextMenu();
 
+    const folderParent = this.props.pathParts.length > 1 ? (
+      <div key={'0-0'} className="tr track" onClick={this.goToParent}>
+        <div className="td " >..</div>
+        <div className="td " />
+        <div className="td " />
+        <div className="td " />
+      </div>
+    ) : '';
+
     return (
       <div>
         <h1 className="header">Folders</h1>
         <h3>{pathParts.length > 1 ? pathParts.join(' / ') : '/'}</h3>
         <div className="display-table track-list">
+          {folderParent}
           <TrackList
             renderItem={this.renderItem}
-            renderItems={this.renderItems}
             totalTracks={totalLength}
             hideHeader
           />

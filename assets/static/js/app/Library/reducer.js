@@ -8,7 +8,6 @@ import { TRACK_UPDATE } from '../Track/actions';
 import { insertAtOffset } from '../Util/Util';
 
 const initialLibrary = {
-  libraryView: 'TRACKS',
   librarySort: { sortBy: 'title', dir: 'asc' },
   totalTracks: 0,
   tracks: [],

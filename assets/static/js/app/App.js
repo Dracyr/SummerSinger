@@ -24,7 +24,7 @@ import PlaylistView from '../app/Playlist/PlaylistView';
 const App = () => (
   <Router>
     <div>
-      <Player />
+      {/*<Player />*/}
       <div className="wrapper">
         <Sidebar />
         <div id="main-content">

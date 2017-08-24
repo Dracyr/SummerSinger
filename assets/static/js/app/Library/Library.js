@@ -5,11 +5,11 @@ import { connect } from 'react-redux';
 import * as PlayerActions from '../Player/actions';
 import * as LibraryActions from './actions';
 
-import InfiniteTrackList from '../Track/InfiniteTrackList';
-import { InfiniteAlbumList } from '../Album/AlbumList';
+import TrackList from '../Track/TrackList';
 import Album from '../Album/Album';
+import AlbumList from '../Album/AlbumList';
 import Artist from '../Artist/Artist';
-import { InfiniteArtistList } from '../Artist/ArtistList';
+import ArtistList from '../Artist/ArtistList';
 import Folders from '../Folders/Folders';
 
 class Library extends Component {
@@ -91,7 +91,7 @@ class Library extends Component {
     switch (libraryView) {
       case 'TRACKS':
         currentView = (
-          <InfiniteTrackList
+          <TrackList
             entries={tracks}
             totalTracks={total.tracks}
             keyAttr={'id'}
@@ -104,8 +104,9 @@ class Library extends Component {
         break;
       case 'ALBUMS':
         currentView = (
-          <InfiniteAlbumList
+          <AlbumList
             entries={albums}
+            currentKey={currentId}
             totalAlbums={total.albums}
             onClickHandler={album => actions.switchLibraryView('SHOW_ALBUM', album.id)}
             loadMoreRows={(offset, size) => this.loadMoreRows('albums', offset, size)}
@@ -113,7 +114,7 @@ class Library extends Component {
         break;
       case 'ARTISTS':
         currentView = (
-          <InfiniteArtistList
+          <ArtistList
             entries={artists}
             currentKey={currentId}
             totalArtists={total.artists}

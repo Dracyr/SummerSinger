@@ -10,7 +10,7 @@ class PlaylistView extends PureComponent {
   static propTypes = {
     playlist: PropTypes.shape({
       id: PropTypes.number,
-    }).isRequired,
+    }),
     fetchPlaylist: PropTypes.func.isRequired,
     requestQueueAndPlayTrack: PropTypes.func.isRequired,
     currentId: PropTypes.oneOfType([
@@ -21,6 +21,7 @@ class PlaylistView extends PureComponent {
 
   static defaultProps = {
     currentId: null,
+    playlist: null,
   };
 
 

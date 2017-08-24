@@ -54,6 +54,7 @@ class Album extends PureComponent {
               currentKey={currentId}
               onClickHandler={track => this.props.requestQueueAndPlayTrack(track.id)}
               hideAlbum
+              displayStatic
             />
           </div>
         </div>

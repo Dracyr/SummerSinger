@@ -61,10 +61,12 @@ class StarRating extends PureComponent {
     event.preventDefault();
     event.stopPropagation();
 
-    const rect = this.starRating.getBoundingClientRect();
-    let rating = ((event.pageX - rect.left) / rect.width) * 5;
-    rating = (Math.round(rating * 2) / 2) * 20;
-    this.props.updateTrack(this.props.track.id, { rating });
+    if (this.props.track.id) {
+      const rect = this.starRating.getBoundingClientRect();
+      let rating = ((event.pageX - rect.left) / rect.width) * 5;
+      rating = (Math.round(rating * 2) / 2) * 20;
+      this.props.updateTrack(this.props.track.id, { rating });
+    }
   }
 
   render() {
@@ -72,10 +74,9 @@ class StarRating extends PureComponent {
     if (this.state.hover) {
       stars = this.state.hoverStars;
     } else {
-      stars = conversion[this.props.track.rating];
+      stars = conversion[this.props.track.rating] || 0;
     }
     const halfStar = stars - Math.floor(stars) === 0.5;
-
 
     return (
       <a

@@ -40,9 +40,11 @@ h1, h2, h3, h4, h5, h6 {
   flex-grow: 1;
 
   overflow-y: scroll;
-  height: calc(100vh - 80px);
+  // height: calc(100vh - 80px);
+  height: 100vh;
 
   background: #EEE;
+  // box-shadow: 0px 0px 10px 5px #ddd;
 }
 
 .playing-icon {
@@ -74,15 +76,31 @@ h1, h2, h3, h4, h5, h6 {
   border-collapse: collapse;
 }
 
+
+.dir-table {
+  .tr:hover {
+    background-color: #EEE;
+    &.selected {
+      background: #dadada;
+    }
+  }
+}
+
+
 .tr {
   display: inline-table;
   width: 100%;
   height: 40px;
   overflow: hidden;
+
+  &.selected {
+    background: #dadada;
+  }
 }
 
 .tr.track {
   cursor: pointer;
+  overflow-y: hidden;
 
   &:hover {
     background: #ddd;
@@ -199,4 +217,139 @@ h1, h2, h3, h4, h5, h6 {
   height: '1em';
   display: 'inline-block';
   background-color: '#ddd';
+}
+
+.modal {
+  display: block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  outline: 0;
+
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 150ms linear;
+
+  &.visible {
+    opacity: 1;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+.modal-content {
+  width: 600px;
+  margin: 10vh auto;
+  background: #FFF;
+}
+
+.modal-header {
+  padding: 15px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.modal-body {
+  position: relative;
+  padding: 15px;
+}
+
+.modal-title {
+  margin: 0;
+  line-height: 1.42857143;
+}
+
+button {
+  background: none;
+  padding: 0.6em 1.1em;
+  border: 1px solid $color-primary;
+  color: $color-primary;
+
+  transition: color 150ms ease, background 150ms ease;
+
+  &:hover {
+    background: $color-primary;
+    color: #FFF;
+  }
+}
+
+/* Collection default theme */
+
+.ReactVirtualized__Collection {
+}
+
+.ReactVirtualized__Collection__innerScrollContainer {
+}
+
+/* Grid default theme */
+
+.ReactVirtualized__Grid {
+}
+
+.ReactVirtualized__Grid__innerScrollContainer {
+}
+
+/* Table default theme */
+
+.ReactVirtualized__Table {
+}
+
+.ReactVirtualized__Table__Grid {
+}
+
+.ReactVirtualized__Table__headerRow {
+  font-weight: 700;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.ReactVirtualized__Table__row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.ReactVirtualized__Table__headerTruncatedText {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.ReactVirtualized__Table__headerColumn,
+.ReactVirtualized__Table__rowColumn {
+  margin-right: 10px;
+  min-width: 0px;
+}
+.ReactVirtualized__Table__rowColumn {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ReactVirtualized__Table__headerColumn:first-of-type,
+.ReactVirtualized__Table__rowColumn:first-of-type {
+  margin-left: 10px;
+}
+.ReactVirtualized__Table__sortableHeaderColumn {
+  cursor: pointer;
+}
+
+.ReactVirtualized__Table__sortableHeaderIconContainer {
+  display: flex;
+  align-items: center;
+}
+.ReactVirtualized__Table__sortableHeaderIcon {
+  flex: 0 0 24px;
+  height: 1em;
+  width: 1em;
+  fill: currentColor;
+}
+
+/* List default theme */
+
+.ReactVirtualized__List {
 }

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { requestQueueAndPlayTrack } from '../Player/actions';
 import { fetchLibrary, sortLibrary } from '../Library/actions';
-import InfiniteTrackList from '../Track/InfiniteTrackList';
+import TrackList from '../Track/TrackList';
 
 class Tracks extends PureComponent {
   static propTypes = {
@@ -37,7 +37,7 @@ class Tracks extends PureComponent {
       <div>
         <h1 className="header">All Tracks</h1>
 
-        <InfiniteTrackList
+        <TrackList
           entries={tracks}
           totalTracks={totalTracks}
           keyAttr={'id'}

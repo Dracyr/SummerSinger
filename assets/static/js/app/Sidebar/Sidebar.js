@@ -2,11 +2,14 @@ import React, { PureComponent, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Dragula from 'react-dragula';
+import { NavLink, withRouter } from 'react-router-dom';
 
-import SidebarLinks from './SidebarLinks';
+import SidebarSearch from './SidebarSearch';
 import CreatePlaylist from './CreatePlaylist';
 import SidebarPlaylist from './SidebarPlaylist';
 import SidebarContextMenu from './SidebarContextMenu';
+
+import SidebarPlayer from '../Player/SidebarPlayer';
 
 import * as LibraryActions from '../Library/actions';
 import * as PlaylistActions from '../Playlist/actions';
@@ -77,7 +80,20 @@ class Sidebar extends PureComponent {
 
     return (
       <div className="sidebar">
-        <SidebarLinks fetchSearch={actions.library.fetchSearch} />
+        <SidebarPlayer />
+        <div className="sidebar-links">
+          <SidebarSearch search={actions.library.fetchSearch} />
+          <NavLink to="/queue" activeClassName="active">Queue</NavLink>
+          {/* <NavLink to="/inbox" activeClassName="active">Inbox</NavLink> */}
+          <NavLink to="/library" activeClassName="active">Library</NavLink>
+          <ul className="sidebar-library-links">
+            <li><NavLink to="/tracks" activeClassName="active">Tracks</NavLink></li>
+            <li><NavLink to="/artists" activeClassName="active">Artists</NavLink></li>
+            <li><NavLink to="/albums" activeClassName="active">Albums</NavLink></li>
+            <li><NavLink to="/folders" activeClassName="active">Folders</NavLink></li>
+          </ul>
+          <NavLink to="/settings" activeClassName="active">Settings</NavLink>
+        </div>
 
         <div className="sidebar-playlist-header">
           Playlists
@@ -141,4 +157,4 @@ function mapDispatch(dispatch) {
   };
 }
 
-export default connect(mapState, mapDispatch)(Sidebar);
+export default withRouter(connect(mapState, mapDispatch)(Sidebar));

@@ -1,59 +1,73 @@
 import React, { PureComponent, PropTypes } from 'react';
-import _ from 'lodash';
-import { getScrollParent } from '../Util/Util';
+import { AutoSizer, List, WindowScroller, InfiniteLoader } from 'react-virtualized';
 
-export default function proxyList(WrappedList) {
-  return class InfiniteListProxy extends PureComponent {
-    constructor() {
-      super();
-      this.requestedPages = new Set();
-      this.isRowLoaded = this.isRowLoaded.bind(this);
-      this.onScroll = _.throttle(this.onScroll.bind(this), 100, { leading: false, trailing: true });
-      this.entryList = null;
-    }
-
-    componentDidMount() {
-      getScrollParent(this).addEventListener('scroll', this.onScroll, false);
-    }
-
-    componentWillUnmount() {
-      getScrollParent(this).removeEventListener('scroll', this.onScroll);
-    }
-
-    onScroll() {
-      if (this.props.loadMoreRows) {
-        const [start, end] = this.entryList.getVisibleRange();
-        const pageSize = 50;
-
-        const pages = [
-          Math.floor(start / pageSize) * pageSize,
-          Math.floor(end / pageSize) * pageSize,
-          Math.ceil(start / pageSize) * pageSize,
-          Math.ceil(end / pageSize) * pageSize,
-        ];
-        pages.forEach((page) => {
-          if (!this.isRowLoaded(page) && !this.requestedPages.has(page) && !isNaN(page)) {
-            this.requestedPages.add(page);
-            this.props.loadMoreRows(page, 50);
-          }
-        });
-      }
-    }
-
-    isRowLoaded(index) {
-      return !!(this.props.entries && this.props.entries[index]);
-    }
-
-    proc(wrappedComponentInstance) {
-      if (wrappedComponentInstance) {
-        this.entryList = wrappedComponentInstance.getEntryList();
-        this.wrappedComponentInstance = wrappedComponentInstance;
-      }
-    }
-
-    render() {
-      const props = Object.assign({}, this.props, { ref: this.proc.bind(this) });
-      return <WrappedList {...props} />;
-    }
+export default class InfiniteList extends PureComponent {
+  static propTypes = {
+    entryCount: PropTypes.number,
+    loadMoreRows: PropTypes.func,
+    isRowLoaded: PropTypes.func,
+    rowHeight: PropTypes.number,
+    renderItem: PropTypes.func,
   };
+
+  constructor(props) {
+    super(props);
+    this.requestedPages = new Set();
+
+    this.loadMoreRows = this.loadMoreRows.bind(this);
+    this.scrollElement = document.getElementById('main-content');
+  }
+
+  loadMoreRows({ startIndex, stopIndex }) {
+    if (this.props.loadMoreRows) {
+      const pageSize = 50;
+
+      const pages = [
+        Math.floor(startIndex / pageSize) * pageSize,
+        Math.floor(stopIndex / pageSize) * pageSize,
+        Math.ceil(startIndex / pageSize) * pageSize,
+        Math.ceil(stopIndex / pageSize) * pageSize,
+      ];
+      pages.forEach((page) => {
+        if (!this.props.isRowLoaded(page) && !this.requestedPages.has(page) && !isNaN(page)) {
+          this.requestedPages.add(page);
+          this.props.loadMoreRows(page, pageSize);
+        }
+      });
+    }
+  }
+
+  render() {
+    return (
+      <InfiniteLoader
+        isRowLoaded={this.props.isRowLoaded}
+        loadMoreRows={this.loadMoreRows}
+        rowCount={this.props.entryCount}
+      >
+        {({ onRowsRendered, registerChild }) => (
+          <WindowScroller
+            scrollElement={this.scrollElement}
+          >
+            {({ height, scrollTop }) => (
+              <AutoSizer disableHeight>
+                {({ width }) => (
+                  <List
+                    ref={registerChild}
+                    autoHeight
+                    height={height}
+                    width={width}
+                    rowRenderer={this.props.renderItem}
+                    rowCount={this.props.entryCount}
+                    rowHeight={this.props.rowHeight}
+                    onRowsRendered={onRowsRendered}
+                    scrollTop={scrollTop}
+                  />
+                )}
+              </AutoSizer>
+            )}
+          </WindowScroller>
+        )}
+      </InfiniteLoader>
+    );
+  }
 }

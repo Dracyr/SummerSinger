@@ -8,6 +8,7 @@ export default class Folder extends PureComponent {
     }).isRequired,
     fetchFolder: PropTypes.func.isRequired,
     openContextMenu: PropTypes.func,
+    style: PropTypes.object,
   };
 
   static defaultProps = {
@@ -36,6 +37,7 @@ export default class Folder extends PureComponent {
         className="tr track"
         onClick={this.fetchFolder}
         onContextMenu={this.onContextMenu}
+        style={this.props.style}
       >
         <div className="td "><b>{this.props.folder.title}</b></div>
         <div className="td "></div>

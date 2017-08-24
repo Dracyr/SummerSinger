@@ -1,45 +1,56 @@
 import React, { PureComponent, PropTypes } from 'react';
-import ReactList from 'react-list';
-
-import proxyList from '../Util/InfiniteList';
-import ArtistCard from './ArtistCard';
+import InfiniteGrid from '../Util/InfiniteGrid';
+import Card, { EmptyCard } from '../Util/Card';
 
 export default class ArtistList extends PureComponent {
   static propTypes = {
     entries: PropTypes.array.isRequired,
     totalArtists: PropTypes.number.isRequired,
+    loadMoreRows: PropTypes.func,
   };
 
-  // Used by InfiniteList
-  getEntryList() {
-    return this.entryList;
+  constructor() {
+    super();
+    this.renderItem = this.renderItem.bind(this);
+    this.isRowLoaded = this.isRowLoaded.bind(this);
+    this.requestedPages = new Set();
+  }
+
+  isRowLoaded({ index }) {
+    return !!(this.props.entries && this.props.entries[index]);
+  }
+
+  renderItem({ columnIndex, rowIndex, key, style }) {
+    const index = (rowIndex * 5) + columnIndex;
+    const artist = this.props.entries[index];
+    let artistComponent = '';
+    if (artist) {
+      artistComponent = (
+        <Card
+          key={key}
+          style={style}
+          url={`/artists/${artist.id}`}
+          imageUrl={artist.image_url || '/images/album_placeholder.png'}
+          title={artist.name}
+        />
+      );
+    } else {
+      artistComponent = <EmptyCard key={key} style={style} />;
+    }
+    return artistComponent;
   }
 
   render() {
     const { entries, totalArtists } = this.props;
+    const artistCount = totalArtists || (entries && entries.length) || 0;
+
     return (
-      <ReactList
-        itemRenderer={(index, key) =>
-          <ArtistCard
-            key={key}
-            artist={entries[index]}
-          />
-        }
-        itemsRenderer={(items, ref) =>
-          <div className="card-list" ref={ref}>
-            {items}
-          </div>
-        }
-        length={totalArtists || entries.length}
-        axis="y"
-        type="uniform"
-        useStaticSize
-        useTranslate3d
-        ref={(c) => { this.entryList = c; }}
+      <InfiniteGrid
+        entryCount={artistCount}
+        isRowLoaded={this.isRowLoaded}
+        loadMoreRows={this.props.loadMoreRows}
+        renderItem={this.renderItem}
       />
     );
   }
 }
-
-export const InfiniteArtistList = proxyList(ArtistList);
-

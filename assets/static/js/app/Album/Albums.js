@@ -2,7 +2,7 @@ import React, { PureComponent, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchLibrary } from '../Library/actions';
-import { InfiniteAlbumList } from './AlbumList';
+import AlbumList from './AlbumList';
 
 class Albums extends PureComponent {
   static propTypes = {
@@ -16,16 +16,16 @@ class Albums extends PureComponent {
   }
 
   render() {
-    const { albums, totalAlbums } = this.props;
+    const { albums, totalAlbums, fetchLibrary } = this.props;
 
     return (
       <div>
         <h1 className="header">All Albums</h1>
-        <InfiniteAlbumList
+        <AlbumList
           entries={albums}
           totalAlbums={totalAlbums}
           keyAttr="id"
-          loadMoreRows={(offset, size) => this.props.fetchLibrary('albums', offset, size)}
+          loadMoreRows={(offset, size) => fetchLibrary('albums', offset, size)}
         />
       </div>
     );

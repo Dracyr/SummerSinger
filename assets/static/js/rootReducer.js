@@ -9,6 +9,7 @@ import inbox from './app/Inbox/reducer';
 import folders from './app/Folders/reducer';
 import playlist from './app/Playlist/reducer';
 import sidebar from './app/Sidebar/reducer';
+import settings from './app/Settings/reducer';
 
 import {
   GO_TO_PARENT,
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   inbox,
   playlist,
   sidebar,
+  settings,
   folders: undoable(folders, {
     filter: includeAction([RECEIVE_FOLDER]),
     debub: true,

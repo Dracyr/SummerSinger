@@ -1,9 +1,15 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { requestVolume } from '../Player/actions';
+import LibrarySettings from './Library/LibrarySettings';
 
-class Settings extends Component {
+class Settings extends PureComponent {
+  static propTypes = {
+    requestVolume: PropTypes.func.isRequired,
+    volume: PropTypes.number.isRequired,
+  };
+
   constructor() {
     super();
     this.setVolume = this.setVolume.bind(this);
@@ -11,7 +17,7 @@ class Settings extends Component {
 
   setVolume(event) {
     const volume = event.target.value;
-    this.props.actions.requestVolume(volume);
+    this.props.requestVolume(volume);
   }
 
   render() {
@@ -27,16 +33,11 @@ class Settings extends Component {
           onChange={this.setVolume}
         />
 
-        <h4>Libraries</h4>
+        <LibrarySettings />
       </div>
     );
   }
 }
-
-Settings.propTypes = {
-  actions: PropTypes.object,
-  volume: PropTypes.number,
-};
 
 function mapState(state) {
   return {
@@ -46,9 +47,7 @@ function mapState(state) {
 
 function mapDispatch(dispatch) {
   return {
-    actions: {
-      requestVolume: (...args) => { dispatch(requestVolume(...args)); },
-    },
+    requestVolume: (...args) => { dispatch(requestVolume(...args)); },
   };
 }
 

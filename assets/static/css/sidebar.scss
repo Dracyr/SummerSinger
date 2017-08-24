@@ -2,13 +2,16 @@
 
 .sidebar {
   width: 300px;
-  height: calc(100vh - 80px);
-  padding-top: 20px;
+  // height: calc(100vh - 80px);
+  height: 100vh;
+  // padding-top: 20px;
   flex-shrink: 0;
   background: #FFF;
 
   overflow-y: scroll;
   overflow-x: hidden;
+  box-shadow: 5px 0 10px 0px #ddd;
+  z-index: 1;
 }
 
 .sidebar::-webkit-scrollbar {
@@ -23,7 +26,7 @@
   font-size: 25px;
   font-weight: 200;
 
-  li {
+  /* li {
     cursor: pointer;
 
     padding-left: 40px;
@@ -46,8 +49,7 @@
       padding: 4px 0 4px 30px;
       input { background: $color-primary; }
     }
-
-  }
+  } */
 
   li.search.active {
     background: $color-primary;
@@ -77,6 +79,12 @@
       input { background: $color-primary; }
     }
   }
+}
+
+.sidebar-library-links {
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
 }
 
 .unstyled-input {

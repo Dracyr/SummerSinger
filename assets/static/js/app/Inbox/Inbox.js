@@ -8,7 +8,7 @@ import * as PlayerActions from '../Player/actions';
 import * as InboxActions from './actions';
 import _ from 'lodash';
 
-import InfiniteTrackList from '../Track/InfiniteTrackList';
+import TrackList from '../Track/TrackList';
 import StarRating from '../Track/StarRating';
 
 class Inbox extends PureComponent {
@@ -70,7 +70,7 @@ class Inbox extends PureComponent {
             <span onClick={this.clearInbox}>add all to library</span>
           </small>
         </h1>
-        <InfiniteTrackList
+        <TrackList
           entries={tracks}
           totalTracks={totalTracks}
           keyAttr={"id"}

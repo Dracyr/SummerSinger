@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 import { PlaceholderText } from '../Util/Util';
 
-const emptyCard = (
-  <div className="card">
+export const EmptyCard = props => (
+  <div className="card" style={props.style}>
     <div className="card-image">
       <img
         src="/images/album_placeholder.png"
@@ -17,32 +17,33 @@ const emptyCard = (
   </div>
 );
 
-const AlbumCard = (props) => {
-  const album = props.album;
-
-  if (!album) { return emptyCard; }
-
+const Card = (props) => {
+  const { url, imageUrl, title, subTitle, style } = props;
   return (
-    <Link to={`/albums/${album.id}`} className="card">
+    <Link to={url} className="card" style={style}>
       <div className="card-image">
         <img
-          src={(album.cover_art_thumb_url) || '/images/album_placeholder.png'}
-          alt={album.title}
+          src={imageUrl}
+          alt={title}
           width="150"
           height="150"
         />
       </div>
       <div className="card-content">
-        {album.title}
+        {title}
         <br />
-        <small>{album.artist}</small>
+        <small>{subTitle}</small>
       </div>
     </Link>
   );
 };
 
-AlbumCard.propTypes = {
-  album: PropTypes.object,
+Card.propTypes = {
+  url: PropTypes.string,
+  imageUrl: PropTypes.string,
+  title: PropTypes.string,
+  subTitle: PropTypes.string,
+  style: PropTypes.object,
 };
 
-export default AlbumCard;
+export default Card;
