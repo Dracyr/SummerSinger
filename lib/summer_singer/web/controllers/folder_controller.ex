@@ -34,7 +34,8 @@ defmodule SummerSinger.Web.FolderController do
   end
 
   def show(conn, %{"id" => id}) do
-    folder = Repo.get!(Folder, id) |> Repo.preload([:children, tracks: [:artist, :album]])
+    folder = Repo.get!(Folder, id)
+    |> Repo.preload([:children, tracks: [:artist, :album]])
     render(conn, "show.json", folder: folder)
   end
 
