@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import ContextMenu, { MenuItem } from '../Util/ContextMenu';
 
 export default class FolderContextMenu extends PureComponent {
   static propTypes = {
-    folder: React.PropTypes.object.isRequired,
-    playFolder: React.PropTypes.func.isRequired,
-    queueFolder: React.PropTypes.func.isRequired,
-    hideContextMenu: React.PropTypes.func.isRequired,
-    context: React.PropTypes.object.isRequired,
+    folder: PropTypes.object.isRequired,
+    playFolder: PropTypes.func.isRequired,
+    queueFolder: PropTypes.func.isRequired,
+    hideContextMenu: PropTypes.func.isRequired,
+    context: PropTypes.object.isRequired,
   };
 
   constructor() {

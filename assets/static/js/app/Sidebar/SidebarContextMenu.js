@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import ContextMenu, { MenuItem } from '../Util/ContextMenu';
 
@@ -34,11 +35,11 @@ export default class SidebarContextMenu extends Component {
 }
 
 SidebarContextMenu.propTypes = {
-  playlist: React.PropTypes.object,
-  playPlaylist: React.PropTypes.func,
-  queuePlaylist: React.PropTypes.func,
-  hideContextMenu: React.PropTypes.func,
-  context: React.PropTypes.object,
+  playlist: PropTypes.object,
+  playPlaylist: PropTypes.func,
+  queuePlaylist: PropTypes.func,
+  hideContextMenu: PropTypes.func,
+  context: PropTypes.object,
 };
 
 

@@ -1,6 +1,6 @@
-import React, { PureComponent, PropTypes } from 'react';
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Portal from 'react-portal';
 
 import { fetchLibraries, addLibrary } from '../actions';
 import NewLibraryModal from './NewLibraryModal';
@@ -13,6 +13,10 @@ class LibrarySettings extends PureComponent {
 
   constructor() {
     super();
+    this.state = {
+      addLibraryOpen: false,
+    };
+
     this.addLibrary = this.addLibrary.bind(this);
   }
 
@@ -21,11 +25,13 @@ class LibrarySettings extends PureComponent {
   }
 
   addLibrary(path) {
-    this.props.addLibrary(path);
+    this.setState({ addLibraryOpen: false });
+    if (path) {
+      this.props.addLibrary(path);
+    }
   }
 
   render() {
-    const addLibraryButton = <button>Add Library</button>;
     return (
       <div>
         <h3>Libraries</h3>
@@ -48,10 +54,13 @@ class LibrarySettings extends PureComponent {
           </div>
         </div>
 
+        <button onClick={() => this.setState({ addLibraryOpen: true })}>
+          Add Library
+        </button>
 
-        <Portal openByClickOn={addLibraryButton}>
+        {this.state.addLibraryOpen &&
           <NewLibraryModal submit={this.addLibrary} />
-        </Portal>
+        }
       </div>
     );
   }

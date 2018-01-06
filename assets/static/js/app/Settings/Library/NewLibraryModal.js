@@ -1,24 +1,40 @@
-import React, { PureComponent, PropTypes } from 'react';
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 
 import ImportLibrary from './ImportLibrary';
 import Modal from '../../Util/Modal';
 
-export default class NewLibraryModal extends PureComponent {
-  constructor() {
-    super();
-    this.submit = this.submit.bind(this);
+const modalContainer = document.getElementById('modal-container');
+
+export default class NewLibraryModal extends Component {
+  constructor(props) {
+    super(props);
+    this.el = document.createElement('div');
   }
 
-  submit(path) {
-    this.props.submit(path);
-    this.props.closePortal();
+  componentDidMount() {
+    modalContainer.appendChild(this.el);
+    document.addEventListener('click', (event) => {
+      if (event.target.dataset.modal) {
+        this.props.submit(null);
+      }
+    });
   }
+
+  componentWillUnmount() {
+    modalContainer.removeChild(this.el);
+  }
+
+  // submit(path) {
+  //   this.props.submit(path);
+  // }
 
   render() {
-    return (
+    return ReactDOM.createPortal(
       <Modal title="Add Library">
-        <ImportLibrary submit={this.submit} />
-      </Modal>
+        <ImportLibrary submit={path => this.submit(path)} />
+      </Modal>,
+      this.el,
     );
   }
 }

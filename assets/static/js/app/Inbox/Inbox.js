@@ -1,23 +1,23 @@
 import React, { PureComponent } from 'react';
-import Portal from 'react-portal';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import _ from 'lodash';
 
 import * as PlayerActions from '../Player/actions';
 import * as InboxActions from './actions';
-import _ from 'lodash';
 
 import TrackList from '../Track/TrackList';
 import StarRating from '../Track/StarRating';
 
 class Inbox extends PureComponent {
   static propTypes = {
-    actions: React.PropTypes.object,
-    tracks: React.PropTypes.array,
-    currentId: React.PropTypes.number,
-    totalTracks: React.PropTypes.number,
-    inboxSort: React.PropTypes.object,
+    actions: PropTypes.object,
+    tracks: PropTypes.array,
+    currentId: PropTypes.number,
+    totalTracks: PropTypes.number,
+    inboxSort: PropTypes.object,
   };
 
   constructor() {
@@ -26,19 +26,10 @@ class Inbox extends PureComponent {
     this.sortTracks = this.sortTracks.bind(this);
     this.clearInbox = this.clearInbox.bind(this);
     this.onSelectTrack = this.onSelectTrack.bind(this);
-    this.state = {
-      selectedTrack: null,
-    };
   }
 
   componentDidMount() {
     this.props.actions.fetchInbox(0, 50);
-    this.refs.trackEditPanePortal.openPortal();
-  }
-
-
-  onSelectTrack(track) {
-    this.setState({ selectedTrack: track });
   }
 
   clearInbox() {
@@ -73,17 +64,14 @@ class Inbox extends PureComponent {
         <TrackList
           entries={tracks}
           totalTracks={totalTracks}
-          keyAttr={"id"}
+          keyAttr="id"
           currentKey={currentId}
           sortTracks={this.sortTracks}
           onSelectTrack={this.onSelectTrack}
           sort={inboxSort}
           loadMoreRows={(offset, size) => this.loadMoreRows(offset, size)}
-          onClickHandler={(track) => actions.requestQueueAndPlayTrack(track.id)}
+          onClickHandler={track => actions.requestQueueAndPlayTrack(track.id)}
         />
-        <Portal closeOnEsc isOpened ref="trackEditPanePortal">
-          <TrackEditPane track={this.state.selectedTrack} />
-        </Portal>
       </div>
     );
   }

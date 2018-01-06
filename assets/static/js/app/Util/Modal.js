@@ -1,7 +1,7 @@
-import React, { PureComponent, PropTypes } from 'react';
+import React, { PureComponent } from 'react';
 
 const Modal = (props) => (
-  <div className="modal visible">
+  <div className="modal visible" data-modal>
     <div className="modal-content">
       <div className="modal-header">
         <h3 className="modal-title">{props.title}</h3>

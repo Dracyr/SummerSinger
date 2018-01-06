@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { isParent } from './Util';
 
 export default class ContextMenu extends Component {
@@ -56,9 +57,9 @@ export default class ContextMenu extends Component {
 }
 
 ContextMenu.propTypes = {
-  hideContextMenu: React.PropTypes.func,
-  context: React.PropTypes.object,
-  children: React.PropTypes.array,
+  hideContextMenu: PropTypes.func,
+  context: PropTypes.object,
+  children: PropTypes.array,
 };
 
 export const MenuItem = (props) => {
@@ -78,9 +79,9 @@ export const MenuItem = (props) => {
 };
 
 MenuItem.propTypes = {
-  onClick: React.PropTypes.func,
-  children: React.PropTypes.string,
-  disabled: React.PropTypes.bool,
+  onClick: PropTypes.func,
+  children: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 export class Submenu extends Component {
@@ -163,8 +164,8 @@ export class Submenu extends Component {
 }
 
 Submenu.propTypes = {
-  title: React.PropTypes.string,
-  children: React.PropTypes.array,
+  title: PropTypes.string,
+  children: PropTypes.array,
 };
 
 

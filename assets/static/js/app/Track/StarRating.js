@@ -1,6 +1,7 @@
 /* eslint react/no-array-index-key: 0 */
 
-import React, { PureComponent, PropTypes } from 'react';
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { updateTrack } from './actions';
 

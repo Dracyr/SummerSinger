@@ -1,0 +1,43 @@
+.modal {
+  display: block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  outline: 0;
+
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 150ms linear;
+
+  z-index: 100;
+
+  &.visible {
+    opacity: 1;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+.modal-content {
+  width: 600px;
+  margin: 10vh auto;
+  background: #FFF;
+}
+
+.modal-header {
+  padding: 15px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.modal-body {
+  position: relative;
+  padding: 15px;
+}
+
+.modal-title {
+  margin: 0;
+  line-height: 1.42857143;
+}

@@ -1,4 +1,5 @@
-import React, { PureComponent, PropTypes } from 'react';
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -10,14 +11,14 @@ import ContextMenu, { MenuItem, Submenu } from '../Util/ContextMenu';
 
 class TrackContextMenu extends PureComponent {
   static propTypes = {
-    track: React.PropTypes.shape({
+    track: PropTypes.shape({
       id: PropTypes.number,
       inbox: PropTypes.bool,
     }).isRequired,
-    actions: React.PropTypes.object.isRequired,
-    hideContextMenu: React.PropTypes.func.isRequired,
-    context: React.PropTypes.object.isRequired,
-    playlists: React.PropTypes.shape({
+    actions: PropTypes.object.isRequired,
+    hideContextMenu: PropTypes.func.isRequired,
+    context: PropTypes.object.isRequired,
+    playlists: PropTypes.shape({
       id: PropTypes.number,
       title: PropTypes.string,
     }).isRequired,

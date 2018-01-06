@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import TrackList from '../Track/TrackList';
@@ -7,9 +8,9 @@ import { removeQueueTrack, clearQueue } from './actions';
 
 class Queue extends PureComponent {
   static propTypes = {
-    actions: React.PropTypes.object.isRequired,
-    queue: React.PropTypes.array.isRequired,
-    currentIndex: React.PropTypes.number,
+    actions: PropTypes.object.isRequired,
+    queue: PropTypes.array.isRequired,
+    currentIndex: PropTypes.number,
   };
 
   constructor() {
