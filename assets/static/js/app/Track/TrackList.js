@@ -204,6 +204,7 @@ export default class TrackList extends PureComponent {
     const trackCount = totalTracks || (entries && entries.length) || 0;
 
     const header = this.renderHeader(hideHeader);
+    // const header = this.props.renderHeader();
 
     if (trackCount === 0 && !this.props.hideHeader) {
       return (

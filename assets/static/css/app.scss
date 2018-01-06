@@ -115,7 +115,6 @@ h1, h2, h3, h4, h5, h6 {
   display: table-cell;
   padding: 8px;
   border-top: 1px solid #ddd;
-  height: 40px;
 
   &.td-title {
     width: 40%;
@@ -144,11 +143,12 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-.track .td {
+.track > .td {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 0px;
+  vertical-align: middle;
 }
 
 .tr.hide-album {

@@ -2,6 +2,7 @@ defmodule SummerSinger.Importer.Metadata do
   alias SummerSinger.{Repo, Track, Album, Artist, CoverArt}
   alias SummerSinger.Importer.MusicTagger
   import Ecto.Query
+  require IEx
 
   def perform() do
     artists =
@@ -14,9 +15,11 @@ defmodule SummerSinger.Importer.Metadata do
         preload: [:cover_art])
       |> Map.new
 
-    tracks = Repo.all(from t in Track) #, where: not t.imported)
+    tracks = Repo.all(from t in Track, where: not t.imported)
 
     total_tracks = length(tracks)
+    IO.inspect("Got #{total_tracks} tracks")
+
     ProgressBar.render(0, total_tracks)
 
     tracks
@@ -49,14 +52,21 @@ defmodule SummerSinger.Importer.Metadata do
     case result do
       {:ok, updated_track, {artists, albums}} ->
         {[updated_track], {artists, albums}}
-      _ ->
+      {:error, err} ->
+        IO.inspect("Could not import #{track.path}, error #{err}")
+        {[], {artists, albums}}
+      {:err, err} ->
+        IO.inspect("Could not import #{track.path}, err #{err}")
+        {[], {artists, albums}}
+      a ->
+        IO.inspect(a)
+        IO.inspect("Could not import #{track.path}, unkown error")
         {[], {artists, albums}}
     end
   end
 
   defp put_new(map, _key, nil), do: map
   defp put_new(map, key, value), do: Map.put_new(map, key, value)
-  # def get_resources({artists, albums}, artist_name, album_artist_name, album_title, cover_art) do
   def get_resources({artists, albums}, tags, cover_art) do
     multi =
       Ecto.Multi.new
@@ -64,8 +74,8 @@ defmodule SummerSinger.Importer.Metadata do
       |> Ecto.Multi.run(:album_artist, &fetch_album_artist(&1, artists, tags))
       |> Ecto.Multi.run(:album, &fetch_album(&1, albums, tags))
       |> Ecto.Multi.run(:cover_art, &fetch_cover_art(&1, cover_art))
-      |> Ecto.Multi.run(:cover_art_image, &update_cover_image(&1, cover_art))
-      |> Ecto.Multi.run(:update_album_cover, &update_album_cover/1)
+      # |> Ecto.Multi.run(:cover_art_image, &update_cover_image(&1, cover_art))
+      # |> Ecto.Multi.run(:update_album_cover, &update_album_cover/1)
 
     case Repo.transaction(multi) do
       {:ok, res} ->
@@ -77,17 +87,32 @@ defmodule SummerSinger.Importer.Metadata do
         } = res
 
         artists = put_new(artists, artist.name, artist)
-        artists = put_new(artists, album_artist.name, album_artist)
-        albums = put_new(albums, {album.title, album.artist_id}, album)
+          if artist do
+            put_new(artists, artist.name, artist)
+          else
+            artists
+          end
+        artists =
+          if album_artist do
+            put_new(artists, album_artist.name, album_artist)
+          else
+            artists
+          end
+        albums =
+          if album do
+            put_new(albums, {album.title, album.artist_id}, album)
+          else
+            albums
+          end
 
         {:ok, {artists, albums}, artist, album, cover_art}
       _ ->
         :error
+        {:error, "Could not insert into database"}
     end
   end
 
-  def fetch_artist(_, _, nil), do: {:ok, nil}
-  def fetch_artist(%{}, artists, artist_name) do
+  def fetch_artist(%{}, artists, %{"ARTIST" => artist_name}) do
     case Map.fetch(artists, artist_name) do
       {:ok, artist} -> {:ok, artist}
       :error ->
@@ -96,9 +121,9 @@ defmodule SummerSinger.Importer.Metadata do
         |> Repo.insert
     end
   end
+  def fetch_artist(_, _, _), do: {:ok, nil}
 
-  def fetch_album_artist(_, _, nil), do: {:ok, nil}
-  def fetch_album_artist(%{artist: artist}, artists, artist_name) do
+  def fetch_album_artist(%{artist: artist}, artists, %{"ALBUMARTIST" => artist_name}) do
     album_artist =
       if artist && artist.name == artist_name,
         do: {:ok, artist},
@@ -112,9 +137,9 @@ defmodule SummerSinger.Importer.Metadata do
         |> Repo.insert
     end
   end
+  def fetch_album_artist(_, _, _), do: {:ok, nil}
 
-  def fetch_album(_, _, nil, _), do: {:ok, nil}
-  def fetch_album(%{artist: artist, album_artist: album_artist}, albums, album_title) do
+  def fetch_album(%{artist: artist, album_artist: album_artist}, albums, %{"ALBUM" => album_title}) do
     artist_id = (album_artist || artist).id
 
     case Map.fetch(albums, {album_title, artist_id}) do
@@ -125,7 +150,10 @@ defmodule SummerSinger.Importer.Metadata do
         |> Repo.insert
     end
   end
+  def fetch_album(_, _, _), do: {:ok, nil}
 
+  def fetch_cover_art(_, _), do: {:ok, nil}
+  #######
   def fetch_cover_art(_, nil), do: {:ok, nil}
   def fetch_cover_art(%{album: album}, cover_art) do
     album = Repo.preload(album, :cover_art)

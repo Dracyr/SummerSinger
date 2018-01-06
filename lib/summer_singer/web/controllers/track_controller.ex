@@ -25,7 +25,7 @@ defmodule SummerSinger.Web.TrackController do
   def index(conn, params) do
     tracks =
       from(t in Track,
-        where: t.imported and t.inbox == ^(params["inbox"] == "true"),
+        # where: t.imported and t.inbox == ^(params["inbox"] == "true"),
         preload: [:artist, :album],
       )
       |> apply_filters(params, share: params)
@@ -33,7 +33,7 @@ defmodule SummerSinger.Web.TrackController do
 
     track_count =
       from(t in Track,
-        where: t.imported and t.inbox == ^(params["inbox"] == "true"),
+        # where: t.imported and t.inbox == ^(params["inbox"] == "true"),
         select: count(t.id))
       |> Repo.all()
       |> Enum.at(0)
