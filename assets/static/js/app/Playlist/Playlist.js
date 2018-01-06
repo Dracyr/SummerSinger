@@ -12,7 +12,11 @@ const Playlist = (props) => {
         keyAttr="id"
         currentKey={currentId}
         onClickHandler={track => requestQueueAndPlayTrack(track.id)}
-        displayStatic
+        renderList={({ entries, renderItem }) => (
+          entries.map((track, index) => (
+            renderItem({ index, key: track.id })
+          ))
+        )}
       />
     </div>
   );

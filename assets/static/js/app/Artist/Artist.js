@@ -47,7 +47,11 @@ class Artist extends PureComponent {
           keyAttr={'id'}
           currentKey={currentId}
           onClickHandler={onClickHandler}
-          displayStatic
+          renderList={({ entries, renderItem }) => (
+            entries.map((track, index) => (
+              renderItem({ index, key: track.id })
+            ))
+          )}
         />
       );
     }
@@ -55,14 +59,14 @@ class Artist extends PureComponent {
     return (
       <div>
         <h1>{artist.name}</h1>
-        {artist.albums.map(album =>
+        {artist.albums.map(album => (
           <Album
             key={album.id}
             album={album}
             onClickHandler={onClickHandler}
             currentId={currentId}
-          />,
-        )}
+          />
+        ))}
 
         {trackList}
       </div>

@@ -16,13 +16,12 @@ export default class TrackList extends PureComponent {
     onDeleteHandler: PropTypes.func,
     totalTracks: PropTypes.number,
     renderItem: PropTypes.func,
-    hideHeader: PropTypes.bool,
+    renderHeader: PropTypes.func,
+    renderList: PropTypes.func,
     sortTracks: PropTypes.func,
     sort: PropTypes.object,
     onSelectTrack: PropTypes.func,
-    hideAlbum: PropTypes.bool,
     loadMoreRows: PropTypes.func,
-    displayStatic: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -39,7 +38,6 @@ export default class TrackList extends PureComponent {
     sort: null,
     onSelectTrack: () => {},
     loadMoreRows: () => {},
-    displayStatic: false,
   }
 
   constructor(props) {
@@ -130,7 +128,7 @@ export default class TrackList extends PureComponent {
       return this.props.renderItem({index, key, style});
     }
 
-    let trackComponent = '';
+    let trackComponent = null;
     if (this.props.entries && this.props.entries[index]) {
       const { entries, keyAttr, currentKey, onClickHandler } = this.props;
       const { selectedTrack, selectedIndex } = this.state;
@@ -163,11 +161,7 @@ export default class TrackList extends PureComponent {
     return trackComponent;
   }
 
-  renderHeader(hideHeader) {
-    if (hideHeader) {
-      return null;
-    }
-
+  renderHeader() {
     const renderSortCol = column => (
       this.props.sort && this.props.sort.sortBy === column ?
         `fa fa-sort-${this.props.sort.dir}` : ''
@@ -175,7 +169,7 @@ export default class TrackList extends PureComponent {
 
     return (
       <div className="thead">
-        <div className={`tr ${this.props.hideAlbum ? 'hide-album' : ''}`}>
+        <div className="tr">
           <div className="td td-title">
             <span onClick={this.sortTitle}>Title </span>
             <i className={renderSortCol('title')} />
@@ -199,44 +193,41 @@ export default class TrackList extends PureComponent {
     );
   }
 
+  isRowLoaded = ({ index }) => (
+    !!(this.props.entries && this.props.entries[index])
+  )
+
   render() {
-    const { entries, totalTracks, hideHeader } = this.props;
+    const { entries, totalTracks } = this.props;
     const trackCount = totalTracks || (entries && entries.length) || 0;
+    const header = this.props.renderHeader ?
+      this.props.renderHeader() :
+      this.renderHeader();
 
-    const header = this.renderHeader(hideHeader);
-    // const header = this.props.renderHeader();
-
-    if (trackCount === 0 && !this.props.hideHeader) {
-      return (
-        <div className="display-table track-list">
-          {header}
-        </div>
-      );
-    }
-
-    const isRowLoaded = ({ index }) => !!(this.props.entries && this.props.entries[index]);
-    let list = '';
-
-    if (this.props.displayStatic) {
-      list = this.props.entries.map((e, index) => (
-        this.renderItem({ index, key: index })
-      ));
-    } else {
-      list = (
-        <InfiniteList
-          entryCount={trackCount}
-          loadMoreRows={this.props.loadMoreRows}
-          isRowLoaded={isRowLoaded}
-          rowHeight={40}
-          renderItem={this.renderItem}
-        />
-      );
+    if (trackCount === 0) {
+      return <div className="display-table track-list">{header}</div>;
     }
 
     return (
       <div className="display-table track-list">
         {header}
-        {list}
+        {
+          this.props.renderList ? (
+            this.props.renderList({
+              entries: this.props.entries,
+              renderItem: this.renderItem
+            })
+          ) : (
+            <InfiniteList
+              entryCount={trackCount}
+              loadMoreRows={this.props.loadMoreRows}
+              isRowLoaded={this.isRowLoaded}
+              rowHeight={40}
+              renderItem={this.renderItem}
+              additionalKeys={{ ...this.props.sort }}
+            />
+          )
+        }
         {this.state.contextMenu ?
           <TrackContextMenu
             context={this.state.contextMenu}

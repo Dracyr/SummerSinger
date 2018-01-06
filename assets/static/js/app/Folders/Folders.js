@@ -153,7 +153,7 @@ class Folders extends PureComponent {
           <TrackList
             renderItem={this.renderItem}
             totalTracks={totalLength}
-            hideHeader
+            renderHeader={() => {}}
           />
           {contextMenu}
         </div>

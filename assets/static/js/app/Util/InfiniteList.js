@@ -54,13 +54,15 @@ export default class InfiniteList extends PureComponent {
                   <List
                     ref={registerChild}
                     autoHeight
-                    height={height}
+                    height={height || 0}
                     width={width}
                     rowRenderer={this.props.renderItem}
                     rowCount={this.props.entryCount}
                     rowHeight={this.props.rowHeight}
                     onRowsRendered={onRowsRendered}
                     scrollTop={scrollTop}
+
+                    {...this.props.additionalKeys}
                   />
                 )}
               </AutoSizer>

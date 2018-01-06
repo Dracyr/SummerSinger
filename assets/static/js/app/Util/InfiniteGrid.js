@@ -45,9 +45,7 @@ export default class InfiniteGrid extends PureComponent {
     const scrollElement = document.getElementById("main-content");
 
     return (
-      <WindowScroller
-        scrollElement={scrollElement}
-      >
+      <WindowScroller scrollElement={scrollElement}>
         {({ height, scrollTop }) => (
           <InfiniteLoader
             isRowLoaded={isRowLoaded}
@@ -72,7 +70,7 @@ export default class InfiniteGrid extends PureComponent {
                     columnCount={5}
                     columnWidth={175}
                     rowHeight={215}
-                    height={height}
+                    height={height || 0}
                     width={width}
                   />
                 )}

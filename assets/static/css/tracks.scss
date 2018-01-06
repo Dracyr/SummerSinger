@@ -1,0 +1,165 @@
+
+.playing-icon {
+  position: absolute;
+  height: 0px;
+  left: -25px;
+  margin-right: -40px;
+  margin-top: -6px;
+  float: left;
+  font-size: 23px;
+  line-height: 1.4;
+}
+
+.no_tracks_banner {
+  margin-top: 10%;
+  font-size: 40px;
+  text-align: center;
+  opacity: 1;
+  transition: opacity 100ms;
+}
+
+.display-table {
+  display: table;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+  background-color: transparent;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+
+.dir-table {
+  .tr:hover {
+    background-color: #EEE;
+    &.selected {
+      background: #dadada;
+    }
+  }
+}
+
+
+.tr {
+  display: inline-table;
+  width: 100%;
+  height: 40px;
+  overflow: hidden;
+
+  &.selected {
+    background: #dadada;
+  }
+}
+
+.tr.track {
+  cursor: pointer;
+  overflow-y: hidden;
+  border-bottom: 2px solid #ddd;
+
+  &:hover {
+    background: #ddd;
+  }
+}
+
+.tr.track a {
+  color: $default-font-color;
+}
+
+.td {
+  display: table-cell;
+  padding: 8px;
+  // border-top: 1px solid #ddd;
+
+  &.td-title {
+    width: 40%;
+    max-width: 40%;
+  }
+  &.td-artist {
+    width: 25%;
+    max-width: 25%;
+  }
+  &.td-album {
+    width: 25%;
+    max-width: 25%;
+  }
+  &.td-rating {
+    width: 25%;
+    max-width: 25%;
+    min-width: 81px;
+  }
+
+  &.td-title > span,
+  &.td-artist > span,
+  &.td-album > span,
+  &.td-rating > span {
+    cursor: pointer;
+    @include no-select();
+  }
+}
+
+.track > .td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 0px;
+  vertical-align: middle;
+}
+
+.tr.hide-album {
+  .td-artist { width: 40%; }
+  .td-title  { width: 45%; }
+}
+
+.track-list > .thead {
+  border-bottom: 2px solid #ddd;
+}
+
+.header {
+  border-bottom: 2px solid $color-primary;
+
+  span {
+    transition: all 350ms ease;
+    cursor: pointer;
+    &.inactive { opacity: .3; }
+  }
+}
+
+.header-controls {
+  float: right;
+  bottom: -15px;
+  position: relative;
+  color: $color-primary;
+}
+
+.list-unstyled {
+  margin-bottom: 0;
+}
+
+.track-edit-pane {
+  position: absolute;
+  bottom: 0;
+  transform: translateY(100px);
+  background: #ddd;
+  padding: 5px 20px 10px 20px;
+  width: calc(100% - 300px);
+  left: 300px;
+
+  transition: all 250ms ease(in-out-quart);
+}
+
+.show-pane {
+  transform: translateY(0%);
+}
+
+.track-form-rating {
+  width: 80px;
+  float: right;
+  display: block;
+  margin-top: 38px;
+}
+
+.placeholder-text {
+  width: '50%';
+  height: '1em';
+  display: 'inline-block';
+  background-color: '#ddd';
+}

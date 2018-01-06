@@ -11,7 +11,11 @@ const Search = props => (
     keyAttr={'id'}
     currentKey={props.currentId}
     onClickHandler={track => requestQueueAndPlayTrack(track.id)}
-    displayStatic
+    renderList={({ entries, renderItem }) => (
+      entries.map((track, index) => (
+        renderItem({ index, key: track.id })
+      ))
+    )}
   />
 );
 

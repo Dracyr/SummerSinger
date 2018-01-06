@@ -54,7 +54,20 @@ class Album extends PureComponent {
               currentKey={currentId}
               onClickHandler={track => this.props.requestQueueAndPlayTrack(track.id)}
               hideAlbum
-              displayStatic
+              renderHeader={() => (
+                <div className="thead">
+                  <div className="tr">
+                    <div className="td td-title">Title </div>
+                    <div className="td td-artist">Artist </div>
+                    <div className="td td-rating">Rating </div>
+                  </div>
+                </div>
+              )}
+              renderList={({ entries, renderItem }) => (
+                entries.map((track, index) => (
+                  renderItem({ index, key: track.id })
+                ))
+              )}
             />
           </div>
         </div>
