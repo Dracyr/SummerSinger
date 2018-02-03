@@ -1,7 +1,5 @@
 import fetch from 'isomorphic-fetch';
 
-import { toggleCreatePlaylist } from '../Sidebar/actions';
-
 export const SWITCH_PLAYLIST_VIEW = 'SWITCH_PLAYLIST_VIEW';
 export const PlaylistViews = {
   SHOW: 'SHOW',
@@ -72,11 +70,11 @@ export function fetchPlaylist(playlistId) {
 }
 
 export function createPlaylist(title) {
-  return (dispatch) => {
+  return () => {
     fetch('/api/playlists', {
       method: 'post',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -84,8 +82,7 @@ export function createPlaylist(title) {
           title,
         },
       }),
-    })
-    .then(() => dispatch(toggleCreatePlaylist()));
+    });
   };
 }
 

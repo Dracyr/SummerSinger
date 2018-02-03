@@ -40,12 +40,15 @@ class SidebarPlayer extends PureComponent {
 
     const playingClass = playing ? 'fa fa-pause' : 'fa fa-play';
 
-    let playerCenter = '';
+    let playerCenter = (
+      <span>No track playing</span>
+    );
+
     if (currentTrack) {
       const artist = currentTrack.artist ? `${currentTrack.artist} - ` : '';
       const title = currentTrack.title ? currentTrack.title : currentTrack.filename;
       playerCenter = (
-        <div style={{textAlign: 'center'}} >
+        <div style={{ textAlign: 'center' }} >
           <div className="song" style={{ height: 25, fontSize: 16 }} >
             {artist} {title}
           </div>
@@ -57,35 +60,33 @@ class SidebarPlayer extends PureComponent {
     }
 
     return (
-      <div
+      <section
         style={{
           display: 'inline-block',
           marginBottom: 10,
           paddingBottom: 10,
           borderBottom: '1px solid #ddd',
+          background: '#fff',
         }}
       >
-        <div>
-          <img src="http://placekitten.com/g/250/250" alt="" className="now-playing-art"/>
-        </div>
-        <div>
-          {playerCenter}
-        </div>
-        <div style={{ paddingLeft: 40, paddingRight: 40 }} >
-          <SeekSlider
-            seek={this.props.actions.requestSeek}
-            playing={playing}
-            startTime={startTime}
-            pausedDuration={pausedDuration}
-            duration={currentTrack && currentTrack.duration}
-          />
-        </div>
-        <div id="player-controls">
+        <img src="http://placekitten.com/g/250/250" alt="" className="now-playing-art" />
+
+        {playerCenter}
+
+        <SeekSlider
+          seek={this.props.actions.requestSeek}
+          playing={playing}
+          startTime={startTime}
+          pausedDuration={pausedDuration}
+          duration={currentTrack && currentTrack.duration}
+        />
+
+        <ul id="player-controls">
           <i className="fa fa-fast-backward"onClick={actions.requestPreviousTrack}></i>
           <i className={playingClass} onClick={this.requestPlayback}></i>
           <i className="fa fa-fast-forward"onClick={actions.requestNextTrack}></i>
-        </div>
-      </div>
+        </ul>
+      </section>
     );
   }
 }

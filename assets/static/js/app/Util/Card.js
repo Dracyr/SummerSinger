@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import { PlaceholderText } from '../Util/Util';
+import { PlaceholderText } from 'Util';
 
 export const EmptyCard = props => (
   <div className="card" style={props.style}>

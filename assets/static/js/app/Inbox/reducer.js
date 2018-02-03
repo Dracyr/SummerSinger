@@ -5,7 +5,7 @@ import {
 } from './actions';
 
 import { TRACK_UPDATE } from '../Track/actions';
-import { insertAtOffset } from '../Util/Util';
+import { insertAtOffset } from 'Util';
 
 const initialLibrary = {
   inboxSort: { sortBy: 'title', dir: 'asc' },

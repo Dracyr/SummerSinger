@@ -10,14 +10,16 @@ import SummerSocket from './app/Util/SummerSocket';
 const summerSocket = new SummerSocket();
 const store = configureStore(summerSocket);
 
+const rootEl = document.getElementById('container');
+
 const render = (Component) => {
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
-        <Component store={store} />
+        <Component />
       </Provider>
     </AppContainer>,
-    document.getElementById('container')
+    rootEl,
   );
 };
 

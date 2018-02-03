@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import StarRating from './StarRating';
-import { PlaceholderText } from '../Util/Util';
+import { PlaceholderText } from 'Util';
 
 const emptyTrack = (
   <div className="tr track">

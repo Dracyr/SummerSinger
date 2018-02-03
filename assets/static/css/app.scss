@@ -1,5 +1,5 @@
 @import "variables";
-@import "bootstrap";
+// @import "bootstrap";
 @import "font-awesome";
 
 @import "player";
@@ -15,18 +15,37 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans');
 
 html {
-  min-height: 100vh;
+  // min-height: 100vh;
 }
 
 body {
-  min-height: 100vh;
+  height: 100vh;
+  // min-height: 100vh;
   margin: 0;
 
   color: $default-font-color;
   background: #ddd;
   font-family: 'Noto Sans', sans-serif;
 
-  overflow: hidden;
+  // overflow: hidden;
+}
+
+#container {
+  display: grid;
+  grid-template-columns: 300px auto;
+  grid-template-rows: 400px auto;
+  grid-template-areas:
+    "player main"
+    "sidebar main";
+  height: 100%;
+}
+
+.sidebar {
+  grid-area: sidebar;
+}
+
+main {
+  grid-area: main;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -34,16 +53,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .wrapper {
-  display: flex;
-  background: #ddd;
+  // display: flex;
+  // background: #ddd;
 }
 
 #main-content {
   padding: 20px 40px 0px 40px;
-  flex-grow: 1;
+  // flex-grow: 1;
 
-  overflow-y: scroll;
-  height: 100vh;
+  // overflow-y: scroll;
+  // height: 100vh;
 
   background: #EEE;
 }

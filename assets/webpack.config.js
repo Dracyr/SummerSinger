@@ -56,4 +56,11 @@ module.exports = {
       },
     }],
   },
+  resolve: {
+    alias: {
+      Components: path.resolve(__dirname, 'static/js/components'),
+      Containers: path.resolve(__dirname, 'static/js/containers'),
+      Util: path.resolve(__dirname, 'static/js/util'),
+    },
+  },
 };

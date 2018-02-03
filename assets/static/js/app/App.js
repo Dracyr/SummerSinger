@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -6,7 +6,8 @@ import {
   Switch,
 } from 'react-router-dom';
 
-import Sidebar from '../app/Sidebar/Sidebar';
+import Sidebar from 'Containers/Sidebar';
+import SidebarPlayer from '../app/Player/SidebarPlayer';
 import Settings from '../app/Settings/Settings';
 import Library from '../app/Library/Library';
 import Tracks from '../app/Track/Tracks';
@@ -22,28 +23,27 @@ import PlaylistView from '../app/Playlist/PlaylistView';
 
 const App = () => (
   <Router>
-    <div>
-      <div className="wrapper">
-        <Sidebar />
-        <div id="main-content">
-          <Switch>
-            <Route path="/queue" component={Queue} />
-            <Route path="/search" component={Search} />
-            {/*<Route path="/inbox" component={Inbox} />*/}
-            <Route path="/tracks" component={Tracks} />
-            <Route path="/artists/:artistId" component={Artist} />
-            <Route path="/artists" component={Artists} />
-            <Route path="/albums/:albumId" component={Album} />
-            <Route path="/albums" component={Albums} />
-            <Route path="/library" component={Library} />
-            <Route path="/folders" component={Folders} />
-            <Route path="/settings" component={Settings} />
-            <Route path="/playlist/:playlistId" component={PlaylistView} />
-            <Redirect to="/queue" />
-          </Switch>
-        </div>
-      </div>
-    </div>
+    <Fragment>
+      <SidebarPlayer />
+      <Sidebar />
+      <main>
+        <Switch>
+          <Route path="/queue" component={Queue} />
+          <Route path="/search" component={Search} />
+          {/*<Route path="/inbox" component={Inbox} />*/}
+          <Route path="/tracks" component={Tracks} />
+          <Route path="/artists/:artistId" component={Artist} />
+          <Route path="/artists" component={Artists} />
+          <Route path="/albums/:albumId" component={Album} />
+          <Route path="/albums" component={Albums} />
+          <Route path="/library" component={Library} />
+          <Route path="/folders" component={Folders} />
+          <Route path="/settings" component={Settings} />
+          <Route path="/playlist/:playlistId" component={PlaylistView} />
+          <Redirect to="/queue" />
+        </Switch>
+      </main>
+    </Fragment>
   </Router>
 );
 

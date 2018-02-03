@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import InfiniteList from '../Util/InfiniteList';
-import { closestSelector } from '../Util/Util';
+import { closestSelector } from 'Util';
 import Track from './Track';
 import TrackContextMenu from './TrackContextMenu';
 

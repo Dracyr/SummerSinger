@@ -8,7 +8,6 @@ import artists from './app/Artist/reducer';
 import inbox from './app/Inbox/reducer';
 import folders from './app/Folders/reducer';
 import playlist from './app/Playlist/reducer';
-import sidebar from './app/Sidebar/reducer';
 import settings from './app/Settings/reducer';
 
 import {
