@@ -14,6 +14,7 @@
   <body>
     <div id="container"></div>
     <div id="modal-container"></div>
+    <div id="menu-container"></div>
 
     <%= if Application.get_env(:summer_singer, :env) == :dev do %>
       <script src='http://localhost:8081/bundle.js'></script>

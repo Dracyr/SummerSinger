@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 
 import App from './app/App';
-import configureStore from './configureStore';
-import SummerSocket from './app/Util/SummerSocket';
+import configureStore from 'Util/configureStore';
+import SummerSocket from 'Util/SummerSocket';
 
 const summerSocket = new SummerSocket();
 const store = configureStore(summerSocket);

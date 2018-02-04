@@ -1,8 +1,8 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 
-class SidebarPlaylist extends PureComponent {
+class SidebarPlaylist extends Component {
   static propTypes = {
     playlist: PropTypes.shape({
       id: PropTypes.number,
@@ -14,31 +14,28 @@ class SidebarPlaylist extends PureComponent {
 
   constructor() {
     super();
-    this.onDrop = this.onDrop.bind(this);
-    this.onDragOver = this.onDragOver.bind(this);
-    this.onDragLeave = this.onDragLeave.bind(this);
-    this.onContextMenu = this.onContextMenu.bind(this);
+
     this.state = {
       dragging: false,
     };
   }
 
-  onContextMenu(e) {
+  handleContextMenu = (e) => {
     e.preventDefault();
     this.props.openContextMenu(this.props.playlist, e.pageX, e.pageY);
   }
 
-  onDragOver(e) {
+  handleDragOver = (e) => {
     e.preventDefault();
     this.setState({ dragging: true });
   }
 
-  onDragLeave(e) {
+  handleDragLeave = (e) => {
     e.preventDefault();
     this.setState({ dragging: false });
   }
 
-  onDrop(e) {
+  handleDrop = (e) => {
     const payload = JSON.parse(e.dataTransfer.getData('text/plain'));
     if (payload.track_id) {
       this.props.addTrackToPlaylist(payload.track_id, this.props.playlist.id);
@@ -52,13 +49,13 @@ class SidebarPlaylist extends PureComponent {
       <NavLink
         to={`/playlist/${playlist.id}`}
         activeClassName="active"
-        onContextMenu={this.onContextMenu}
-        onDragOver={this.onDragOver}
-        onDrop={this.onDrop}
-        onDragLeave={this.onDragLeave}
-        onDragEnd={this.onDragLeave}
-        onDragExit={this.onDragLeave}
-        className={this.state.dragging ? 'dragging' : ''}
+        onContextMenu={this.handleContextMenu}
+        onDragOver={this.handleDragOver}
+        onDrop={this.handleDrop}
+        onDragLeave={this.handleDragLeave}
+        onDragEnd={this.handleDragLeave}
+        onDragExit={this.handleDragLeave}
+        className={`sidebar-playlist ${this.state.dragging ? 'dragging' : ''}`}
       >
         {playlist.title}
       </NavLink>

@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import ContextMenu, { MenuItem, SubMenu } from 'Components/ContextMenu';
+
 import * as PlayerActions from '../Player/actions';
 import * as PlaylistActions from '../Playlist/actions';
 import { addTrackToLibrary } from '../Inbox/actions';
-
-import ContextMenu, { MenuItem, Submenu } from '../Util/ContextMenu';
 
 class TrackContextMenu extends PureComponent {
   static propTypes = {
@@ -56,25 +56,27 @@ class TrackContextMenu extends PureComponent {
         hideContextMenu={this.props.hideContextMenu}
         context={this.props.context}
       >
-        <MenuItem onClick={this.playTrack}>Play Track</MenuItem>
-        <MenuItem onClick={this.queueTrack}>Queue Track</MenuItem>
-        <Submenu title="Add Track to Playlist">
-          {this.props.playlists.map(playlist => (
-            <MenuItem
-              key={playlist.id}
-              onClick={() => this.addTrackToPlaylist(playlist)}
-            >
-              {playlist.title}
-            </MenuItem>
-          ))}
-        </Submenu>
-        {this.props.track && this.props.track.inbox ?
-          <MenuItem onClick={this.addTrackToLibrary}>Add to Library</MenuItem> : ''
-        }
+        Tjo tjo
       </ContextMenu>
     );
   }
 }
+//
+// <MenuItem onClick={this.playTrack}>Play Track</MenuItem>
+// <MenuItem onClick={this.queueTrack}>Queue Track</MenuItem>
+// <SubMenu title="Add Track to Playlist">
+//   {this.props.playlists.map(playlist => (
+//     <MenuItem
+//       key={playlist.id}
+//       onClick={() => this.addTrackToPlaylist(playlist)}
+//     >
+//       {playlist.title}
+//     </MenuItem>
+//   ))}
+// </SubMenu>
+//{this.props.track && this.props.track.inbox ?
+//  <MenuItem onClick={this.addTrackToLibrary}>Add to Library</MenuItem> : ''
+//}
 
 function mapState(state) {
   return {

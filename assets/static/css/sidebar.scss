@@ -1,11 +1,6 @@
 @import "variables";
 
 .sidebar {
-  // width: 300px;
-  // height: calc(100vh - 80px);
-  // height: 100vh;
-  // padding-top: 20px;
-  // flex-shrink: 0;
   background: #FFF;
 
   overflow-y: scroll;
@@ -25,36 +20,6 @@
 
   font-size: 25px;
   font-weight: 200;
-
-  /* li {
-    cursor: pointer;
-
-    padding-left: 40px;
-    transition: background 100ms ease-in,
-                color 100ms ease-in,
-                padding-top 100ms ease-in-out,
-                padding-bottom 100ms ease-in-out;
-    input {
-      transition: background 100ms ease-in;
-    }
-
-    &:hover {
-      background: $color-primary;
-      color: #FFF;
-      input { background: $color-primary; }
-    }
-
-    &.active {
-      border-left: 10px solid $color-primary;
-      padding: 4px 0 4px 30px;
-      input { background: $color-primary; }
-    }
-  } */
-
-  li.search.active {
-    background: $color-primary;
-    color: #FFF;
-  }
 
   a {
     cursor: pointer;
@@ -87,15 +52,53 @@
   font-size: 18px;
 }
 
-.unstyled-input {
+@mixin unstyled-input {
   margin: 0;
   padding: 0;
   border: 0;
   outline: none;
 }
 
+.search-input {
+  @include unstyled-input();
+
+  width: 100%;
+  // padding-top: .3em;
+  // padding-bottom: .3em;
+  padding-left: 40px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 25px;
+  font-weight: 200;
+  color: #666;
+  cursor: pointer;
+
+  transition: background 100ms ease-in,
+              color 100ms ease-in,
+              padding-top 100ms ease-in-out,
+              padding-bottom 100ms ease-in-out;
+
+  &:hover {
+    background: $color-primary;
+    color: #FFF;
+    input { background: $color-primary; }
+  }
+
+  &:focus, &.active {
+    border-left: 10px solid $color-primary;
+    padding: 4px 0 4px 30px;
+    background: $color-primary;
+    color: #FFF;
+  }
+}
+
 .sidebar-playlist-header {
   font-family: 'Raleway', sans-serif;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-items: auto;
+  justify-content: space-between;
 
   @include no-select();
 
@@ -104,23 +107,20 @@
   margin-bottom: 5px;
   font-size: 22px;
 
-  .fa-plus {
-    margin-right: 1em;
-    line-height: inherit;
+  > button {
+    outline: none;
+    border: none;
+    margin-right: 10px;
+    padding: 8px 8px 8px 8px;
+    cursor: pointer;
+
+    > .fa-plus {
+      margin: 0;
+    }
   }
 }
 
-.playlist-tab {
-  padding-left: 40px;
-  padding-right: 5px;
-  font-size: 16px;
-}
-
-.playlist-list {
-  word-wrap: break-word;
-}
-
-.playlist-list a {
+.sidebar-playlist {
   display: block;
   margin-bottom: 4px;
   padding-right: 20px;
@@ -131,7 +131,6 @@
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  // transition: color 50ms ease;
   transition: background 100ms ease-in,
               color 100ms ease-in;
 
@@ -147,7 +146,10 @@
 }
 
 .create-playlist input {
-  color: $color-primary;
-  border-bottom: 1px $color-primary solid;
+  @include unstyled-input();
+
   width: 90%;
+  margin-left: 40px;
+  border-bottom: 1px $color-primary solid;
+  color: $color-primary;
 }

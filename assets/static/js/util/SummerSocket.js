@@ -1,10 +1,10 @@
 import { Socket } from 'phoenix';
 
-import { socketStatusUpdate, fetchStatus } from '../Player/actions';
-import { queueUpdate, fetchQueue } from '../Queue/actions';
-import { receivePlaylists } from '../Playlist/actions';
-import { trackUpdate } from '../Track/actions';
-import { clearInbox } from '../Inbox/actions';
+import { socketStatusUpdate, fetchStatus } from '../app/Player/actions';
+import { queueUpdate, fetchQueue } from '../app/Queue/actions';
+import { receivePlaylists } from '../app/Playlist/actions';
+import { trackUpdate } from '../app/Track/actions';
+import { clearInbox } from '../app/Inbox/actions';
 
 export default class SummerSocket {
   constructor() {
@@ -14,14 +14,13 @@ export default class SummerSocket {
 
   initialize(store) {
     this.store = store;
-    const socket = this.socket;
 
     // Immediately request queue and status, in case websocket connection is slow
     this.store.dispatch(fetchQueue());
     this.store.dispatch(fetchStatus());
 
-    socket.connect();
-    const broadcastChannel = socket.channel('status:broadcast', {});
+    this.socket.connect();
+    const broadcastChannel = this.socket.channel('status:broadcast', {});
     this.broadcastChannel = broadcastChannel;
 
     broadcastChannel.join().receive('ok', (initInfo) => {
@@ -123,11 +122,12 @@ export default class SummerSocket {
   }
 
   seek(seekPercent) {
-    const track = this.state().track;
+    const { track } = this.state();
+
     if (track) {
-      const seekDuration = seekPercent * track.duration;
-      const currentItemId = this.state().statusUpdate.currentItemId;
-      this.socket.emit('seek', { id: currentItemId, pos: seekDuration });
+      const pos = seekPercent * track.duration;
+      const id = this.state().statusUpdate.currentItemId;
+      this.socket.emit('seek', { id, pos });
     }
   }
 }

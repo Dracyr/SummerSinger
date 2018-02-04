@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ContextMenu, { MenuItem } from '../../../../app/Util/ContextMenu';
+import ContextMenu, { MenuItem } from 'Components/ContextMenu';
 
-const SidebarContextMenu = ({
-  playlist, playPlaylist, queuePlaylist, hideContextMenu, position,
+const PlaylistContextMenu = ({
+  playlist, playPlaylist, queuePlaylist, hideContextMenu, position, validTarget,
 }) => (
   <ContextMenu
     hideContextMenu={hideContextMenu}
     context={position}
+    validTarget={validTarget}
   >
     <MenuItem onClick={() => playPlaylist(playlist.id)}>
       Play Playlist Now
@@ -19,17 +20,18 @@ const SidebarContextMenu = ({
   </ContextMenu>
 );
 
-SidebarContextMenu.propTypes = {
+PlaylistContextMenu.propTypes = {
   playlist: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,
   playPlaylist: PropTypes.func.isRequired,
   queuePlaylist: PropTypes.func.isRequired,
   hideContextMenu: PropTypes.func.isRequired,
+  validTarget: PropTypes.func.isRequired,
   position: PropTypes.shape({
     x: PropTypes.number,
     y: PropTypes.number,
   }).isRequired,
 };
 
-export default SidebarContextMenu;
+export default PlaylistContextMenu;

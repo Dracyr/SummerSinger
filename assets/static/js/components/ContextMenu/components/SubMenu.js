@@ -1,90 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isParent } from 'Util';
 
-export default class ContextMenu extends Component {
-  constructor() {
-    super();
-    this.getLeftOffset = this.getLeftOffset.bind(this);
-    this.onRandomClick = this.onRandomClick.bind(this);
-    this.onDefaultContextMenu = this.onDefaultContextMenu.bind(this);
-  }
-
-  componentDidMount() {
-    document.addEventListener('click', this.onRandomClick);
-    document.addEventListener('contextmenu', this.onDefaultContextMenu);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('click', this.onRandomClick);
-    document.removeEventListener('contextmenu', this.onDefaultContextMenu);
-  }
-
-  onRandomClick(event) {
-    if (!event.defaultPrevented) {
-      this.props.hideContextMenu();
-    }
-  }
-
-  onDefaultContextMenu(event) {
-    if (!isParent(event.target, this.refs.rootMenu)) {
-      this.props.hideContextMenu();
-    }
-  }
-
-  getLeftOffset(x) {
-    const windowWidth = window.innerWidth
-      || document.documentElement.clientWidth
-      || document.body.clientWidth;
-    const elementWidth = (this.refs.rootMenu && this.refs.rootMenu.offsetWidth) || 160;
-
-    return x + elementWidth >= windowWidth ? (x - elementWidth) : x;
-  }
-
-  render() {
-    const style = {
-      position: 'fixed',
-      left: this.getLeftOffset(this.props.context.x),
-      top: this.props.context.y,
-    };
-
-    return (
-      <div style={style} ref="rootMenu" className="context-menu">
-        {this.props.children}
-      </div>
-    );
-  }
-}
-
-ContextMenu.propTypes = {
-  hideContextMenu: PropTypes.func,
-  context: PropTypes.object,
-  children: PropTypes.array,
-};
-
-export const MenuItem = (props) => {
-  const className = props.disabled ? 'context-menu-item disabled' : 'context-menu-item';
-
-  return (
-    <div className={className}>
-      <a
-        href="#"
-        className="context-menu-link"
-        onClick={props.onClick}
-      >
-        {props.children}
-      </a>
-    </div>
-  );
-};
-
-MenuItem.propTypes = {
-  onClick: PropTypes.func,
-  children: PropTypes.string,
-  disabled: PropTypes.bool,
-};
-
-export class Submenu extends Component {
+export default class SubMenu extends Component {
   constructor() {
     super();
     this.state = {
@@ -163,7 +80,7 @@ export class Submenu extends Component {
   }
 }
 
-Submenu.propTypes = {
+SubMenu.propTypes = {
   title: PropTypes.string,
   children: PropTypes.array,
 };

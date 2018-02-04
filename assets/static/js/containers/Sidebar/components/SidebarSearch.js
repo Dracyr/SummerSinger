@@ -1,70 +1,58 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
-import { NavLink } from 'react-router-dom';
-
-export default class SidebarSearch extends PureComponent {
+class SidebarSearch extends Component {
   static propTypes = {
-    active: PropTypes.bool,
     search: PropTypes.func.isRequired,
-  };
-
-  static defaultProps = {
-    active: null,
+    location: PropTypes.shape({
+      pathname: PropTypes.string,
+    }).isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func,
+    }).isRequired,
   };
 
   constructor(props) {
     super(props);
     this.state = { value: 'Search' };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.onBlur = this.handleOnBlur.bind(this);
-    this.onFocus = this.handleOnFocus.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.active !== nextProps.active) {
-      this.setState({ value: nextProps.active ? '' : 'Search' });
-    }
-  }
-
-  handleChange(event) {
-    const value = event.target.value;
+  handleChange = (event) => {
+    const { value } = event.target;
     this.setState({ value });
-    this.search(value);
-  }
 
-  handleKeyPress(event) {
-    if (event.key === 'Enter') {
-      this.search(this.state.value);
+    if (value.length >= 1) {
+      this.props.search(value);
     }
   }
 
-  handleOnBlur() {
-    this.setState({ value: 'Search' });
+  handleKeyPress = (event) => {
+    if (event.key === 'Enter' && this.state.value >= 1) {
+      this.props.search(this.state.value);
+    }
   }
 
-  handleOnFocus() {
+  handleFocus = () => {
+    if (this.props.location.pathname !== '/search') {
+      this.props.history.push('/search');
+    }
     this.setState({ value: '' });
-  }
-
-  search(searchTerm) {
-    this.props.search(searchTerm);
   }
 
   render() {
     return (
-      <NavLink to="/search" className="search">
-        <input
-          type="text"
-          className="unstyled-input"
-          value={this.state.value}
-          onChange={this.handleChange}
-          onKeyPress={this.handleKeyPress}
-          onBlur={this.onBlur}
-          onFocus={this.onFocus}
-        />
-      </NavLink>
+      <input
+        type="text"
+        className="search-input"
+        value={this.props.location.pathname === '/search' ? this.state.value : 'Search'}
+        onChange={this.handleChange}
+        onKeyPress={this.handleKeyPress}
+        onBlur={this.handleBlur}
+        onFocus={this.handleFocus}
+      />
     );
   }
 }
+
+export default withRouter(SidebarSearch);
