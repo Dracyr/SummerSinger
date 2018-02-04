@@ -11,7 +11,7 @@ import { fetchSearch as FetchSearch } from '../../app/Library/actions';
 import * as PlaylistActions from '../../app/Playlist/actions';
 
 const Sidebar = ({ fetchSearch, playlists, playlistActions }) => (
-  <aside className="sidebar">
+  <aside id="sidebar">
     <nav className="sidebar-links">
       <SidebarSearch search={fetchSearch} />
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as PlayerActions from '../Player/actions';
+import * as PlayerActions from 'Containers/Player/actions';
 import * as LibraryActions from './actions';
 
 import TrackList from '../Track/TrackList';

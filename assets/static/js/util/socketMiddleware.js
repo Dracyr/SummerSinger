@@ -7,7 +7,7 @@ import {
   REQUEST_NEXT_TRACK,
   REQUEST_SEEK,
   REQUEST_VOLUME,
-} from '../app/Player/actions';
+} from 'Containers/Player/actions';
 
 import {
   PLAY_FOLDER,
@@ -23,7 +23,7 @@ import {
 import {
   REMOVE_QUEUE_TRACK,
   CLEAR_QUEUE,
-} from '../app/Queue/actions';
+} from 'Containers/Queue/actions';
 
 import {
   REQUEST_CLEAR_INBOX,
@@ -78,6 +78,7 @@ export default socket => store => next => action => {
       break;
     case REQUEST_CLEAR_INBOX:
       socket.requestClearInbox();
+      break;
     default:
       break;
   }

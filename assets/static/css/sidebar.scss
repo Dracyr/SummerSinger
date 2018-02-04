@@ -1,15 +1,15 @@
 @import "variables";
 
-.sidebar {
+#sidebar {
   background: #FFF;
 
   overflow-y: scroll;
   overflow-x: hidden;
-  box-shadow: 5px 0 10px 0px #ddd;
+  padding-top: 1em;
   z-index: 1;
 }
 
-.sidebar::-webkit-scrollbar {
+#sidebar::-webkit-scrollbar {
   display: none;
 }
 

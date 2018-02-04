@@ -1,7 +1,7 @@
 import { Socket } from 'phoenix';
 
-import { socketStatusUpdate, fetchStatus } from '../app/Player/actions';
-import { queueUpdate, fetchQueue } from '../app/Queue/actions';
+import { socketStatusUpdate, fetchStatus } from 'Containers/Player/actions';
+import { queueUpdate, fetchQueue } from 'Containers/Queue/actions';
 import { receivePlaylists } from '../app/Playlist/actions';
 import { trackUpdate } from '../app/Track/actions';
 import { clearInbox } from '../app/Inbox/actions';

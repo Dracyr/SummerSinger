@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import TrackList from '../Track/TrackList';
-import { requestQueueAndPlayTrack } from '../Player/actions';
+import { requestQueueAndPlayTrack } from 'Containers/Player/actions';
 
 const Search = props => (
   <TrackList

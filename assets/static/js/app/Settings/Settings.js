@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { requestVolume } from '../Player/actions';
+import { requestVolume } from 'Containers/Player/actions';
 import LibrarySettings from './Library/LibrarySettings';
 
 class Settings extends PureComponent {

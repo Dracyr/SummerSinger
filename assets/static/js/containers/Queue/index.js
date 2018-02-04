@@ -1,12 +1,12 @@
-import React, { PureComponent } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import TrackList from '../Track/TrackList';
-import { requestPlayTrack } from '../Player/actions';
+import TrackList from '../../app/Track/TrackList';
+import { requestPlayTrack } from 'Containers/Player/actions';
 import { removeQueueTrack, clearQueue } from './actions';
 
-class Queue extends PureComponent {
+class Queue extends Component {
   static propTypes = {
     actions: PropTypes.object.isRequired,
     queue: PropTypes.array.isRequired,
@@ -37,7 +37,7 @@ class Queue extends PureComponent {
     const { currentIndex, queue } = this.props;
 
     return (
-      <div>
+      <Fragment>
         <h1 className="header">
           Queue
           <small className="header-controls">
@@ -51,7 +51,7 @@ class Queue extends PureComponent {
           onClickHandler={this.handleClick}
           onDeleteHandler={this.handleDelete}
         />
-      </div>
+      </Fragment>
     );
   }
 }

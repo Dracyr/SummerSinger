@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import Album from '../Album/Album';
 import TrackList from '../Track/TrackList';
-import { requestQueueAndPlayTrack } from '../Player/actions';
+import { requestQueueAndPlayTrack } from 'Containers/Player/actions';
 import { fetchArtist } from './actions';
 
 class Artist extends PureComponent {

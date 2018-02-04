@@ -1,5 +1,4 @@
 @import "variables";
-// @import "bootstrap";
 @import "font-awesome";
 
 @import "player";
@@ -14,57 +13,38 @@
 @import url('http://fonts.googleapis.com/css?family=Raleway:400,300,200');
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans');
 
-html {
-  // min-height: 100vh;
-}
-
 body {
   height: 100vh;
-  // min-height: 100vh;
   margin: 0;
 
-  color: $default-font-color;
   background: #ddd;
+  color: $default-font-color;
   font-family: 'Noto Sans', sans-serif;
-
-  // overflow: hidden;
-}
-
-#container {
-  display: grid;
-  grid-template-columns: 300px auto;
-  grid-template-rows: 400px auto;
-  grid-template-areas:
-    "player main"
-    "sidebar main";
-  height: 100%;
-}
-
-.sidebar {
-  grid-area: sidebar;
-}
-
-main {
-  grid-area: main;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Raleway', sans-serif;
 }
 
-.wrapper {
-  // display: flex;
-  // background: #ddd;
+#container {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: 450px 1fr;
+  grid-template-areas:
+    "player main"
+    "sidebar main";
+  height: 100%;
+}
+
+#sidebar {
+  grid-area: sidebar;
 }
 
 #main-content {
-  padding: 20px 40px 0px 40px;
-  // flex-grow: 1;
-
-  // overflow-y: scroll;
-  // height: 100vh;
-
+  grid-area: main;
+  padding: 0 40px 0 40px;
   background: #EEE;
+  overflow-y: scroll;
 }
 
 button {

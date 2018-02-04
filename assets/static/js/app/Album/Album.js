@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import TrackList from '../Track/TrackList';
-import { requestQueueAndPlayTrack } from '../Player/actions';
+import { requestQueueAndPlayTrack } from 'Containers/Player/actions';
 import { fetchAlbum } from './actions';
 
 class Album extends PureComponent {

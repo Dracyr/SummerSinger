@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import undoable, { includeAction } from 'redux-undo';
 
-import player from './app/Player/reducer';
+import player from 'Containers/Player/reducer';
 import library from './app/Library/reducer';
 import albums from './app/Album/reducer';
 import artists from './app/Artist/reducer';
@@ -23,7 +23,6 @@ const rootReducer = combineReducers({
   artists,
   inbox,
   playlist,
-  sidebar,
   settings,
   folders: undoable(folders, {
     filter: includeAction([RECEIVE_FOLDER]),

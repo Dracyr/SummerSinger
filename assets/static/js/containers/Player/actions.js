@@ -14,11 +14,11 @@ export function socketStatusUpdate(statusUpdate) {
 }
 
 export function fetchStatus() {
-  return dispatch => {
-    return fetch('/api/status')
+  return dispatch => (
+    fetch('/api/status')
       .then(response => response.json())
-      .then(json => dispatch(socketStatusUpdate(json)));
-  };
+      .then(json => dispatch(socketStatusUpdate(json)))
+  );
 }
 
 export function requestPlayback(playback) {

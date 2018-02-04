@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import ContextMenu, { MenuItem, SubMenu } from 'Components/ContextMenu';
 
-import * as PlayerActions from '../Player/actions';
+import * as PlayerActions from 'Containers/Player/actions';
 import * as PlaylistActions from '../Playlist/actions';
 import { addTrackToLibrary } from '../Inbox/actions';
 

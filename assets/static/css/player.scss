@@ -2,29 +2,35 @@ $now_playing_height: 70px;
 $player_center_width: 800px;
 $color-primary: #aa79ff;
 
-.now-playing {
-  font-family: 'Raleway', sans-serif;
-
-  display: flex;
-
-  height: $now_playing_height;
+#player {
+  display: grid;
+  grid-row-gap: 5px;
+  grid-template-rows: 300px 50px 10px 75px;
+  grid-template-columns: 100%;
+  grid-template-areas:
+    "now-playing-art"
+    "track-info"
+    "seek-bar"
+    "player-controls";
+  border-bottom: 1px solid #ddd;
+  background: #fff;
   width: 100%;
+}
 
-  background: #FAFAFA;
+.track-info {
+  grid-area: track-info;
+  text-align: center;
 }
 
 #player-controls {
-  width: 300px;
-  min-width: 235px;
-  height: 100%;
-  float: left;
-  padding-left: 75px;
-
+  grid-area: player-controls;
   font-size: 40px;
   line-height: 1.8;
   letter-spacing: 20px;
+  justify-self: center;
+  align-self: center;
 
-  i {
+  > i {
     cursor: pointer;
     &:hover {
       color: $color-primary;
@@ -32,99 +38,32 @@ $color-primary: #aa79ff;
   }
 }
 
-.player-info {
-  flex-grow: 1;
-}
-
-.player-left-wrapper {
-  position: relative;
-  width: 50%;
-  height: $now_playing_height;
-  float: left;
-  margin-right: ($player_center_width / 2) * -1 ;
-}
-
-.player-center {
-  position: relative;
-  float: left;
-  width: $player_center_width;
-  height: $now_playing_height;
-  height: 100%;
-
-  text-align: center;
-  .song {
-    padding-top: 6px;
-
-    font-size: 24px;
-  }
-}
-
-.player-right-wrapper {
-  position: relative;
-  float: right;
-  width: 50%;
-  height: $now_playing_height;
-  margin-left: ($player_center_width / 2) * -1 ;
-}
-
-#volume {
-  display: inline-block;
-  width: 140px;
-  height: 100%;
-  float: right;
-  margin-right: 60px;
-}
-
 $seek_slider_height: 10px;
 .seek-slider {
-  position: relative;
-  display: block;
+  grid-area: seek-bar;
   height: $seek_slider_height;
-  width: 100%;
   background: #DDD;
+  width: 80%;
+  justify-self: center;
 
-  .duration-passed {
-    background: $color-primary;
-    display: inline-block;
-    height: $seek_slider_height;
-    position: absolute;
-    width: 100%;
-
-    //transition: transform 200ms ease-out;
-
-    transform-origin: left;
-    transform: scaleX(0);
-  }
 }
 
-.streaming-controls {
-  position: relative;
-  right: 40px;
-  float: right;
-  font-size: 30px;
-  top: 15px;
-}
+.duration-passed {
+  background: $color-primary;
+  display: inline-block;
+  height: $seek_slider_height;
+  position: absolute;
+  width: 100%;
 
-@mixin no-select() {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none;   /* Chrome/Safari/Opera */
-  -khtml-user-select: none;    /* Konqueror */
-  -moz-user-select: none;      /* Firefox */
-  -ms-user-select: none;       /* IE/Edge */
-  user-select: none;           /* non-prefixed version, currently
-                                  not supported by any browser */
-}
-
-.track-list tr {
-  cursor: pointer;
-  @include no-select();
+  transform-origin: left;
+  transform: scaleX(0);
 }
 
 .now-playing-art {
-  margin-left: 25px;
-  margin-top: 25px;
-  margin-bottom: 20px;
+  grid-area: now-playing-art;
   height: 250px;
-  box-shadow: rgb(221, 221, 221) 5px 5px 10px 0px;
+  justify-self: center;
+  align-self: center;
   outline: 1px solid #ddd;
+  box-shadow: rgb(221, 221, 221) 5px 5px 10px 0px;
 }

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { requestQueueAndPlayTrack } from '../Player/actions';
+import { requestQueueAndPlayTrack } from 'Containers/Player/actions';
 import { fetchLibrary, sortLibrary } from '../Library/actions';
 import TrackList from '../Track/TrackList';
 

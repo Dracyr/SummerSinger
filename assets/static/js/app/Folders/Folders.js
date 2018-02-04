@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as FolderActions from './actions';
-import * as PlayerActions from '../Player/actions';
+import * as PlayerActions from 'Containers/Player/actions';
 import Folder from './Folder';
 import Track from '../Track/Track';
 import TrackList from '../Track/TrackList';

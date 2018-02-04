@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import _ from 'lodash';
 
-import * as PlayerActions from '../Player/actions';
+import * as PlayerActions from 'Containers/Player/actions';
 import * as InboxActions from './actions';
 
 import TrackList from '../Track/TrackList';

@@ -17,9 +17,9 @@ export function clearQueue() {
 }
 
 export function fetchQueue() {
-  return dispatch => {
-    return fetch('/api/queue')
+  return dispatch => (
+    fetch('/api/queue')
       .then(response => response.json())
-      .then(json => dispatch(queueUpdate(json.queue)));
-  };
+      .then(json => dispatch(queueUpdate(json.queue)))
+  );
 }

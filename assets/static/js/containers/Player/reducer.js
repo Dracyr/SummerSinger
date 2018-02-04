@@ -1,6 +1,6 @@
 import { PLAYER_UPDATE } from './actions';
-import { QUEUE_UPDATE } from '../Queue/actions';
-import { TRACK_UPDATE } from '../Track/actions';
+import { QUEUE_UPDATE } from 'Containers/Queue/actions';
+import { TRACK_UPDATE } from '../../app/Track/actions';
 
 const initialPlayer = {
   playing: false,
@@ -19,7 +19,8 @@ export default function player(state = initialPlayer, action) {
       const normalizedStartTime = action.statusUpdate.start_time +
         (Date.now() - action.statusUpdate.current_time);
 
-      return { ...state,
+      return {
+        ...state,
         playing: action.statusUpdate.playback,
         queueIndex: action.statusUpdate.queue_index,
         startTime: normalizedStartTime,
@@ -30,15 +31,17 @@ export default function player(state = initialPlayer, action) {
       };
     }
     case QUEUE_UPDATE:
-      return { ...state,
+      return {
+        ...state,
         currentTrack: action.queue[state.queueIndex] || null,
         queue: action.queue,
       };
     case TRACK_UPDATE:
-      return { ...state,
-        queue: state.queue.map(track =>
+      return {
+        ...state,
+        queue: state.queue.map(track => (
           action.track.id === track.id ? action.track : track
-        ),
+        )),
       };
     default:
       return state;

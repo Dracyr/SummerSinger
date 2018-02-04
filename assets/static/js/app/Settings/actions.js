@@ -1,5 +1,3 @@
-import fetch from 'isomorphic-fetch';
-
 export const RECEIVE_CD = 'RECEIVE_CD';
 
 export const RECEIVE_LIBRARIES = 'RECEIVE_LIBRARIES';
@@ -10,12 +8,11 @@ function receiveCd(dir) {
 }
 
 export function cd(path) {
-  return (dispatch) => {
-    console.log();
-    return fetch(`/api/file_system/${encodeURIComponent(path)}`)
+  return dispatch => (
+    fetch(`/api/file_system/${encodeURIComponent(path)}`)
       .then(response => response.json())
-      .then(json => dispatch(receiveCd(json)));
-  };
+      .then(json => dispatch(receiveCd(json)))
+  );
 }
 
 function receiveLibraries(libraries) {
@@ -23,11 +20,11 @@ function receiveLibraries(libraries) {
 }
 
 export function fetchLibraries() {
-  return (dispatch) => {
-    return fetch('/api/libraries')
+  return dispatch => (
+    fetch('/api/libraries')
       .then(response => response.json())
-      .then(json => dispatch(receiveLibraries(json.data)));
-  };
+      .then(json => dispatch(receiveLibraries(json.data)))
+  );
 }
 
 export function addLibrary(libraryPath) {
