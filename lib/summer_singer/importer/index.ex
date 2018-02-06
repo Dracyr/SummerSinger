@@ -27,12 +27,14 @@ defmodule SummerSinger.Importer.Index do
       |> IndexFolder.to_changesets(library.id)
       |> Repo.multi_changesets(on_conflict: :replace_all, conflict_target: :path)
 
-    folder_ids = Map.new(results, fn {_, fldr} -> {fldr.path, {fldr.id, fldr}} end)
+    folder_ids = Map.new(results, fn {_, f} -> {f.path, {f.id, f}} end)
     {folders, tracks} = collect_updates(root_dir, folder_ids, nil)
 
     Logger.info("Inserting, found #{length(folders)} folders, #{length(tracks)} tracks")
     Repo.multi_changesets(folders)
     Repo.multi_changesets(tracks, on_conflict: :nothing)
+
+    # Broadcast library updated
 
     nil
   end
@@ -42,15 +44,17 @@ defmodule SummerSinger.Importer.Index do
   defp collect_dirs(path) do
     children = File.ls!(path)
 
-    dirs = children
+    dirs =
+      children
       |> Enum.map(&Path.expand(&1, path))
-      |> Enum.filter_map(&File.dir?/1, &collect_dirs/1)
+      |> Enum.filter(&File.dir?/1)
+      |> Enum.map(&collect_dirs/1)
       |> Enum.filter(&(length(&1.tracks) > 0 || length(&1.children) > 0))
 
-    tracks = Enum.filter_map(children,
-        &Enum.member?(@valid_exts, Path.extname(&1)),
-        &Path.expand(&1, path)
-      )
+    tracks =
+      children
+      |> Enum.filter(&Enum.member?(@valid_exts, Path.extname(&1)))
+      |> Enum.map(&Path.expand(&1, path))
 
     %IndexFolder{path: path, children: dirs, tracks: tracks}
   end

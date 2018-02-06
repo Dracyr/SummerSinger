@@ -44,7 +44,7 @@ class SidebarPlayer extends PureComponent {
       const artist = currentTrack.artist ? `${currentTrack.artist} - ` : '';
       const title = currentTrack.title ? currentTrack.title : currentTrack.filename;
       playerCenter = (
-        <div style={{textAlign: 'center'}} >
+        <div style={{ textAlign: 'center' }}>
           <div className="song" style={{ height: 25, fontSize: 16 }} >
             {artist} {title}
           </div>
@@ -80,9 +80,9 @@ class SidebarPlayer extends PureComponent {
           />
         </div>
         <div id="player-controls">
-          <i className="fa fa-fast-backward"onClick={actions.requestPreviousTrack}></i>
-          <i className={playingClass} onClick={this.requestPlayback}></i>
-          <i className="fa fa-fast-forward"onClick={actions.requestNextTrack}></i>
+          <i className="fa fa-fast-backward"onClick={actions.requestPreviousTrack} />
+          <i className={playingClass} onClick={this.requestPlayback} />
+          <i className="fa fa-fast-forward"onClick={actions.requestNextTrack} />
         </div>
       </div>
     );

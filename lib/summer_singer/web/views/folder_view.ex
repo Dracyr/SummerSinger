@@ -13,7 +13,7 @@ defmodule SummerSinger.Web.FolderView do
     %{id: folder.id,
       title: folder.title,
       children: render_many(folder.children, SummerSinger.Web.FolderView, "folder_lite.json"),
-      tracks: render_many(folder.tracks, SummerSinger.Web.TrackView, "track.json")
+      #tracks: render_many(folder.tracks, SummerSinger.Web.TrackView, "track.json")
     }
   end
 
