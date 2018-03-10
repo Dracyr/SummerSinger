@@ -1,46 +1,46 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { NavLink } from "react-router-dom";
 
 class SidebarPlaylist extends Component {
   static propTypes = {
     playlist: PropTypes.shape({
       id: PropTypes.number,
-      title: PropTypes.string,
+      title: PropTypes.string
     }).isRequired,
     openContextMenu: PropTypes.func.isRequired,
-    addTrackToPlaylist: PropTypes.func.isRequired,
+    addTrackToPlaylist: PropTypes.func.isRequired
   };
 
   constructor() {
     super();
 
     this.state = {
-      dragging: false,
+      dragging: false
     };
   }
 
-  handleContextMenu = (e) => {
+  handleContextMenu = e => {
     e.preventDefault();
     this.props.openContextMenu(this.props.playlist, e.pageX, e.pageY);
-  }
+  };
 
-  handleDragOver = (e) => {
+  handleDragOver = e => {
     e.preventDefault();
     this.setState({ dragging: true });
-  }
+  };
 
-  handleDragLeave = (e) => {
+  handleDragLeave = e => {
     e.preventDefault();
     this.setState({ dragging: false });
-  }
+  };
 
-  handleDrop = (e) => {
-    const payload = JSON.parse(e.dataTransfer.getData('text/plain'));
+  handleDrop = e => {
+    const payload = JSON.parse(e.dataTransfer.getData("text/plain"));
     if (payload.track_id) {
       this.props.addTrackToPlaylist(payload.track_id, this.props.playlist.id);
     }
-  }
+  };
 
   render() {
     const { playlist } = this.props;
@@ -55,7 +55,7 @@ class SidebarPlaylist extends Component {
         onDragLeave={this.handleDragLeave}
         onDragEnd={this.handleDragLeave}
         onDragExit={this.handleDragLeave}
-        className={`sidebar-playlist ${this.state.dragging ? 'dragging' : ''}`}
+        className={`sidebar-playlist ${this.state.dragging ? "dragging" : ""}`}
       >
         {playlist.title}
       </NavLink>

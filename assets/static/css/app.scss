@@ -60,3 +60,50 @@ button {
     color: #FFF;
   }
 }
+
+///////
+
+.tracklist-next {
+  display: grid;
+  grid-template-columns: 2fr 2fr 3fr;
+  grid-auto-rows: 40px;
+  grid-template-areas: "title artist album";
+}
+
+.track-title {
+  grid-area: title
+}
+.track-artist {
+  grid-area: artist
+}
+.track-album {
+  grid-area: album
+}
+
+.next-tracks-list {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.next-tracks-track {
+  display: table-row;
+  height: 40px;
+}
+
+.next-track-td {
+  // max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.next-track-title,
+.next-track-artist,
+.next-track-album {
+  display: table-cell;
+  vertical-align: middle;
+  width: 30%;
+  max-width: 30%;
+  padding-right: 10px;
+}

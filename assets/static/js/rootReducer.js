@@ -1,20 +1,19 @@
-import { combineReducers } from 'redux';
-import undoable, { includeAction } from 'redux-undo';
-
-import player from 'Containers/Player/reducer';
-import library from './app/Library/reducer';
-import albums from './app/Album/reducer';
-import artists from './app/Artist/reducer';
-import inbox from './app/Inbox/reducer';
-import folders from './app/Folders/reducer';
-import playlist from './app/Playlist/reducer';
-import settings from './app/Settings/reducer';
+import { combineReducers } from "redux";
+import undoable from "redux-undo";
 
 import {
   GO_TO_PARENT,
   GO_TO_PARENT_N,
-  RECEIVE_FOLDER,
-} from './app/Folders/actions';
+  RECEIVE_FOLDER
+} from "Containers/Folders/actions";
+import player from "Containers/Player/reducer";
+import folders from "Containers/Folders/reducer";
+import settings from "Containers/Settings/reducer";
+import playlist from "Containers/Playlists/reducer";
+import library from "Containers/Library/reducer";
+import albums from "Containers/Albums/reducer";
+import artists from "Containers/Artists/reducer";
+import inbox from "Containers/Inbox/reducer";
 
 const rootReducer = combineReducers({
   player,
@@ -25,11 +24,10 @@ const rootReducer = combineReducers({
   playlist,
   settings,
   folders: undoable(folders, {
-    filter: includeAction([RECEIVE_FOLDER]),
-    debub: true,
+    filter: action => action.type === RECEIVE_FOLDER,
     undoType: GO_TO_PARENT,
-    jumpToPastType: GO_TO_PARENT_N,
-  }),
+    jumpToPastType: GO_TO_PARENT_N
+  })
 });
 
 export default rootReducer;

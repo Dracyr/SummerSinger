@@ -1,24 +1,23 @@
-export const REQUEST_PLAYBACK = 'REQUEST_PLAYBACK';
-export const REQUEST_QUEUE_TRACK = 'REQUEST_QUEUE_TRACK';
-export const REQUEST_PLAY_TRACK = 'REQUEST_PLAY_TRACK';
-export const REQUEST_QUEUE_AND_PLAY_TRACK = 'REQUEST_QUEUE_AND_PLAY_TRACK';
-export const REQUEST_PREVIOUS_TRACK = 'REQUEST_PREVIOUS_TRACK';
-export const REQUEST_NEXT_TRACK = 'REQUEST_NEXT_TRACK';
-export const REQUEST_SEEK = 'REQUEST_SEEK';
-export const REQUEST_VOLUME = 'REQUEST_VOLUME';
+export const REQUEST_PLAYBACK = "REQUEST_PLAYBACK";
+export const REQUEST_QUEUE_TRACK = "REQUEST_QUEUE_TRACK";
+export const REQUEST_PLAY_TRACK = "REQUEST_PLAY_TRACK";
+export const REQUEST_QUEUE_AND_PLAY_TRACK = "REQUEST_QUEUE_AND_PLAY_TRACK";
+export const REQUEST_PREVIOUS_TRACK = "REQUEST_PREVIOUS_TRACK";
+export const REQUEST_NEXT_TRACK = "REQUEST_NEXT_TRACK";
+export const REQUEST_SEEK = "REQUEST_SEEK";
+export const REQUEST_VOLUME = "REQUEST_VOLUME";
 
-export const PLAYER_UPDATE = 'PLAYER_UPDATE';
+export const PLAYER_UPDATE = "PLAYER_UPDATE";
 
 export function socketStatusUpdate(statusUpdate) {
   return { type: PLAYER_UPDATE, statusUpdate };
 }
 
 export function fetchStatus() {
-  return dispatch => (
-    fetch('/api/status')
+  return dispatch =>
+    fetch("/api/status")
       .then(response => response.json())
-      .then(json => dispatch(socketStatusUpdate(json)))
-  );
+      .then(json => dispatch(socketStatusUpdate(json)));
 }
 
 export function requestPlayback(playback) {

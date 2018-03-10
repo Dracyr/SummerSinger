@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import CreatePlaylistInput from './components/CreatePlaylistInput';
-import SidebarPlaylist from './components/SidebarPlaylist';
-import PlaylistContextMenu from './components/PlaylistContextMenu';
+import CreatePlaylistInput from "./components/CreatePlaylistInput";
+import SidebarPlaylist from "./components/SidebarPlaylist";
+import PlaylistContextMenu from "./components/PlaylistContextMenu";
 
 class SidebarPlaylists extends Component {
   constructor() {
@@ -12,7 +12,7 @@ class SidebarPlaylists extends Component {
     this.state = {
       contextMenuPosition: null,
       selectedPlaylist: null,
-      showCreatePlaylist: false,
+      showCreatePlaylist: false
     };
   }
 
@@ -23,25 +23,25 @@ class SidebarPlaylists extends Component {
   openContextMenu = (playlist, x, y) => {
     this.setState({
       contextMenuPosition: { x, y },
-      selectedPlaylist: playlist,
+      selectedPlaylist: playlist
     });
-  }
+  };
 
   hideContextMenu = () => {
     this.setState({
       contextMenuPosition: null,
-      selectedPlaylist: null,
+      selectedPlaylist: null
     });
-  }
+  };
 
-  selectPlaylist = (playlist) => {
+  selectPlaylist = playlist => {
     this.setState({ selectedPlaylist: playlist });
-  }
+  };
 
-  createPlaylist = (playlistTitle) => {
+  createPlaylist = playlistTitle => {
     this.props.createPlaylist(playlistTitle);
     this.setState({ showCreatePlaylist: false });
-  }
+  };
 
   render() {
     const { playlists } = this.props;
@@ -73,30 +73,34 @@ class SidebarPlaylists extends Component {
           ))}
         </ul>
 
-        {this.state.contextMenuPosition &&
+        {this.state.contextMenuPosition && (
           <PlaylistContextMenu
-            validTarget={target => target.classList.contains('sidebar-playlist')}
+            validTarget={target =>
+              target.classList.contains("sidebar-playlist")
+            }
             position={this.state.contextMenuPosition}
             hideContextMenu={this.hideContextMenu}
             playPlaylist={this.props.playPlaylist}
             queuePlaylist={this.props.queuePlaylist}
             playlist={this.state.selectedPlaylist}
           />
-        }
+        )}
       </nav>
     );
   }
 }
 
 SidebarPlaylists.propTypes = {
-  playlists: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number,
-    title: PropTypes.string,
-  })).isRequired,
+  playlists: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      title: PropTypes.string
+    })
+  ).isRequired,
   playPlaylist: PropTypes.func.isRequired,
   queuePlaylist: PropTypes.func.isRequired,
   addTrackToPlaylist: PropTypes.func.isRequired,
-  createPlaylist: PropTypes.func.isRequired,
+  createPlaylist: PropTypes.func.isRequired
 };
 
 export default SidebarPlaylists;

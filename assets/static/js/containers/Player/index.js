@@ -1,11 +1,11 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
-import SeekSlider from './components/SeekSlider';
-import TrackInfo from './components/TrackInfo';
-import * as PlayerActions from './actions';
+import * as PlayerActions from "./actions";
+import SeekSlider from "Containers/Player/components/SeekSlider";
+import TrackInfo from "Containers/Player/components/TrackInfo";
 
 class SidebarPlayer extends PureComponent {
   static propTypes = {
@@ -14,21 +14,21 @@ class SidebarPlayer extends PureComponent {
       id: PropTypes.number,
       artist: PropTypes.string,
       title: PropTypes.string,
-      album: PropTypes.string,
+      album: PropTypes.string
     }),
     startTime: PropTypes.number,
     pausedDuration: PropTypes.number,
     requestPlayback: PropTypes.func.isRequired,
     requestSeek: PropTypes.func.isRequired,
     requestPreviousTrack: PropTypes.func.isRequired,
-    requestNextTrack: PropTypes.func.isRequired,
+    requestNextTrack: PropTypes.func.isRequired
   };
 
   static defaultProps = {
     currentTrack: null,
     startTime: null,
-    pausedDuration: null,
-  }
+    pausedDuration: null
+  };
 
   constructor() {
     super();
@@ -40,13 +40,15 @@ class SidebarPlayer extends PureComponent {
   }
 
   render() {
-    const {
-      playing, currentTrack, startTime, pausedDuration,
-    } = this.props;
+    const { playing, currentTrack, startTime, pausedDuration } = this.props;
 
     return (
       <section id="player">
-        <img src="http://placekitten.com/g/250/250" alt="" className="now-playing-art" />
+        <img
+          src="http://placekitten.com/g/250/250"
+          alt=""
+          className="now-playing-art"
+        />
 
         <TrackInfo {...currentTrack} />
 
@@ -61,13 +63,16 @@ class SidebarPlayer extends PureComponent {
         <ul id="player-controls">
           <i
             className="fa fa-fast-backward"
-            onClick={this.props.requestPreviousTrack} />
+            onClick={this.props.requestPreviousTrack}
+          />
           <i
-            className={playing ? 'fa fa-pause' : 'fa fa-play'}
-            onClick={this.requestPlayback} />
+            className={playing ? "fa fa-pause" : "fa fa-play"}
+            onClick={this.requestPlayback}
+          />
           <i
             className="fa fa-fast-forward"
-            onClick={this.props.requestNextTrack} />
+            onClick={this.props.requestNextTrack}
+          />
         </ul>
       </section>
     );
@@ -80,7 +85,7 @@ function mapState(state) {
     currentTrack: state.player.currentTrack,
     startTime: state.player.startTime,
     pausedDuration: state.player.pausedDuration,
-    queue: state.player.queue,
+    queue: state.player.queue
   };
 }
 

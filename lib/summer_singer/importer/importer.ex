@@ -13,7 +13,7 @@ defmodule SummerSinger.Importer do
   end
 
   defp scan_library(library) do
-    # SummerSinger.Importer.Index.perform(library)
+    SummerSinger.Importer.Index.perform(library)
     SummerSinger.Importer.Metadata.perform()
     SummerSinger.Importer.Playlists.perform(library.path)
   end

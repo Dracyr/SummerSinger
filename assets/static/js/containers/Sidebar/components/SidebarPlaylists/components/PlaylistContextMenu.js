@@ -1,10 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import ContextMenu, { MenuItem } from 'Components/ContextMenu';
+import ContextMenu, { MenuItem } from "Components/ContextMenu";
 
 const PlaylistContextMenu = ({
-  playlist, playPlaylist, queuePlaylist, hideContextMenu, position, validTarget,
+  playlist,
+  playPlaylist,
+  queuePlaylist,
+  hideContextMenu,
+  position,
+  validTarget
 }) => (
   <ContextMenu
     hideContextMenu={hideContextMenu}
@@ -22,7 +27,7 @@ const PlaylistContextMenu = ({
 
 PlaylistContextMenu.propTypes = {
   playlist: PropTypes.shape({
-    id: PropTypes.number,
+    id: PropTypes.number
   }).isRequired,
   playPlaylist: PropTypes.func.isRequired,
   queuePlaylist: PropTypes.func.isRequired,
@@ -30,8 +35,8 @@ PlaylistContextMenu.propTypes = {
   validTarget: PropTypes.func.isRequired,
   position: PropTypes.shape({
     x: PropTypes.number,
-    y: PropTypes.number,
-  }).isRequired,
+    y: PropTypes.number
+  }).isRequired
 };
 
 export default PlaylistContextMenu;

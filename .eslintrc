@@ -1,11 +1,21 @@
 {
-  "extends": "airbnb",
+  "extends": ["airbnb", "prettier"],
   "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "es6": true
+  },
   "plugins": [
     "babel"
   ],
   "rules": {
     "react/jsx-filename-extension": 0,
     "jsx-a11y/no-static-element-interactions": 0,
+    "jsx-a11y/click-events-have-key-events": 0
+  },
+  "settings": {
+    "import/resolver": {
+      "webpack": {}
+    }
   }
 }

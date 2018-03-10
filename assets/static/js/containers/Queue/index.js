@@ -1,16 +1,16 @@
-import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, { Component, Fragment } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import TrackList from '../../app/Track/TrackList';
-import { requestPlayTrack } from 'Containers/Player/actions';
-import { removeQueueTrack, clearQueue } from './actions';
+import TrackList from "Components/TrackList";
+import { requestPlayTrack } from "Containers/Player/actions";
+import { removeQueueTrack, clearQueue } from "./actions";
 
 class Queue extends Component {
   static propTypes = {
     actions: PropTypes.object.isRequired,
     queue: PropTypes.array.isRequired,
-    currentIndex: PropTypes.number,
+    currentIndex: PropTypes.number
   };
 
   constructor() {
@@ -58,18 +58,26 @@ class Queue extends Component {
 
 function mapState(state) {
   return {
-    currentIndex: state.player.currentTrack ? state.player.currentTrack.index : null,
-    queue: state.player.queue,
+    currentIndex: state.player.currentTrack
+      ? state.player.currentTrack.index
+      : null,
+    queue: state.player.queue
   };
 }
 
 function mapDispatch(dispatch) {
   return {
     actions: {
-      requestPlayTrack: (...args) => { dispatch(requestPlayTrack(...args)); },
-      removeQueueTrack: (...args) => { dispatch(removeQueueTrack(...args)); },
-      clearQueue: (...args) => { dispatch(clearQueue(...args)); },
-    },
+      requestPlayTrack: (...args) => {
+        dispatch(requestPlayTrack(...args));
+      },
+      removeQueueTrack: (...args) => {
+        dispatch(removeQueueTrack(...args));
+      },
+      clearQueue: (...args) => {
+        dispatch(clearQueue(...args));
+      }
+    }
   };
 }
 

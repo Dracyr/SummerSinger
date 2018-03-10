@@ -1,5 +1,5 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
 
 export default class SeekSlider extends PureComponent {
   static propTypes = {
@@ -7,14 +7,14 @@ export default class SeekSlider extends PureComponent {
     startTime: PropTypes.number,
     pausedDuration: PropTypes.number,
     duration: PropTypes.number,
-    seek: PropTypes.func.isRequired,
+    seek: PropTypes.func.isRequired
   };
 
   static defaultProps = {
     playing: false,
     pausedDuration: 0,
     startTime: 0,
-    duration: 0,
+    duration: 0
   };
 
   constructor(props) {
@@ -35,7 +35,7 @@ export default class SeekSlider extends PureComponent {
   tick() {
     this.setState({
       now: Date.now(),
-      lastPlaying: this.props.playing ? Date.now() : this.state.lastPlaying,
+      lastPlaying: this.props.playing ? Date.now() : this.state.lastPlaying
     });
   }
 

@@ -34,7 +34,7 @@ defmodule SummerSinger.Web.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    for path <- ~w(search queue inbox library folder settings playlist tracks albums artists folders import_library) do
+    for path <- ~w(search queue inbox library folder settings playlist tracks albums artists folders import_library next_tracks) do
       get "/#{path}", PageController, :index
     end
     get "/playlist/:playlistId", PageController, :index

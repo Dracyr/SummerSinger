@@ -6,28 +6,20 @@ import {
   REQUEST_PREVIOUS_TRACK,
   REQUEST_NEXT_TRACK,
   REQUEST_SEEK,
-  REQUEST_VOLUME,
-} from 'Containers/Player/actions';
+  REQUEST_VOLUME
+} from "Containers/Player/actions";
 
-import {
-  PLAY_FOLDER,
-  QUEUE_FOLDER,
-} from '../app/Folders/actions';
+import { PLAY_FOLDER, QUEUE_FOLDER } from "Containers/Folders/actions";
 
 import {
   ADD_TRACK_TO_PLAYLIST,
   PLAY_PLAYLIST,
-  QUEUE_PLAYLIST,
-} from '../app/Playlist/actions';
+  QUEUE_PLAYLIST
+} from "Containers/Playlists/actions";
 
-import {
-  REMOVE_QUEUE_TRACK,
-  CLEAR_QUEUE,
-} from 'Containers/Queue/actions';
+import { REMOVE_QUEUE_TRACK, CLEAR_QUEUE } from "Containers/Queue/actions";
 
-import {
-  REQUEST_CLEAR_INBOX,
-} from '../app/Inbox/actions';
+import { REQUEST_CLEAR_INBOX } from "Containers/Inbox/actions";
 
 export default socket => store => next => action => {
   switch (action.type) {

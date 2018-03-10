@@ -1,5 +1,5 @@
-import React from 'react';
-import { findDOMNode } from 'react-dom';
+import React from "react";
+import { findDOMNode } from "react-dom";
 
 export const PlaceholderText = () => <div className="placeholder-text" />;
 
@@ -22,13 +22,13 @@ export const closestSelector = (el, selector) => {
 
   // find vendor prefix
   [
-    'matches',
-    'webkitMatchesSelector',
-    'mozMatchesSelector',
-    'msMatchesSelector',
-    'oMatchesSelector',
-  ].some((fn) => {
-    if (typeof document.body[fn] === 'function') {
+    "matches",
+    "webkitMatchesSelector",
+    "mozMatchesSelector",
+    "msMatchesSelector",
+    "oMatchesSelector"
+  ].some(fn => {
+    if (typeof document.body[fn] === "function") {
       matchesFn = fn;
       return true;
     }
@@ -57,11 +57,14 @@ export function insertAtOffset(target, arr, offset) {
   return newArr;
 }
 
-export const getScrollParent = (node) => {
+export const getScrollParent = node => {
   let el = findDOMNode(node);
-  while (el = el.parentElement) {
+  while ((el = el.parentElement)) {
     switch (window.getComputedStyle(el).overflowY) {
-      case 'auto': case 'scroll': case 'overlay': return el;
+      case "auto":
+      case "scroll":
+      case "overlay":
+        return el;
     }
   }
   return window;

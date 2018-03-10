@@ -1,4 +1,3 @@
-
 .playing-icon {
   position: absolute;
   height: 0px;
@@ -28,16 +27,14 @@
   border-collapse: collapse;
 }
 
-
 .dir-table {
   .tr:hover {
-    background-color: #EEE;
+    background-color: #eee;
     &.selected {
       background: #dadada;
     }
   }
 }
-
 
 .tr {
   display: inline-table;
@@ -105,8 +102,12 @@
 }
 
 .tr.hide-album {
-  .td-artist { width: 40%; }
-  .td-title  { width: 45%; }
+  .td-artist {
+    width: 40%;
+  }
+  .td-title {
+    width: 45%;
+  }
 }
 
 .track-list > .thead {
@@ -119,7 +120,9 @@
   span {
     transition: all 350ms ease;
     cursor: pointer;
-    &.inactive { opacity: .3; }
+    &.inactive {
+      opacity: 0.3;
+    }
   }
 }
 
@@ -158,8 +161,8 @@
 }
 
 .placeholder-text {
-  width: '50%';
-  height: '1em';
-  display: 'inline-block';
-  background-color: '#ddd';
+  width: "50%";
+  height: "1em";
+  display: "inline-block";
+  background-color: "#ddd";
 }
