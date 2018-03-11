@@ -10,8 +10,8 @@
 @import "react-virtualized";
 @import "modal";
 
-@import url('http://fonts.googleapis.com/css?family=Raleway:400,300,200');
-@import url('https://fonts.googleapis.com/css?family=Noto+Sans');
+@import url("http://fonts.googleapis.com/css?family=Raleway:400,300,200");
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans");
 
 body {
   height: 100vh;
@@ -19,11 +19,16 @@ body {
 
   background: #ddd;
   color: $default-font-color;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: "Noto Sans", sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Raleway', sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Raleway", sans-serif;
 }
 
 #container {
@@ -43,7 +48,7 @@ h1, h2, h3, h4, h5, h6 {
 #main-content {
   grid-area: main;
   padding: 0 40px 0 40px;
-  background: #EEE;
+  background: #eee;
   overflow-y: scroll;
 }
 
@@ -57,7 +62,7 @@ button {
 
   &:hover {
     background: $color-primary;
-    color: #FFF;
+    color: #fff;
   }
 }
 
@@ -71,13 +76,13 @@ button {
 }
 
 .track-title {
-  grid-area: title
+  grid-area: title;
 }
 .track-artist {
-  grid-area: artist
+  grid-area: artist;
 }
 .track-album {
-  grid-area: album
+  grid-area: album;
 }
 
 .next-tracks-list {
@@ -106,4 +111,8 @@ button {
   width: 30%;
   max-width: 30%;
   padding-right: 10px;
+}
+
+.disable-focus-outline:focus {
+  outline: none;
 }

@@ -71,6 +71,7 @@ export default class InfiniteList extends PureComponent {
                     rowHeight={this.props.rowHeight}
                     onRowsRendered={onRowsRendered}
                     scrollTop={scrollTop}
+                    className="disable-focus-outline"
                     {...this.props.additionalKeys}
                   />
                 )}
