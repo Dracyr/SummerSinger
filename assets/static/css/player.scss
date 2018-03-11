@@ -42,10 +42,10 @@ $seek_slider_height: 10px;
 .seek-slider {
   grid-area: seek-bar;
   height: $seek_slider_height;
-  background: #DDD;
+  background: #ddd;
   width: 80%;
   justify-self: center;
-
+  position: relative;
 }
 
 .duration-passed {

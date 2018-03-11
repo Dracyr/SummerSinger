@@ -20,8 +20,6 @@ export default class SeekSlider extends PureComponent {
   constructor(props) {
     super(props);
     this.state = { now: Date.now(), lastPlaying: Date.now() };
-    this.tick = this.tick.bind(this);
-    this.handleSeek = this.handleSeek.bind(this);
   }
 
   componentDidMount() {
@@ -32,16 +30,17 @@ export default class SeekSlider extends PureComponent {
     clearInterval(this.timer);
   }
 
-  tick() {
+  tick = () => {
     this.setState({
       now: Date.now(),
       lastPlaying: this.props.playing ? Date.now() : this.state.lastPlaying
     });
-  }
+  };
 
-  handleSeek(event) {
-    this.props.seek(event.clientX / document.documentElement.clientWidth);
-  }
+  handleSeek = event => {
+    const clickX = event.clientX - this.seekSlider.getBoundingClientRect().x;
+    this.props.seek(clickX / this.seekSlider.offsetWidth);
+  };
 
   render() {
     const { playing, startTime, pausedDuration, duration } = this.props;
@@ -55,7 +54,13 @@ export default class SeekSlider extends PureComponent {
     }
 
     return (
-      <div className="seek-slider" onClick={this.handleSeek}>
+      <div
+        className="seek-slider"
+        onClick={this.handleSeek}
+        ref={el => {
+          this.seekSlider = el;
+        }}
+      >
         <span className="seek-slider-handle" />
         <span
           className="duration-passed"
