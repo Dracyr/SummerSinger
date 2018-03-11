@@ -3,9 +3,11 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import Album from "Containers/Albums/components/Album";
-import TrackList from "Containers/Tracks/components/TrackList";
+import TrackList from "Components/TrackList";
 import { requestQueueAndPlayTrack } from "Containers/Player/actions";
 import { fetchArtist } from "Containers/Artists/actions";
+
+import { normalizeTracks } from "Util";
 
 class Artist extends PureComponent {
   static propTypes = {
@@ -43,13 +45,12 @@ class Artist extends PureComponent {
     if (artist.artist_tracks && artist.artist_tracks.length > 0) {
       trackList = (
         <TrackList
-          entries={artist.artist_tracks}
-          keyAttr={"id"}
+          keyAttr="id"
           currentKey={currentId}
+          trackIds={artist.artist_tracks.map(t => t.id)}
+          tracksById={normalizeTracks(artist.artist_tracks)}
           onClickHandler={onClickHandler}
-          renderList={({ entries, renderItem }) =>
-            entries.map((track, index) => renderItem({ index, key: track.id }))
-          }
+          staticList
         />
       );
     }

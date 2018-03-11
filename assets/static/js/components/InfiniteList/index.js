@@ -17,6 +17,10 @@ export default class InfiniteList extends PureComponent {
     additionalKeys: PropTypes.object
   };
 
+  static defaultProps = {
+    loadMoreRows: null
+  };
+
   constructor(props) {
     super(props);
     this.requestedPages = new Set();
@@ -49,8 +53,8 @@ export default class InfiniteList extends PureComponent {
     return (
       <InfiniteLoader
         isRowLoaded={this.props.isRowLoaded}
-        loadMoreRows={this.loadMoreRows}
         rowCount={this.props.entryCount}
+        loadMoreRows={this.loadMoreRows}
       >
         {({ onRowsRendered, registerChild }) => (
           <WindowScroller scrollElement={this.scrollElement}>

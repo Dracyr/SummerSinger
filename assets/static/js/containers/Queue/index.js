@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 import TrackList from "Components/TrackList";
 import { requestPlayTrack } from "Containers/Player/actions";
+import { normalizeTracks } from "Util";
 import { removeQueueTrack, clearQueue } from "./actions";
 
 class Queue extends Component {
@@ -45,7 +46,8 @@ class Queue extends Component {
           </small>
         </h1>
         <TrackList
-          entries={queue}
+          trackIds={queue.map(t => t.id)}
+          tracksById={normalizeTracks(queue)}
           keyAttr="index"
           currentKey={currentIndex}
           onClickHandler={this.handleClick}

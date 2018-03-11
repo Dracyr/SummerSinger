@@ -52,7 +52,8 @@
   overflow-y: hidden;
   border-bottom: 2px solid #ddd;
 
-  &:hover {
+  &:hover,
+  &.selected {
     background: #ddd;
   }
 }

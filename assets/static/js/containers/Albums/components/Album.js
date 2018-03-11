@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { requestQueueAndPlayTrack } from "Containers/Player/actions";
 import { fetchAlbum as FetchAlbum } from "Containers/Albums/actions";
 import TrackList from "Components/TrackList";
+import { normalizeTracks } from "Util";
 
 class Album extends Component {
   static propTypes = {
@@ -25,7 +26,6 @@ class Album extends Component {
     if (this.props.match) {
       const albumId = parseInt(match.params.albumId, 10);
       if (!album || album.id !== albumId) {
-        console.log("hej", fetchAlbum);
         fetchAlbum(albumId);
       }
     }
@@ -59,13 +59,15 @@ class Album extends Component {
           </div>
           <div style={{ width: "100%" }}>
             <TrackList
-              entries={album.tracks || []}
               keyAttr="id"
               currentKey={currentId}
+              trackIds={(album.tracks || []).map(t => t.id)}
+              tracksById={normalizeTracks(album.tracks)}
               onClickHandler={track =>
                 this.props.requestQueueAndPlayTrack(track.id)
               }
               hideAlbum
+              staticList
               renderHeader={() => (
                 <div className="thead">
                   <div className="tr">
@@ -75,11 +77,6 @@ class Album extends Component {
                   </div>
                 </div>
               )}
-              renderList={({ entries, renderItem }) =>
-                entries.map((track, index) =>
-                  renderItem({ index, key: track.id })
-                )
-              }
             />
           </div>
         </div>

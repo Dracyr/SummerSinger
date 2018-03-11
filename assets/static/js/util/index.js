@@ -69,3 +69,6 @@ export const getScrollParent = node => {
   }
   return window;
 };
+
+export const normalizeTracks = tracks =>
+  tracks.reduce((acc, track) => ({ ...acc, [track.id]: track }), {});

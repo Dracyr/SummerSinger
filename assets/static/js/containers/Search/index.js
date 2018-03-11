@@ -1,20 +1,25 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
+import { normalizeTracks } from "Util";
 import { requestQueueAndPlayTrack as RequestQueueAndPlayTrack } from "Containers/Player/actions";
 import TrackList from "Components/TrackList";
 
 const Search = ({ search, currentId, requestQueueAndPlayTrack }) => (
-  <TrackList
-    keyAttr="id"
-    entries={search}
-    currentKey={currentId}
-    onClickHandler={track => requestQueueAndPlayTrack(track.id)}
-    renderList={({ entries, renderItem }) =>
-      entries.map((track, index) => renderItem({ index, key: track.id }))
-    }
-  />
+  <Fragment>
+    <h1 className="header">Search</h1>
+    <TrackList
+      keyAttr="id"
+      trackIds={search.map(t => t.id)}
+      tracksById={normalizeTracks(search)}
+      currentKey={currentId}
+      onClickHandler={track => requestQueueAndPlayTrack(track.id)}
+      renderList={({ entries, renderItem }) =>
+        entries.map((track, index) => renderItem({ index, key: track.id }))
+      }
+    />
+  </Fragment>
 );
 
 Search.propTypes = {

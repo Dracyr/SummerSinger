@@ -1,12 +1,13 @@
-import { RECEIVE_LIBRARY, RECEIVE_SEARCH, SORT_LIBRARY } from "./actions";
-
+import { insertAtOffset, normalizeTracks } from "Util";
 import { TRACK_UPDATE } from "Containers/Tracks/actions";
-import { insertAtOffset } from "Util";
+import { RECEIVE_LIBRARY, RECEIVE_SEARCH, SORT_LIBRARY } from "./actions";
 
 const initialLibrary = {
   librarySort: { sortBy: "title", dir: "asc" },
   totalTracks: 0,
   tracks: [],
+  tracksById: {},
+  trackIds: [],
   totalAlbums: 0,
   albums: [],
   totalArtists: 0,
@@ -25,13 +26,19 @@ const recieveLibrary = (
 ) => {
   switch (libraryType) {
     case "tracks":
-      if (fullUpdate) {
-        return { ...state, tracks: libraryTracks, totalTracks: total };
-      }
-
       return {
         ...state,
-        tracks: insertAtOffset(state.tracks, libraryTracks, offset),
+        trackIds: fullUpdate
+          ? libraryTracks.map(t => t.id)
+          : insertAtOffset(
+              state.trackIds,
+              libraryTracks.map(t => t.id),
+              offset
+            ),
+        tracksById: {
+          ...state.tracksById,
+          ...normalizeTracks(libraryTracks)
+        },
         totalTracks: total
       };
     case "albums":

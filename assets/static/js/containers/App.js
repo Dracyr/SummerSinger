@@ -19,8 +19,6 @@ import Artist from "Containers/Artists/components/Artist";
 import Albums from "Containers/Albums";
 import Album from "Containers/Albums/components/Album";
 
-import NextTracks from "Containers/Tracks";
-
 const App = () => (
   <Router>
     <Fragment>
@@ -31,7 +29,6 @@ const App = () => (
           <Route path="/queue" component={Queue} />
           <Route path="/search" component={Search} />
           <Route path="/tracks" component={Tracks} />
-          <Route path="/next_tracks" component={NextTracks} />
           <Route path="/artists/:artistId" component={Artist} />
           <Route path="/artists" component={Artists} />
           <Route path="/albums/:albumId" component={Album} />

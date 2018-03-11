@@ -2,54 +2,69 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { fetchLibrary } from "Containers/Library/actions";
+import { requestQueueAndPlayTrack } from "Containers/Player/actions";
+import { fetchLibrary, sortLibrary } from "Containers/Library/actions";
+import TrackList from "Components/TrackList";
 
 class Tracks extends Component {
-  componentDidMount() {
-    this.props.fetchLibrary("tracks", 0, 500);
-  }
-
-  renderTrack = id => {
-    const track = this.props.tracksById[id];
-
-    return (
-      <div className="next-tracks-track" key={track.id}>
-        <div className="next-track-td next-track-title">{track.title}</div>
-        <div className="next-track-td next-track-artist">{track.artist}</div>
-        <div className="next-track-td next-track-album">{track.album}</div>
-      </div>
-    );
+  static propTypes = {
+    fetchLibrary: PropTypes.func.isRequired,
+    onClickHandler: PropTypes.func.isRequired,
+    sortTracks: PropTypes.func.isRequired,
+    currentId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    librarySort: PropTypes.shape({
+      sortBy: PropTypes.string,
+      dir: PropTypes.string
+    }).isRequired,
+    trackIds: PropTypes.arrayOf(PropTypes.number).isRequired,
+    totalTracks: PropTypes.number.isRequired
   };
 
+  static defaultProps = {
+    currentId: null
+  };
+
+  componentDidMount() {
+    this.props.fetchLibrary("tracks", 0, 50);
+  }
+
   render() {
+    const {
+      currentId,
+      totalTracks,
+      librarySort,
+      sortTracks,
+      onClickHandler
+    } = this.props;
+
     return (
-      <div className="next-tracks-list">
-        {this.props.tracksIds.map(id => this.renderTrack(id))}
+      <div>
+        <h1 className="header">All Tracks</h1>
+
+        <TrackList
+          trackIds={this.props.trackIds}
+          tracksById={this.props.tracksById}
+          totalTracks={totalTracks}
+          keyAttr="id"
+          currentKey={currentId}
+          sortTracks={sortTracks}
+          sort={librarySort}
+          loadMoreRows={(offset, size) =>
+            this.props.fetchLibrary("tracks", offset, size)
+          }
+          onClickHandler={track => onClickHandler(track.id)}
+        />
       </div>
     );
   }
 }
 
-Tracks.propTypes = {
-  tracksById: PropTypes.shape({
-    id: PropTypes.number,
-    title: PropTypes.string,
-    artist: PropTypes.string,
-    album: PropTypes.string
-  }),
-  tracksIds: PropTypes.arrayOf(PropTypes.number),
-  fetchLibrary: PropTypes.func
-};
-
-Tracks.defaultProps = {
-  tracksById: {},
-  tracksIds: [],
-  fetchLibrary: () => {}
-};
-
 function mapState(state) {
   return {
-    tracksIds: state.library.trackIds,
+    currentId: state.player.currentTrack ? state.player.currentTrack.id : null,
+    librarySort: state.library.librarySort,
+    tracks: state.library.tracks,
+    trackIds: state.library.trackIds,
     tracksById: state.library.tracksById,
     totalTracks: state.library.totalTracks
   };
@@ -57,7 +72,9 @@ function mapState(state) {
 
 function mapDispatch(dispatch) {
   return {
-    fetchLibrary: (...args) => dispatch(fetchLibrary(...args))
+    onClickHandler: (...args) => dispatch(requestQueueAndPlayTrack(...args)),
+    fetchLibrary: (...args) => dispatch(fetchLibrary(...args)),
+    sortTracks: (...args) => dispatch(sortLibrary(...args))
   };
 }
 

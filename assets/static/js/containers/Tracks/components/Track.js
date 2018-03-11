@@ -1,11 +1,11 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-import StarRating from "./StarRating";
 import { PlaceholderText } from "Util";
+import StarRating from "./StarRating";
 
-const emptyTrack = (
+export const EmptyTrack = () => (
   <div className="tr track">
     <div className="td td-title">
       <PlaceholderText />
@@ -20,11 +20,10 @@ const emptyTrack = (
   </div>
 );
 
-class Track extends PureComponent {
+class Track extends Component {
   static propTypes = {
-    onClickHandler: PropTypes.func,
+    handleOnClick: PropTypes.func,
     openContextMenu: PropTypes.func,
-    selectTrack: PropTypes.func,
     track: PropTypes.shape({
       title: PropTypes.string,
       id: PropTypes.number
@@ -32,50 +31,40 @@ class Track extends PureComponent {
     isPlaying: PropTypes.bool,
     isSelected: PropTypes.bool,
     index: PropTypes.number,
-    hideAlbum: PropTypes.bool
+    hideAlbum: PropTypes.bool,
+    style: PropTypes.object
   };
 
   static defaultProps = {
-    hideAlbum: false,
-    onClickHandler: () => {},
+    handleOnClick: () => {},
     openContextMenu: () => {},
-    selectTrack: () => {},
     track: null,
     isPlaying: false,
     isSelected: false,
-    index: null
+    index: null,
+    hideAlbum: false
   };
 
-  constructor() {
-    super();
-    this.handleOnClick = this.handleOnClick.bind(this);
-    this.handleOnContextMenu = this.handleOnContextMenu.bind(this);
-    this.handleOnDragStart = this.handleOnDragStart.bind(this);
-  }
+  handleOnClick = e => {
+    e.preventDefault();
+    this.props.handleOnClick(this.props.track, this.props.index);
+  };
 
-  handleOnClick() {
-    if (this.props.isSelected) {
-      this.props.onClickHandler(this.props.track);
-    } else {
-      this.props.selectTrack(this.props.track, this.props.index);
-    }
-  }
-
-  handleOnContextMenu(e) {
+  handleOnContextMenu = e => {
     e.preventDefault();
     this.props.openContextMenu(this.props.track, e.pageX, e.pageY);
-  }
+  };
 
-  handleOnDragStart(e) {
+  handleOnDragStart = e => {
     const payload = JSON.stringify({ track_id: this.props.track.id });
     e.dataTransfer.setData("text/plain", payload);
-  }
+  };
 
   render() {
     const { track, isPlaying, isSelected } = this.props;
 
     if (!track) {
-      return emptyTrack;
+      return EmptyTrack;
     }
 
     const currentTrack = isPlaying ? (
@@ -85,20 +74,19 @@ class Track extends PureComponent {
     ) : (
       ""
     );
-    const trackStyle = isSelected
-      ? { ...this.props.style, background: "#dadada" }
-      : this.props.style;
 
     const title = track.title ? track.title : track.filename;
 
     return (
       <div
-        className={`tr track ${this.props.hideAlbum ? "hide-album" : ""}`}
+        className={`tr track ${this.props.hideAlbum ? "hide-album" : ""} ${
+          isSelected ? "selected" : ""
+        }`}
         draggable
         onDragStart={this.handleOnDragStart}
-        onClick={this.handleOnClick}
         onContextMenu={this.handleOnContextMenu}
-        style={trackStyle}
+        onClick={this.handleOnClick}
+        style={this.props.style}
       >
         <div className="td td-title">
           <span title={title}>{title}</span>

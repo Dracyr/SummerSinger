@@ -27,6 +27,7 @@
     "webpack-dev-server": "^2.10.0"
   },
   "dependencies": {
+    "eslint-config-prettier": "^2.9.0",
     "font-awesome": "^4.7.0",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
