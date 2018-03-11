@@ -3,12 +3,10 @@ import PropTypes from "prop-types";
 
 const TrackInfo = ({ artist, title, album, filename }) => (
   <div className="track-info">
-    <div className="song" style={{ height: 25, fontSize: 16 }}>
-      {artist ? `${artist} - ` : ""}
-      {title || filename}
-    </div>
-    <div className="album" style={{ height: 25, fontSize: 14 }}>
-      {album}
+    <div className="track">{title || filename}</div>
+    <div className="meta">
+      {artist}
+      {album ? ` - ${album}` : ""}
     </div>
   </div>
 );

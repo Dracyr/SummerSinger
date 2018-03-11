@@ -20,6 +20,23 @@ $color-primary: #aa79ff;
 .track-info {
   grid-area: track-info;
   text-align: center;
+
+  .track,
+  .meta {
+    height: 25px;
+    padding: 0 10px 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .track {
+    font-size: 16px;
+  }
+
+  .meta {
+    font-size: 14px;
+  }
 }
 
 #player-controls {
