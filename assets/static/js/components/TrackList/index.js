@@ -47,7 +47,7 @@ export default class TrackList extends Component {
     super();
 
     this.state = {
-      contextMenu: false,
+      contextMenu: null,
       selectedTrack: null,
       selectedIndex: null
     };
@@ -76,7 +76,7 @@ export default class TrackList extends Component {
   };
 
   handleOnClickGlobal = event => {
-    if (!event.defaultPrevented) {
+    if (!event.defaultPrevented && !this.state.contextMenu) {
       this.setState({ selectedTrack: null, selectedIndex: null });
     }
   };
@@ -94,16 +94,18 @@ export default class TrackList extends Component {
 
   openContextMenu = (track, x, y, type = "track") => {
     this.setState({
-      contextMenu: { x, y, type },
+      contextMenu: { x, y, type, opened: new Date() },
       selectedTrack: track
     });
   };
 
   hideContextMenu = () => {
-    this.setState({
-      contextMenu: false,
-      selectedTrack: null
-    });
+    if (new Date() - this.state.contextMenu.opened > 500) {
+      this.setState({
+        contextMenu: null,
+        selectedTrack: null
+      });
+    }
   };
 
   isRowLoaded = ({ index }) =>
@@ -189,7 +191,7 @@ export default class TrackList extends Component {
 
         {this.state.contextMenu ? (
           <TrackContextMenu
-            context={this.state.contextMenu}
+            contextMenu={this.state.contextMenu}
             hideContextMenu={this.hideContextMenu}
             track={this.state.selectedTrack}
           />

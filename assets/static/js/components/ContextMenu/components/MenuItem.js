@@ -1,26 +1,28 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-const MenuItem = (props) => {
-  const className = props.disabled ? 'context-menu-item disabled' : 'context-menu-item';
+const MenuItem = props => {
+  const className = props.disabled
+    ? "context-menu-item disabled"
+    : "context-menu-item";
 
   return (
     <div className={className}>
-      <a
-        href="#"
-        className="context-menu-link"
-        onClick={props.onClick}
-      >
+      <button onClick={props.onClick} className="context-menu-link">
         {props.children}
-      </a>
+      </button>
     </div>
   );
 };
 
 MenuItem.propTypes = {
-  onClick: PropTypes.func,
-  children: PropTypes.string,
-  disabled: PropTypes.bool,
+  onClick: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
+  disabled: PropTypes.bool
+};
+
+MenuItem.defaultProps = {
+  disabled: false
 };
 
 export default MenuItem;

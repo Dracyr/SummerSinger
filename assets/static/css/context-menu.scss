@@ -1,20 +1,19 @@
 .context-menu {
   min-width: 160px;
-  padding: 3px 0px!important;
+  padding: 3px 0px !important;
   margin: 2px 0 0;
   font-size: 15px;
   color: #666;
   text-align: left;
   background-color: #fff;
-  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.37)!important;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37) !important;
   border-radius: 2px;
   outline: none;
   z-index: 10000;
 }
 
 .context-menu-link {
-  display: inline-block;
-  width: 100%;
+  display: block;
   padding: 3px 15px;
   clear: both;
   line-height: 1.5;
@@ -23,9 +22,9 @@
   white-space: nowrap;
   background: 0 0;
   border: 0;
-
   text-overflow: ellipsis;
-  // overflow-x: hidden;
+  width: 100%;
+  cursor: pointer;
 }
 
 .context-menu-link:focus {
@@ -46,15 +45,13 @@
   position: relative;
 }
 
-.context-menu-item.submenu > a {
+.context-menu-item.submenu > .context-menu-link {
   padding-right: 27px;
 }
 
-.context-menu-item.submenu > a:after {
+.context-menu-item.submenu > .context-menu-link:after {
   content: "▶";
-  display: inline-block;
   position: absolute;
-  line-height: initial;
   right: 7px;
 }
 

@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 export default class SubMenu extends Component {
   constructor() {
     super();
     this.state = {
-      visible: false,
+      visible: false
     };
 
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
@@ -43,9 +43,10 @@ export default class SubMenu extends Component {
   leftOverflow() {
     const { subMenu, rootMenu } = this.refs;
 
-    const windowWidth = window.innerWidth
-      || document.documentElement.clientWidth
-      || document.body.clientWidth;
+    const windowWidth =
+      window.innerWidth ||
+      document.documentElement.clientWidth ||
+      document.body.clientWidth;
     const elementWidth = (subMenu && subMenu.offsetWidth) || 160;
 
     return rootMenu.getBoundingClientRect().right + elementWidth > windowWidth;
@@ -53,25 +54,23 @@ export default class SubMenu extends Component {
 
   render() {
     const subMenuStyle = {
-      visibility: !this.state.visible ? 'hidden' : 'initial',
+      visibility: !this.state.visible ? "hidden" : "initial"
     };
 
     if (this.state.visible) {
-      subMenuStyle[this.leftOverflow() ? 'right' : 'left'] = '100%';
+      subMenuStyle[this.leftOverflow() ? "right" : "left"] = "100%";
     }
 
     return (
-      <div ref="rootMenu"
+      <div
+        ref="rootMenu"
         className="context-menu-item submenu"
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
       >
-        <a href="#"
-          className="context-menu-link"
-          onClick={this.handleLinkClick}
-        >
+        <button className="context-menu-link" onClick={this.handleLinkClick}>
           {this.props.title}
-        </a>
+        </button>
         <div className="context-menu" style={subMenuStyle} ref="subMenu">
           {this.props.children}
         </div>
@@ -82,7 +81,5 @@ export default class SubMenu extends Component {
 
 SubMenu.propTypes = {
   title: PropTypes.string,
-  children: PropTypes.array,
+  children: PropTypes.array
 };
-
-

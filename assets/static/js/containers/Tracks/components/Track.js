@@ -47,11 +47,13 @@ class Track extends Component {
 
   handleOnClick = e => {
     e.preventDefault();
+    e.stopPropagation();
     this.props.handleOnClick(this.props.track, this.props.index);
   };
 
   handleOnContextMenu = e => {
     e.preventDefault();
+    e.stopPropagation();
     this.props.openContextMenu(this.props.track, e.pageX, e.pageY);
   };
 
