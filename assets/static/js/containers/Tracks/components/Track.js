@@ -45,10 +45,17 @@ class Track extends Component {
     hideAlbum: false
   };
 
+  // Note: This will be also be called twice in case of a double click
   handleOnClick = e => {
     e.preventDefault();
     e.stopPropagation();
     this.props.handleOnClick(this.props.track, this.props.index);
+  };
+
+  handleOnDoubleClick = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.props.handleOnClick(this.props.track, this.props.index, true);
   };
 
   handleOnContextMenu = e => {
@@ -88,6 +95,7 @@ class Track extends Component {
         onDragStart={this.handleOnDragStart}
         onContextMenu={this.handleOnContextMenu}
         onClick={this.handleOnClick}
+        onDoubleClick={this.handleOnDoubleClick}
         style={this.props.style}
       >
         <div className="td td-title">

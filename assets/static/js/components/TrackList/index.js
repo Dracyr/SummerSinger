@@ -81,8 +81,8 @@ export default class TrackList extends Component {
     }
   };
 
-  handleOnClick = (track, index) => {
-    if (this.state.selectedIndex === index) {
+  handleOnClick = (track, index, double) => {
+    if (double) {
       this.props.onClickHandler(track);
     } else {
       this.setState({ selectedTrack: track, selectedIndex: index });
