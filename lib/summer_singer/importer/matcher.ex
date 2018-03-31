@@ -43,7 +43,7 @@ defmodule Matcher do
     params = %{
       # artist: artist,
       # recording: title,
-      query: "artist:#{artist} AND recording:#{title}",
+      query: "artist:\"#{artist}\" recording:\"#{title}\"",
       limit: searchlimit,
       fmt: "json"
     } |> URI.encode_query

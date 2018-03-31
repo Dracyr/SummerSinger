@@ -1,4 +1,5 @@
 defmodule SummerSinger.Importer do
+  alias SummerSinger.Importer.{Index, Metadata, Playlists}
 
   def import_path(path) do
     library = SummerSinger.Library.find_or_create!(path)
@@ -13,8 +14,10 @@ defmodule SummerSinger.Importer do
   end
 
   defp scan_library(library) do
-    SummerSinger.Importer.Index.perform(library)
-    SummerSinger.Importer.Metadata.perform()
-    SummerSinger.Importer.Playlists.perform(library.path)
+    root_dir = Index.collect_dirs(library.path)
+    Index.insert(library, root_dir)
+
+    Metadata.perform()
+    Playlists.perform(library.path)
   end
 end
