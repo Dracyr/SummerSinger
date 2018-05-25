@@ -84,6 +84,7 @@ defmodule AutoTagger.TrackInfo do
     %TrackInfo{
       title: recording["title"],
       id: recording["id"],
+      track_id: recording["id"],
       data_source: "MusicBrainz",
       data_url: track_url(recording["id"]),
       medium: medium,
@@ -97,5 +98,30 @@ defmodule AutoTagger.TrackInfo do
     |> track_info(medium, medium_index, medium_total)
     |> add_artist(recording)
     |> add_length(recording)
+  end
+
+  def from_metadata(metadata) do
+    %TrackInfo{
+      title: metadata["TITLE"],
+      track_id: metadata["MUSICBRAINZ_TRACKID"], #  MusicBrainz ID; UUID fragment only
+      artist: metadata["ARTIST"], #  individual track artist name
+      artist_id: metadata["MUSICBRAINZ_ARTISTID"], # MusicBrainz ID; UUID fragment
+      # length: metadata[""], #  float: duration of the track in seconds
+      index: metadata["TRACKNUMBER"], #  position on the entire release
+      media: metadata["MEDIA"], #  delivery mechanism (Vinyl, etc.)
+      medium: metadata["DISC"], #  the disc number this track appears on in the album
+      medium_index: metadata["TRACKNUMBER"], #  the track's position on the disc
+      medium_total: metadata["TRACKTOTAL"], #  the number of tracks on the item's disc
+      artist_sort: metadata["ARTISTSORT"], #  name of the track artist for sorting
+      # disctitle: metadata[""], #  name of the individual medium (subtitle)
+      artist_credit: metadata["ALBUMARTIST"], #  Recording-specific artist name
+      # data_source: metadata["MusicBrainz"], #  The original data source (MusicBrainz, Discogs, etc.)
+      # data_url: metadata[""], #  The data source release URL.
+      # lyricist: metadata[""], #  individual track lyricist name
+      # composer: metadata[""], #  individual track composer name
+      # composer_sort: metadata[""], #  individual track composer sort name
+      # arranger: metadata[""], #  individual track arranger name
+      # :track_alt
+    }
   end
 end
