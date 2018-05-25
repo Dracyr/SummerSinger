@@ -38,11 +38,7 @@ defmodule AutoTagger.TrackInfo do
      artist_alias = preferred_alias(artist["aliases"])
 
      cur_artist_name =
-      if artist_alias do
-        artist_alias["alias"]
-      else
-        artist["artist"]["name"]
-      end
+      if artist_alias, do: artist_alias["alias"], else: artist["artist"]["name"]
 
     artist_sort =
       cond do
@@ -54,17 +50,14 @@ defmodule AutoTagger.TrackInfo do
       end
 
     artist_credit =
-      if artist["name"] do
-        artist["name"]
-      else
-        cur_artist_name
-      end
+      if artist["name"], do: artist["name"], else: cur_artist_name
 
     {cur_artist_name, artist_sort, artist_credit}
   end
 
   def add_artist(track_info, %{ "artist-credit" => nil }), do: track_info
   def add_artist(track_info, %{ "artist-credit" => artists }) do
+    # Merge multiple artist into one
     {artist, artist_sort, artist_credit} =
       Enum.map(artists, &get_artist_name/1)
       |> Enum.reduce(fn ({a, a_s, a_c}, {a_1, a_s_1, a_c_1}) ->
@@ -87,8 +80,8 @@ defmodule AutoTagger.TrackInfo do
     %{track_info | length: String.to_integer(track_length) / 1000.0 }
   end
 
-  def from_data(recording, medium \\ nil, medium_index \\ nil, medium_total \\ nil) do
-    track_info = %TrackInfo{
+  def track_info(recording, medium, medium_index, medium_total) do
+    %TrackInfo{
       title: recording["title"],
       id: recording["id"],
       data_source: "MusicBrainz",
@@ -97,8 +90,11 @@ defmodule AutoTagger.TrackInfo do
       medium_index: medium_index,
       medium_total: medium_total
     }
+  end
 
-    track_info
+  def from_data(recording, medium \\ nil, medium_index \\ nil, medium_total \\ nil) do
+    recording
+    |> track_info(medium, medium_index, medium_total)
     |> add_artist(recording)
     |> add_length(recording)
   end

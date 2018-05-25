@@ -26,6 +26,7 @@ defmodule Importer.Flattener do
       Enum.flat_map(dir.sub_directories, &flatten_dirs/1)
   end
 
+  # Folds albums in on themselves so that albums with multiple discs are counted as one album
   defp fold_tracks(dir) do
     Enum.flat_map(dir.sub_directories, fn d ->
       case Regex.match?(~r/^(.*((dis[ck])|(cd))[\W_]*)\d+/i, Path.basename(d.path)) do

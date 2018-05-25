@@ -3,7 +3,8 @@ defmodule Importer.Matcher do
 
   def do_stuff do
     # data = Importer.Flattener.fetch_stuff
-    path = "/home/dracyr/Music/Albums/Fleet Foxes - Helplessness Blues (2011)/08 - Lorelai.mp3"
+    # path = "/home/dracyr/Music/Albums/Fleet Foxes - Helplessness Blues (2011)/08 - Lorelai.mp3"
+    path = "/Users/pepe/Music/Kishi Bashi - Sonderlust/Kishi Bashi - Sonderlust - 02 Hey Big Star.mp3"
   end
 
   def get_data_for_track(path) do
@@ -22,7 +23,15 @@ defmodule Importer.Matcher do
     candidates(search_artist, search_title)
   end
 
-  def candidates(search_artist, search_title) do
+  # def distance(track, recording) do
 
+  # end
+
+  def candidates(track_info, search_artist, search_title) do
+    AutoTagger.MBrainz.search_recording(search_artist, search_title)
+    |> Enum.map(fn recording ->
+      dist = Distance.track_distance(track_info, recording)
+      {0, recording}
+    end)
   end
 end
