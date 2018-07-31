@@ -1,4 +1,5 @@
-%{"arc": {:hex, :arc, "0.6.0", "f4ef95b4e72ec5bce8db3474245e8202938b45e431adb34b20a8cda18d98373b", [:mix], [{:ex_aws, "~> 1.0.0", [hex: :ex_aws, optional: true]}, {:httpoison, "~> 0.8", [hex: :httpoison, optional: false]}, {:poison, "~> 2.0 or ~> 3.0", [hex: :poison, optional: true]}, {:sweet_xml, "~> 0.5", [hex: :sweet_xml, optional: true]}]},
+%{
+  "arc": {:hex, :arc, "0.6.0", "f4ef95b4e72ec5bce8db3474245e8202938b45e431adb34b20a8cda18d98373b", [:mix], [{:ex_aws, "~> 1.0.0", [hex: :ex_aws, optional: true]}, {:httpoison, "~> 0.8", [hex: :httpoison, optional: false]}, {:poison, "~> 2.0 or ~> 3.0", [hex: :poison, optional: true]}, {:sweet_xml, "~> 0.5", [hex: :sweet_xml, optional: true]}]},
   "arc_ecto": {:hex, :arc_ecto, "0.5.0-rc1", "e03002f2e0decc044d26a8dc8f42813ffa7848e7f68a6a52571caf335b6f18da", [:mix], [{:arc, "~> 0.6.0-rc1", [hex: :arc, optional: false]}, {:ecto, "~> 2.0", [hex: :ecto, optional: false]}]},
   "bbmustache": {:hex, :bbmustache, "1.0.4", "7ba94f971c5afd7b6617918a4bb74705e36cab36eb84b19b6a1b7ee06427aa38", [:rebar], []},
   "bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [:mix], []},
@@ -17,6 +18,7 @@
   "distillery": {:hex, :distillery, "1.1.0", "e9943bd29557e9c252a051d8ac4b47e597cd9bf2a74332b8628eab4954eb51d7", [:mix], []},
   "earmark": {:hex, :earmark, "1.0.1", "2c2cd903bfdc3de3f189bd9a8d4569a075b88a8981ded9a0d95672f6e2b63141", [:mix], []},
   "ecto": {:hex, :ecto, "2.1.3", "ffb24e150b519a4c0e4c84f9eabc8587199389bc499195d5d1a93cd3b2d9a045", [:mix], [{:db_connection, "~> 1.1", [hex: :db_connection, optional: true]}, {:decimal, "~> 1.2", [hex: :decimal, optional: false]}, {:mariaex, "~> 0.8.0", [hex: :mariaex, optional: true]}, {:poison, "~> 2.2 or ~> 3.0", [hex: :poison, optional: true]}, {:poolboy, "~> 1.5", [hex: :poolboy, optional: false]}, {:postgrex, "~> 0.13.0", [hex: :postgrex, optional: true]}, {:sbroker, "~> 1.0", [hex: :sbroker, optional: true]}]},
+  "emunkres": {:git, "https://github.com/spawnthink/emunkres.git", "19db9b3b461e05be9af37c670248ee3d6aed4802", []},
   "erlexec": {:hex, :erlexec, "1.2.2", "122edf6be532475dd44d2c99653439528e3b3799e2ee0125f2560bcca60a6716", [], []},
   "erlware_commons": {:hex, :erlware_commons, "0.19.0", "7b43caf2c91950c5f60dc20451e3c3afba44d3d4f7f27bcdc52469285a5a3e70", [:rebar3], [{:cf, "0.2.1", [hex: :cf, optional: false]}]},
   "eternal": {:hex, :eternal, "1.1.4", "3a40fd9b9708f79216a6ec8ae886f2b17685dc26b119b9c0403c2b0d3dc1ac69", [:mix], [{:deppie, "~> 1.1", [hex: :deppie, optional: false]}]},
@@ -52,4 +54,5 @@
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.1", "28a4d65b7f59893bc2c7de786dec1e1555bd742d336043fe644ae956c3497fbe", [:make, :rebar], []},
   "ssl_verify_hostname": {:hex, :ssl_verify_hostname, "1.0.5"},
   "timex": {:hex, :timex, "1.0.0-rc1"},
-  "tzdata": {:hex, :tzdata, "0.5.4"}}
+  "tzdata": {:hex, :tzdata, "0.5.4"},
+}
