@@ -1,31 +1,19 @@
 defmodule Importer.Matcher do
   alias AutoTagger.TrackInfo
-  require IEx
 
-  def do_stuff do
-    # data = Importer.Flattener.fetch_stuff
-    # path = "/home/dracyr/Music/Albums/Fleet Foxes - Helplessness Blues (2011)/08 - Lorelai.mp3"
-    # path = "/Users/pepe/Music/Kishi Bashi - Sonderlust/Kishi Bashi - Sonderlust - 02 Hey Big Star.mp3"
-    path = "/home/dracyr/Music/Albums/Fleet Foxes - Helplessness Blues (2011)/08 - Lorelai.mp3"
+  def match_track(path) do
     track_info = get_data_for_track(path)
     tag_track(track_info)
   end
 
-  def get_tags do
-    path = "/home/dracyr/Music/Albums/Daft Punk - Random Access Memories (2013)/13 - Contact.flac"
-    {:ok, audio_info, track_info, cover} = SummerSinger.Importer.MusicTagger.read(path)
-    track_info
-  end
-
-  def do_album_stuff do
-    path = "/home/dracyr/Music/Albums/Daft Punk - Random Access Memories (2013)/"
+  def match_album(path) do
     %{tracks: tracks} = Importer.Scanner.scan!(path)
 
     Enum.map(tracks, fn track_path ->
-      {:ok, audio_info, track_info, cover} = SummerSinger.Importer.MusicTagger.read(track_path)
+      {:ok, _audio_info, track_info, _cover} =
+        SummerSinger.Importer.MusicTagger.read(track_path)
       track_info
-    end)
-    |> tag_album
+    end) |> tag_album
   end
 
   def get_data_for_track(path) do
@@ -34,7 +22,7 @@ defmodule Importer.Matcher do
   end
 
   def tag_track(track_info, search_artist \\ nil, search_title \\ nil) do
-    # find by mbdi
+    track_info = TrackInfo.from_metadata(track_info)
 
     {search_artist, search_title} =
       if !(search_artist && search_title) do
@@ -107,13 +95,16 @@ defmodule Importer.Matcher do
 
     IO.inspect("Tagging #{cur_artist} - #{cur_album}")
     # if search_ids, search by ids
-    # Also try to get musicbarinz id and to that dance
+    # Also try to get musicbarinz id and do that dance
 
     # Is this album likely to be a "various artist" release?
     # case for comp?
     va_likely = not elem(fields["ARTIST"], 1) || String.downcase(cur_artist) in @va_artists
 
-    album_candidates(items, cur_artist, cur_album, va_likely)
+    likelies = Enum.map(fields, fn {k, {v, _}} -> {k, v} end) |> Map.new
+
+    candidates = album_candidates(items, cur_artist, cur_album, va_likely, likelies)
+    {candidates, recommendation(candidates)}
   end
 
   def candidates(track_info, search_artist, search_title) do
@@ -125,46 +116,49 @@ defmodule Importer.Matcher do
 
       {dist, recording}
     end)
-    |> Enum.sort(&(elem(&1, 0) >= elem(&2, 0)))
+    |> Enum.sort(&(elem(&1, 0) <= elem(&2, 0)))
   end
 
+  # Calculate the distance for each item, track pair
+  # And then calculate the optimal mapping
   def assign_items(items, tracks) do
-    costs =
-      items
-      |> Enum.map(&TrackInfo.from_metadata/1)
-      |> Enum.map(fn item ->
-        Enum.map(tracks, &Importer.Distance.track_distance(&1, item))
-        |> Enum.map(&Importer.Distance.distance/1)
-      end)
-
-    # NAH MAN, munkres is hard, just matched based on track number instead
+    items
+    |> Enum.map(fn item ->
+      Enum.map(tracks, &Importer.Distance.track_distance(&1, item))
+      |> Enum.map(&Importer.Distance.distance/1)
+    end)
+    |> Munkres.compute
   end
 
-  def album_candidates(items, search_artist, search_album, va_likely) do
+  def album_candidates(items, search_artist, search_album, va_likely, likelies) do
+    items = Enum.map(items, &TrackInfo.from_metadata/1)
+
     AutoTagger.MBrainz.search_album(search_artist, search_album)
     |> Enum.map(fn release ->
-      # {mapping, extra_items, extra_tracks} = assign_items(items, release.tracks)
-      # Importer.Distance.album_distance(items, release)
-      assign_items(items, release.tracks)
+      mapping = assign_items(items, release.tracks)
+      metadata_mapping = Enum.map(mapping, fn {i, t} -> {Enum.at(items, i), Enum.at(release.tracks, t)}  end)
+
+      dist =
+        Importer.Distance.album_distance(items, release, metadata_mapping, likelies)
+        |> Importer.Distance.distance
+      {dist, release, items, mapping}
     end)
+    |> Enum.sort(&(elem(&1, 0) <= elem(&2, 0)))
   end
 
   @recommendation_none 0
   @recommendation_low 1
   @recommendation_medium 2
   @recommendation_strong 3
-
   @strong_rec_thresh 0.04
   @medium_rec_thresh 0.25
   @rec_gap_thresh 0.25
 
   def recommendation([]), do: @recommendation_none
-  def recommendation([{dist, _} | _]) when dist > @strong_rec_thresh, do: @recommendation_strong
-  def recommendation([{dist, _} | _]) when dist > @medium_rec_thresh, do: @recommendation_medium
+  def recommendation([{dist, _} | _]) when dist < @strong_rec_thresh, do: @recommendation_strong
+  def recommendation([{dist, _} | _]) when dist < @medium_rec_thresh, do: @recommendation_medium
   def recommendation(results) when length(results) == 1, do: @recommendation_low
-
   def recommendation([{d1, _}, {d2, _} | _]) when d2 - d1 >= @rec_gap_thresh,
     do: @recommendation_low
-
   def recommendation(_), do: @recommendation_none
 end

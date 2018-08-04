@@ -7,11 +7,12 @@ defmodule SummerSinger.Mixfile do
       version: "1.0.0",
       elixir: "~> 1.0",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix] ++ Mix.compilers(),
+      compilers: [:rustler, :phoenix] ++ Mix.compilers(),
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      rustler_crates: rustler_crates(),
     ]
   end
 
@@ -67,7 +68,9 @@ defmodule SummerSinger.Mixfile do
       {:arc_ecto, "0.5.0-rc1"},
       {:progress_bar, "> 0.0.0"},
       {:credo, "~> 0.5", only: [:dev, :test]},
-      {:mime, "~> 1.1"}
+      {:mime, "~> 1.1"},
+      {:rustler, "~> 0.18.0"},
+      {:simetric, "~> 0.2.0"}
     ]
   end
 
@@ -85,5 +88,12 @@ defmodule SummerSinger.Mixfile do
       "phoenix.digest": "summer_singer.digest",
       "summer_singer.release": ["compile", "summer_singer.digest", "release"]
     ]
+  end
+
+  defp rustler_crates do
+    [munkres: [
+      path: "native/munkres",
+      mode: (if Mix.env == :prod, do: :release, else: :debug),
+    ]]
   end
 end

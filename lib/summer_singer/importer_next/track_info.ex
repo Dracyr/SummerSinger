@@ -100,13 +100,14 @@ defmodule AutoTagger.TrackInfo do
     |> add_length(recording)
   end
 
+  def from_metadata(track_info = %TrackInfo{}), do: track_info
   def from_metadata(metadata) do
     %TrackInfo{
       title: metadata["TITLE"],
       track_id: metadata["MUSICBRAINZ_TRACKID"], #  MusicBrainz ID; UUID fragment only
       artist: metadata["ARTIST"], #  individual track artist name
       artist_id: metadata["MUSICBRAINZ_ARTISTID"], # MusicBrainz ID; UUID fragment
-      # length: metadata[""], #  float: duration of the track in seconds
+      length: metadata["LENGTH"], #  float: duration of the track in seconds
       index: metadata["TRACKNUMBER"], #  position on the entire release
       media: metadata["MEDIA"], #  delivery mechanism (Vinyl, etc.)
       medium: metadata["DISC"], #  the disc number this track appears on in the album

@@ -1,5 +1,4 @@
-%{
-  "arc": {:hex, :arc, "0.6.0", "f4ef95b4e72ec5bce8db3474245e8202938b45e431adb34b20a8cda18d98373b", [:mix], [{:ex_aws, "~> 1.0.0", [hex: :ex_aws, optional: true]}, {:httpoison, "~> 0.8", [hex: :httpoison, optional: false]}, {:poison, "~> 2.0 or ~> 3.0", [hex: :poison, optional: true]}, {:sweet_xml, "~> 0.5", [hex: :sweet_xml, optional: true]}]},
+%{"arc": {:hex, :arc, "0.6.0", "f4ef95b4e72ec5bce8db3474245e8202938b45e431adb34b20a8cda18d98373b", [:mix], [{:ex_aws, "~> 1.0.0", [hex: :ex_aws, optional: true]}, {:httpoison, "~> 0.8", [hex: :httpoison, optional: false]}, {:poison, "~> 2.0 or ~> 3.0", [hex: :poison, optional: true]}, {:sweet_xml, "~> 0.5", [hex: :sweet_xml, optional: true]}]},
   "arc_ecto": {:hex, :arc_ecto, "0.5.0-rc1", "e03002f2e0decc044d26a8dc8f42813ffa7848e7f68a6a52571caf335b6f18da", [:mix], [{:arc, "~> 0.6.0-rc1", [hex: :arc, optional: false]}, {:ecto, "~> 2.0", [hex: :ecto, optional: false]}]},
   "bbmustache": {:hex, :bbmustache, "1.0.4", "7ba94f971c5afd7b6617918a4bb74705e36cab36eb84b19b6a1b7ee06427aa38", [:rebar], []},
   "bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [:mix], []},
@@ -50,9 +49,10 @@
   "providers": {:hex, :providers, "1.6.0", "db0e2f9043ae60c0155205fcd238d68516331d0e5146155e33d1e79dc452964a", [:rebar3], [{:getopt, "0.8.2", [hex: :getopt, optional: false]}]},
   "ranch": {:hex, :ranch, "1.3.2", "e4965a144dc9fbe70e5c077c65e73c57165416a901bd02ea899cfd95aa890986", [:rebar3], []},
   "relx": {:hex, :relx, "3.19.0", "286dd5244b4786f56aac75d5c8e2d1fb4cfd306810d4ec8548f3ae1b3aadb8f7", [:rebar3], [{:bbmustache, "1.0.4", [hex: :bbmustache, optional: false]}, {:cf, "0.2.1", [hex: :cf, optional: false]}, {:erlware_commons, "0.19.0", [hex: :erlware_commons, optional: false]}, {:getopt, "0.8.2", [hex: :getopt, optional: false]}, {:providers, "1.6.0", [hex: :providers, optional: false]}]},
+  "rustler": {:hex, :rustler, "0.18.0", "db4bd0c613d83a1badc31be90ddada6f9821de29e4afd15c53a5da61882e4f2d", [:mix], [], "hexpm"},
   "sentix": {:hex, :sentix, "1.0.3", "f8c8b6bc5e1f12a4df8952710bf12a29075937742fc7101b1fea7ba1cee7af79", [:mix], [{:cachex, "~> 2.0", [hex: :cachex, optional: false]}, {:erlexec, "1.2.2", [hex: :erlexec, optional: false]}]},
+  "simetric": {:hex, :simetric, "0.2.0", "0d6559aed7b08fd1b6794526c33836e55cee8dd99d2f9bf3e8ea46fdeb47d9e3", [:mix], [], "hexpm"},
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.1", "28a4d65b7f59893bc2c7de786dec1e1555bd742d336043fe644ae956c3497fbe", [:make, :rebar], []},
   "ssl_verify_hostname": {:hex, :ssl_verify_hostname, "1.0.5"},
   "timex": {:hex, :timex, "1.0.0-rc1"},
-  "tzdata": {:hex, :tzdata, "0.5.4"},
-}
+  "tzdata": {:hex, :tzdata, "0.5.4"}}
