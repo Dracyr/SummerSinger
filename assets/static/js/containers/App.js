@@ -18,6 +18,7 @@ import Artists from "Containers/Artists";
 import Artist from "Containers/Artists/components/Artist";
 import Albums from "Containers/Albums";
 import Album from "Containers/Albums/components/Album";
+import Importer from "Containers/Importer";
 
 const App = () => (
   <Router>
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/folders" component={Folders} />
           <Route path="/settings" component={Settings} />
           <Route path="/playlist/:playlistId" component={Playlist} />
+          <Route path="/importer" component={Importer} />
           <Redirect to="/queue" />
         </Switch>
       </main>

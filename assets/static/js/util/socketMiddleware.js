@@ -21,6 +21,8 @@ import { REMOVE_QUEUE_TRACK, CLEAR_QUEUE } from "Containers/Queue/actions";
 
 import { REQUEST_CLEAR_INBOX } from "Containers/Inbox/actions";
 
+import { REQUEST_IMPORT } from "Containers/Importer/actions";
+
 export default socket => store => next => action => {
   switch (action.type) {
     case REQUEST_PLAYBACK:
@@ -71,6 +73,8 @@ export default socket => store => next => action => {
     case REQUEST_CLEAR_INBOX:
       socket.requestClearInbox();
       break;
+    case REQUEST_IMPORT:
+      socket.requestImport(action.path);
     default:
       break;
   }

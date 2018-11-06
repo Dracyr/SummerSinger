@@ -70,8 +70,9 @@ defmodule AutoTagger.AlbumInfo do
       albumstatus: release["status"],
       albumdisambig:
         release["release-group"]["disambiguation"] <> ", " <> release["disambiguation"],
-      media: Enum.at(release["media"], 0) |> Map.get("format"),
-      label: Enum.at(release["label-info"], 0) |> Map.get("label") |> Map.get("name"),
+      # FIXME: Sane handling of missing values
+      media: (Enum.at(release["media"], 0) || %{}) |> Map.get("format"),
+      label: (Enum.at(release["label-info"], 0) || %{}) |> Map.get("label", %{}) |> Map.get("name"),
       script: release["text-representation"]["script"],
       language: release["text-representation"]["language"],
       data_source: "MusicBrainz",

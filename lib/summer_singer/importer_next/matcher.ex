@@ -145,7 +145,9 @@ defmodule Importer.Matcher do
     |> Enum.map(fn release ->
       # {mapping, extra_items, extra_tracks} = assign_items(items, release.tracks)
       # Importer.Distance.album_distance(items, release)
-      assign_items(items, release.tracks)
+
+      #assign_items(items, release.tracks)
+      release
     end)
   end
 

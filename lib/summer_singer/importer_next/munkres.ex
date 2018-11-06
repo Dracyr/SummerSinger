@@ -1,6 +1,4 @@
 defmodule Munkres do
-  require IEx
-
   @doc """
     Step 0:  Create an nxm  matrix called the cost matrix in which each element
       represents the cost of assigning one of n workers to one of m jobs.
@@ -54,6 +52,7 @@ defmodule Munkres do
     {_, _, new_mask} =
       reduce_matrix(state[:n] - 1, reduce_state, fn row_index, col_index, state_acc ->
         cost_element = get_matrix_el(costs, row_index, col_index)
+        {col_covered, row_covered, mask} = state_acc
 
         if cost_element == 0.0 && !Enum.at(row_covered, row_index) &&
              !Enum.at(col_covered, col_index) do
@@ -79,7 +78,7 @@ defmodule Munkres do
   def step(costs, 3, state) do
     col_covered =
       reduce_matrix(state[:n], state[:col_covered], fn row_index, col_index, col_covered ->
-        if get_matrix_el(row_index, col_index) == 1 do
+        if get_matrix_el(state[:mask], row_index, col_index) == 1 do
           List.replace_at(col_covered, col_index, true)
         else
           col_covered
@@ -152,9 +151,9 @@ defmodule Munkres do
   defp reduce_matrix(n, state, fn_reduce) do
     index_list = Enum.to_list(0..n)
 
-    Enum.reduce(index_list, reduce_state, fn row_index, row_acc ->
+    Enum.reduce(index_list, state, fn row_index, row_acc ->
       Enum.reduce(index_list, row_acc, fn col_index, col_acc ->
-        fn_reduce.(row_index, col_index, coll_acc)
+        fn_reduce.(row_index, col_index, col_acc)
       end)
     end)
   end
