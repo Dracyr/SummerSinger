@@ -1,0 +1,24 @@
+.importer-album-list {
+  padding: 0;
+
+  li {
+    list-style: none;
+    background: #fff;
+  }
+}
+
+.importer-album-header {
+  display: grid;
+  grid-template-columns: 100px auto;
+  grid-gap: 20px;
+  border-bottom: 1px solid #ddd;
+
+  h2 {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.importer-album-content {
+  padding: 2em;
+}

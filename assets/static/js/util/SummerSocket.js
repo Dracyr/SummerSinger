@@ -5,6 +5,7 @@ import { queueUpdate, fetchQueue } from "Containers/Queue/actions";
 import { receivePlaylists } from "Containers/Playlists/actions";
 import { trackUpdate } from "Containers/Tracks/actions";
 import { clearInbox } from "Containers/Inbox/actions";
+import { importerUpdate } from "Containers/Importer/actions";
 
 export default class SummerSocket {
   constructor() {
@@ -34,6 +35,7 @@ export default class SummerSocket {
     broadcastChannel.on("playlistsUpdate", this.playlistsUpdate.bind(this));
     broadcastChannel.on("trackUpdate", this.trackUpdate.bind(this));
     broadcastChannel.on("clearInbox", this.clearInbox.bind(this));
+    broadcastChannel.on("importerUpdate", this.importerUpdate.bind(this));
 
     this.state = this.state.bind(this);
   }
@@ -138,7 +140,16 @@ export default class SummerSocket {
     if (track) {
       const pos = seekPercent * track.duration;
       const id = this.state().statusUpdate.currentItemId;
-      this.socket.emit("seek", { id, pos });
+      this.broadcastChannel.push("seek", { id, pos });
     }
+  }
+
+  requestImport(path) {
+    this.broadcastChannel.push("request_import", { path });
+  }
+
+  importerUpdate(data) {
+    console.log(data);
+    this.store.dispatch(importerUpdate(data));
   }
 }

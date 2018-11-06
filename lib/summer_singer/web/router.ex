@@ -2,43 +2,47 @@ defmodule SummerSinger.Web.Router do
   use SummerSinger.Web, :router
 
   pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_flash
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_flash)
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug(:accepts, ["json"])
   end
 
   scope "/api", SummerSinger.Web do
-    pipe_through :api
+    pipe_through(:api)
 
-    get "/status", StatusController, :show
-    get "/queue", QueueController, :show
+    get("/status", StatusController, :show)
+    get("/queue", QueueController, :show)
 
-    resources "/tracks", TrackController, except: [:new, :edit]
-    post "/tracks/clear_inbox", TrackController, :clear_inbox
+    resources("/tracks", TrackController, except: [:new, :edit])
+    post("/tracks/clear_inbox", TrackController, :clear_inbox)
 
-    resources "/albums", AlbumController, except: [:new, :edit]
-    resources "/artists", ArtistController, except: [:new, :edit]
-    resources "/playlists", PlaylistController
-    resources "/libraries", LibraryController
-    resources "/folders", FolderController
-    get "/file_system/:path", FileSystemController, :show
+    resources("/albums", AlbumController, except: [:new, :edit])
+    resources("/artists", ArtistController, except: [:new, :edit])
+    resources("/playlists", PlaylistController)
+    resources("/libraries", LibraryController)
+    resources("/folders", FolderController)
+    get("/file_system/:path", FileSystemController, :show)
   end
 
   scope "/", SummerSinger.Web do
-    pipe_through :browser # Use the default browser stack
+    # Use the default browser stack
+    pipe_through(:browser)
 
-    get "/", PageController, :index
-    for path <- ~w(search queue inbox library folder settings playlist tracks albums artists folders import_library next_tracks) do
-      get "/#{path}", PageController, :index
+    get("/", PageController, :index)
+
+    for path <-
+          ~w(search queue inbox library folder settings playlist tracks albums artists folders import_library next_tracks importer) do
+      get("/#{path}", PageController, :index)
     end
-    get "/playlist/:playlistId", PageController, :index
-    get "/albums/:albumId", PageController, :index
-    get "/artists/:artistId", PageController, :index
+
+    get("/playlist/:playlistId", PageController, :index)
+    get("/albums/:albumId", PageController, :index)
+    get("/artists/:artistId", PageController, :index)
   end
 end

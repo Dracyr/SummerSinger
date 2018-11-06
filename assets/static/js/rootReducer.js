@@ -14,6 +14,7 @@ import library from "Containers/Library/reducer";
 import albums from "Containers/Albums/reducer";
 import artists from "Containers/Artists/reducer";
 import inbox from "Containers/Inbox/reducer";
+import importer from "Containers/Importer/reducer";
 
 const rootReducer = combineReducers({
   player,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   inbox,
   playlist,
   settings,
+  importer,
   folders: undoable(folders, {
     filter: action => action.type === RECEIVE_FOLDER,
     undoType: GO_TO_PARENT,
