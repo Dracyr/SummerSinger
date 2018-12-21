@@ -103,20 +103,30 @@ class Track extends Component {
           {currentTrack}
         </div>
         <div className="td td-artist">
-          <Link to={`/artists/${track.artist_id}`} title={track.artist}>
-            {track.artist}
-          </Link>
+          {track.artist_id ? (
+            <Link to={`/artists/${track.artist_id}`} title={track.artist}>
+              {track.artist}
+            </Link>
+          ) : (
+            track.artist
+          )}
         </div>
         {!this.props.hideAlbum ? (
           <div className="td td-album">
-            <Link to={`/albums/${track.album_id}`} title={track.album}>
-              {track.album}
-            </Link>
+            {track.album_id ? (
+              <Link to={`/albums/${track.album_id}`} title={track.album}>
+                {track.album}
+              </Link>
+            ) : (
+              track.album
+            )}
           </div>
         ) : null}
-        <div className="td td-rating">
-          <StarRating track={track} />
-        </div>
+        {!this.props.hideRating ? (
+          <div className="td td-rating">
+            <StarRating track={track} />
+          </div>
+        ) : null}
       </div>
     );
   }

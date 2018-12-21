@@ -19,6 +19,26 @@
   }
 }
 
+.importer-album-header-title {
+  padding-top: 1.5em;
+}
+
 .importer-album-content {
-  padding: 2em;
+  padding: 1.5em;
+  border-bottom: 1px solid #ddd;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 1em;
+}
+
+.importer-album-detail {
+}
+
+.importer-album-footer {
+  text-align: center;
+  cursor: pointer;
+
+  &:hover {
+    background: #ddd;
+  }
 }

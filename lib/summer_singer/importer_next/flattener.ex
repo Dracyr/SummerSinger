@@ -3,7 +3,7 @@ defmodule Importer.Flattener do
   import Ecto.Query
 
   def fetch_stuff do
-    root_dir = Repo.one from f in Folder, where: f.path == "/home/dracyr/Music/"
+    root_dir = Repo.one(from(f in Folder, where: f.path == "/home/dracyr/Music/"))
 
     collect_dir(root_dir)
     |> flatten_dirs
@@ -11,8 +11,8 @@ defmodule Importer.Flattener do
   end
 
   def collect_dir(dir) do
-    sub_dirs = Repo.all from f in Folder, where: f.parent_id == ^dir.id
-    tracks = Repo.all from t in Track, where: t.folder_id == ^dir.id, select: t.path
+    sub_dirs = Repo.all(from(f in Folder, where: f.parent_id == ^dir.id))
+    tracks = Repo.all(from(t in Track, where: t.folder_id == ^dir.id, select: t.path))
 
     %{
       path: dir.path,

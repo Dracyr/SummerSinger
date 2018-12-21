@@ -1,0 +1,28 @@
+# How scanning a library should work!
+
+Okay, so there are two cases here
+* Scanning a thing for the first time
+* Updating an already existing library
+
+## Scanning for the first time
+
+Find the library
+Do we need to store folders? Maybe not
+Then we want to collect albums. , and the tra
+So we want to find a collection of tracks that might be an album
+Which is what our flattener and scanner are doing.
+Can't remember the difference now tho
+
+Lets go with scanner
+
+When we have this list of tracks, we should insert them directly to the database so we can play them as soon as possible. Though we keep them in the inbox!
+I see i am using insert in a transaction, we could possibly do this faster with `insert_all` instead.
+This might get interesting on a rescan, or if we import a new library that is a subset of a older one. How does that work? Disallow sublibraries sounds like a good idea. But what if I want to move "library" from a sub folder to now encompass more folders? I mean, we still store the full paths for all tracks, which should make them unique or something.
+
+We then bring each collection into the matching engine, and we should be able to do this in parrallel
+
+Should we store the AlbumFolder? TrackCollection? Then after adding all the tracks we could grab the tracks from db for matching?
+The alternative would be to just return them from the function and insert into db as it goes. Hmmm.
+What if we store it, and then attach the album to it when we have it? So then we know which folders have not been matched yet, and we can also flag certain folders as not containing albums. I like this. We can then store the matching status on the TrackCollection as well, for json stufffs. We can also store the existense of other files to track folder moves and the like. Folder renames is also a thing. Store inode?
+
+Okay so flattener reads from db, and scanner does not do it in a flat way, we need to combine them...

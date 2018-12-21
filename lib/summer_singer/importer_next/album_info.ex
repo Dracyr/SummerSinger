@@ -72,7 +72,8 @@ defmodule AutoTagger.AlbumInfo do
         release["release-group"]["disambiguation"] <> ", " <> release["disambiguation"],
       # FIXME: Sane handling of missing values
       media: (Enum.at(release["media"], 0) || %{}) |> Map.get("format"),
-      label: (Enum.at(release["label-info"], 0) || %{}) |> Map.get("label", %{}) |> Map.get("name"),
+      label:
+        (Enum.at(release["label-info"], 0) || %{}) |> Map.get("label", %{}) |> Map.get("name"),
       script: release["text-representation"]["script"],
       language: release["text-representation"]["language"],
       data_source: "MusicBrainz",
@@ -95,7 +96,7 @@ defmodule AutoTagger.AlbumInfo do
   end
 
   def split_date(date_string) do
-    Regex.named_captures(~r/(?<year>\d{4})-(?<month>\d{2})(-(?<day>\d{2}))?/, date_string)
+    Regex.named_captures(~r/(?<year>\d{4})(?:-(?<month>\d{2}))?(?:-(?<day>\d{2}))?/, date_string)
   end
 
   def add_preferred_release_event(album, %{
@@ -127,6 +128,7 @@ defmodule AutoTagger.AlbumInfo do
   def add_preferred_release_event(album, %{
         "release-group" => %{"first-release-date" => release_date}
       }) do
+    IO.inspect(release_date)
     %{"year" => year, "month" => month, "day" => day} = split_date(release_date)
 
     %{

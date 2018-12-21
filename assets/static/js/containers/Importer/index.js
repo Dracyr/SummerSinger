@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 
 import TrackList from "Components/TrackList";
+import Track from "Containers/Tracks/components/Track";
 import { requestImport as RequestImport } from "./actions";
 
 class Importer extends Component {
@@ -9,7 +10,8 @@ class Importer extends Component {
     super();
 
     this.state = {
-      path: null
+      path: null,
+      open: false
     };
   }
 
@@ -42,17 +44,21 @@ class Importer extends Component {
                     <span>{album.album_info.artist}</span>
                   </div>
                 </header>
-                <hr />
-                <div className="importer-album-content">
-                  <TrackList
-                    trackIds={album.extra_tracks.map(t => t.track_id)}
-                    tracksById={album.extra_tracks.reduce((acc, t) => {
-                      acc[t.track_id] = t;
-                      return acc;
-                    }, new Object())}
-                    hideAlbum={true}
-                    staticList={true}
-                  />
+                {this.state.open && (
+                  <div className="importer-album-content">
+                    <div className="importer-album-tracks">
+                      {album.extra_tracks.map(t => (
+                        <Track track={t} hideAlbum hideRating />
+                      ))}
+                    </div>
+                    <div className="importer-album-detail">Detail</div>
+                  </div>
+                )}
+                <div
+                  className="importer-album-footer"
+                  onClick={() => this.setState({ open: !this.state.open })}
+                >
+                  {this.state.open ? "Hide" : "Show more"}
                 </div>
               </li>
             ))}
@@ -63,17 +69,13 @@ class Importer extends Component {
   }
 }
 
-const mapProps = state => {
-  return {
-    album: state.importer.album,
-    matchedAlbums: state.importer.matchedAlbums
-  };
-};
+const mapProps = state => ({
+  album: state.importer.album,
+  matchedAlbums: state.importer.matchedAlbums
+});
 
-const mapDispatch = dispatch => {
-  return {
-    requestImport: (...args) => dispatch(RequestImport(...args))
-  };
-};
+const mapDispatch = dispatch => ({
+  requestImport: (...args) => dispatch(RequestImport(...args))
+});
 
 export default connect(mapProps, mapDispatch)(Importer);

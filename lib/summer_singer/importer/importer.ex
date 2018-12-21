@@ -9,7 +9,7 @@ defmodule SummerSinger.Importer do
 
   def rescan() do
     SummerSinger.Library
-    |> SummerSinger.Repo.all
+    |> SummerSinger.Repo.all()
     |> Enum.each(&scan_library/1)
   end
 

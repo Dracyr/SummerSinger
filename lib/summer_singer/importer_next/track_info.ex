@@ -131,20 +131,40 @@ defmodule AutoTagger.TrackInfo do
     |> add_length(recording)
   end
 
+  def extract_medium_index(metadata) do
+    %{"index" => index, "total" => total} =
+      Regex.named_captures(~r/0*(?<index>\d+)[^\d]*0*(?<total>\d+)?/, metadata["TRACKNUMBER"])
+
+    %{"index" => index, "total" => metadata["TRACKTOTAL"] || metadata["DISCTOTAL"] || total}
+  end
+
   def from_metadata(track_info = %TrackInfo{}), do: track_info
-  def from_metadata(metadata) do
+
+  def from_metadata(audio_info, metadata) do
+    %{"index" => index, "total" => total} = extract_medium_index(metadata)
+
     %TrackInfo{
       title: metadata["TITLE"],
-      track_id: metadata["MUSICBRAINZ_TRACKID"], #  MusicBrainz ID; UUID fragment only
-      artist: metadata["ARTIST"], #  individual track artist name
-      artist_id: metadata["MUSICBRAINZ_ARTISTID"], # MusicBrainz ID; UUID fragment
-      length: metadata["LENGTH"], #  float: duration of the track in seconds
-      index: metadata["TRACKNUMBER"], #  position on the entire release
-      media: metadata["MEDIA"], #  delivery mechanism (Vinyl, etc.)
-      medium: metadata["DISC"], #  the disc number this track appears on in the album
-      medium_index: metadata["TRACKNUMBER"], #  the track's position on the disc
-      medium_total: metadata["TRACKTOTAL"], #  the number of tracks on the item's disc
-      artist_sort: metadata["ARTISTSORT"], #  name of the track artist for sorting
+      #  MusicBrainz ID; UUID fragment only
+      track_id: metadata["MUSICBRAINZ_TRACKID"],
+      #  individual track artist name
+      artist: metadata["ARTIST"],
+      # MusicBrainz ID; UUID fragment
+      artist_id: metadata["MUSICBRAINZ_ARTISTID"],
+      #  float: duration of the track in seconds
+      length: metadata["LENGTH"] || audio_info["duration"],
+      #  position on the entire release
+      index: metadata["TRACKNUMBER"],
+      #  delivery mechanism (Vinyl, etc.)
+      media: metadata["MEDIA"],
+      #  the disc number this track appears on in the album
+      medium: metadata["DISC"],
+      #  the track's position on the disc
+      medium_index: index,
+      #  the number of tracks on the item's disc
+      medium_total: total,
+      #  name of the track artist for sorting
+      artist_sort: metadata["ARTISTSORT"],
       # disctitle: metadata[""], #  name of the individual medium (subtitle)
       #  Recording-specific artist name
       artist_credit: metadata["ALBUMARTIST"]
